@@ -1,0 +1,29 @@
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/bin/fm-lab-home.sh create /tmp/fm-lab.3nc9qg5o
+/tmp/fm-lab.3nc9qg5o
+exit=0
+$ git init -qb main /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-se2c16d9/project
+exit=0
+$ git -C /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-se2c16d9/project commit --allow-empty -qm fixture
+exit=0
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/bin/fm-brief.sh trustrefused /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-se2c16d9/project --scout
+scaffolded: /tmp/fm-lab.3nc9qg5o/data/trustrefused/brief.md (scout; replace {TASK} and {FIRSTMATE_SPEC})
+exit=0
+$ tmux -L fm-lab -f /dev/null new-session -d -s primary -x 120 -y 40 -c /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068 /bin/bash --noprofile --norc
+exit=0
+$ tmux -L fm-lab set-option -g default-shell /bin/bash
+exit=0
+$ tmux -L fm-lab display-message -p -t primary #{socket_path},#{pid},0
+/private/tmp/fm-lab.3nc9qg5o/tmux/tmux-501/fm-lab,15168,0
+exit=0
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/bin/fm-spawn.sh trustrefused /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-se2c16d9/project --scout --harness claude --backend tmux
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /tmp/fm-lab.3nc9qg5o
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-se2c16d9/project' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-se2c16d9/project/users/me', so it is not a project root
+error: could not pre-register Claude workspace trust for /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-se2c16d9/pool/.treehouse/project-d2c266/1/project; refusing to launch a claude worker that would wedge on the trust dialog; inspect window primary:fm-trustrefused
+exit=1
+$ tmux -L fm-lab list-panes -a -F #{session_name}:#{window_name} #{pane_current_command} #{pane_current_path}
+primary:bash bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068
+primary:fm-trustrefused bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-se2c16d9/pool/.treehouse/project-d2c266/1/project
+exit=0
+{"exit": 1, "output": "fm-gate-refuse: gate agent lifecycle permitted only against lab home /tmp/fm-lab.3nc9qg5o\nerror: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-se2c16d9/project' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-se2c16d9/project/users/me', so it is not a project root\nerror: could not pre-register Claude workspace trust for /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-se2c16d9/pool/.treehouse/project-d2c266/1/project; refusing to launch a claude worker that would wedge on the trust dialog; inspect window primary:fm-trustrefused\n", "store_unchanged": true, "task_meta_exists": false, "busy_state_exists": false, "busy_gen_exists": false, "state": {}, "panes": "primary:bash bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068\nprimary:fm-trustrefused bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-se2c16d9/pool/.treehouse/project-d2c266/1/project\n", "passed": true}
+$ tmux -L fm-lab kill-server
+exit=0

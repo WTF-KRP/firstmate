@@ -1,0 +1,2 @@
+primary:bash bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068
+primary:fm-trustrefused bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-n7jsw2un/pool/.treehouse/project-58d099/1/project

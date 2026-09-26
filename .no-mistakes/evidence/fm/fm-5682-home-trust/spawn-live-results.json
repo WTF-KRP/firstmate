@@ -1,0 +1,11 @@
+{
+  "exit": 1,
+  "output": "fm-gate-refuse: gate agent lifecycle permitted only against lab home /tmp/fm-lab.b60pbuj4\nerror: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-n7jsw2un/project' is the home directory, not a project root\nerror: could not pre-register Claude workspace trust for /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-n7jsw2un/pool/.treehouse/project-58d099/1/project; refusing to launch a claude worker that would wedge on the trust dialog; inspect window primary:fm-trustrefused\n",
+  "store_unchanged": true,
+  "task_meta_exists": false,
+  "busy_state_exists": false,
+  "busy_gen_exists": false,
+  "state": {},
+  "panes": "primary:bash bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068\nprimary:fm-trustrefused bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M3F3ECWQZ7XRPK1V9F37K068/.spawn-live-n7jsw2un/pool/.treehouse/project-58d099/1/project\n",
+  "passed": true
+}
