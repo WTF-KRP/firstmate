@@ -1,0 +1,11 @@
+FM_TEST_BEGIN 2026-10-10T01:17:51Z tests/fm-spawn-dispatch-validation.test.sh family=backend-dispatch expected_gate_skip=none
+ok - T1 absent ship/scout hooks add no serializer and effective config is isolated
+ok - T2 typed ship/scout/raw/base allow binds request and delivered snapshot
+ok - T3/T5 refusal preserves queued backlog and releases locks; invalid results cannot allow
+ok - T4 output before a hang cannot allow and ordinary validator descendants stop
+ok - T6 batch checks every pair despite guard suppression and preserves earlier capacity deferral
+FM_TEST_END 2026-10-10T01:19:22Z tests/fm-spawn-dispatch-validation.test.sh exit=0 duration_ms=90010 gate_skip=false
+FM_TEST_SUMMARY total=1 failed=0 skipped_gate=0 duration_ms=90083
+FM_TEST_SUMMARY_FAMILY family=backend-dispatch count=1 duration_ms=90010 failed=0
+FM_TEST_SLOWEST rank=1 script=tests/fm-spawn-dispatch-validation.test.sh duration_ms=90010
+bash bin/fm-test-run.sh tests/fm-spawn-dispatch-validation.test.sh  20.41s user 21.07s system 46% cpu 1:30.11 total

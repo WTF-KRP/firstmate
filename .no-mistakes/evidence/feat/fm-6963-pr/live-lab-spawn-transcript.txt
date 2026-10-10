@@ -1,0 +1,74 @@
+===== scenario: absent
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/t-absent/launch-brief.md records no ship branch; defaulting to legacy branch fm/t-absent
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/t-absent/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode local-only - confirm its definition of done matches
+notice: t-absent ships mode=local-only while the standing posture for demo is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+spawned t-absent harness=sleep kind=ship mode=local-only yolo=off window=primary:fm-t-absent worktree=/private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-lab.PzxkLg/treehouse/.treehouse/demo-ac4606/1/demo
+EXIT=0
+
+===== scenario: refuse
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/t-refuse/launch-brief.md records no ship branch; defaulting to legacy branch fm/t-refuse
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/t-refuse/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode local-only - confirm its definition of done matches
+notice: t-refuse ships mode=local-only while the standing posture for demo is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+lab policy refuses t-refuse for project /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-lab.PzxkLg/projects/demo
+error: dispatch validation: validator exited nonzero
+error: dispatch validation refused (exit 1): /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/config/dispatch-validator
+EXIT=1
+
+===== scenario: allow
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/t-allow/launch-brief.md records no ship branch; defaulting to legacy branch fm/t-allow
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/t-allow/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode local-only - confirm its definition of done matches
+notice: t-allow ships mode=local-only while the standing posture for demo is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+spawned t-allow harness=codex kind=ship mode=local-only yolo=off window=primary:fm-t-allow worktree=/private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-lab.PzxkLg/treehouse/.treehouse/demo-ac4606/2/demo
+EXIT=0
+
+===== scenario: timeout
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/t-timeout/launch-brief.md records no ship branch; defaulting to legacy branch fm/t-timeout
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/t-timeout/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode local-only - confirm its definition of done matches
+notice: t-timeout ships mode=local-only while the standing posture for demo is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+lab validator hanging
+error: dispatch validation refused (exit 124): /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/config/dispatch-validator
+EXIT=1
+
+===== scenario: batch
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/b-one/launch-brief.md records no ship branch; defaulting to legacy branch fm/b-one
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/b-one/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode local-only - confirm its definition of done matches
+notice: b-one ships mode=local-only while the standing posture for demo is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+lab policy refuses b-one for project /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-lab.PzxkLg/projects/demo
+error: dispatch validation: validator exited nonzero
+error: dispatch validation refused (exit 1): /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/config/dispatch-validator
+batch: FAILED to spawn b-one (/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/projects/demo)
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/b-two/launch-brief.md records no ship branch; defaulting to legacy branch fm/b-two
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/b-two/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode local-only - confirm its definition of done matches
+notice: b-two ships mode=local-only while the standing posture for demo is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+spawned b-two harness=sleep kind=ship mode=local-only yolo=off window=primary:fm-b-two worktree=/private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-lab.PzxkLg/treehouse/.treehouse/demo-ac4606/2/demo
+EXIT=1
+
+===== scenario: mutate
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/t-mutate/launch-brief.md records no ship branch; defaulting to legacy branch fm/t-mutate
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/t-mutate/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode local-only - confirm its definition of done matches
+notice: t-mutate ships mode=local-only while the standing posture for demo is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+error: dispatch validation refused: effective brief changed before launch for t-mutate
+warning: leaving task t-mutate's slot claim on /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-lab.PzxkLg/treehouse/.treehouse/demo-ac4606/3/demo in place; the Treehouse project lock is no longer held, so the next spawn's claim replaces it
+EXIT=1
+
+===== scenario: scout
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg
+spawned s-scout harness=sleep kind=scout window=primary:fm-s-scout worktree=/private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-lab.PzxkLg/treehouse/.treehouse/demo-ac4606/4/demo
+EXIT=0
+
+===== scenario: nonexec
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/t-nonexec/launch-brief.md records no ship branch; defaulting to legacy branch fm/t-nonexec
+warning: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/data/t-nonexec/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode local-only - confirm its definition of done matches
+notice: t-nonexec ships mode=local-only while the standing posture for demo is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+error: dispatch validator must be a readable executable regular file: /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.PzxkLg/config/dispatch-validator
+EXIT=1
+
