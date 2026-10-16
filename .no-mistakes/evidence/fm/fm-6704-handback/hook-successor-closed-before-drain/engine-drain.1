@@ -1,0 +1,7 @@
+1792183594	2	signal	demo.status	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-successor-closed-before-drain/state/demo.status
+WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh --ack-through 2 --recovery-generation 59019.1792183594.vQaAk2
+wake annotation: unread wake-EVENT since last drain, not current state: demo.status: working [at=1792183593]: first actionable wake
+wake annotation: latest wake-EVENT observed at drain, not current state: demo.status: needs-decision [at=1792183598]: which export format?
+OPEN DECISIONS (still open, folded from the durable status logs - not just the latest line):
+demo needs-decision: which export format?
+OPEN DECISIONS: close one by answering it: bin/fm-send.sh <task> --resolve-key <key> '<answer>'

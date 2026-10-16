@@ -1,0 +1,3 @@
+1792183616	start	gen=host-86690-1792183616	primary=claude
+1792183620	pass-through	downtime-unrestored	attended	main-only	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-turns-main-only-write-fails/state/demo.status
+1792183620	pass-through	attended	main-only	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-turns-main-only-write-fails/state/demo.status

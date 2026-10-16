@@ -1,0 +1,3 @@
+1792183650	start	gen=host-20684-1792183649	primary=claude
+1792183657	handled	turn=host-20684-1792183649.1	posture=attended	rc=0	reports=1	error=0 cost=0.25 conversation_cost=0.25 input=5 cache_read=100 cache_write=10 output=20 turns=3	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.Y7Ivq6/hook-successor-closed-before-drain/state/demo.status
+1792183657	pass-through	attended	main-only	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.Y7Ivq6/hook-successor-closed-before-drain/state/demo.status

@@ -1,0 +1,4 @@
+1792183628	start	gen=host-2038-1792183628	primary=claude
+1792183634	handled	turn=host-2038-1792183628.1	posture=attended	rc=0	reports=1	error=0 cost=0.25 conversation_cost=0.25 input=5 cache_read=100 cache_write=10 output=20 turns=3	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-successor-restore-fails-announced/state/demo.status
+1792183634	to-main	downtime-unrestored	branch-outcome: the supervision session handled this wake and recorded captain outcomes for you (store rows 1); run bin/fm-wake-drain.sh, act on its BRANCH OUTCOMES section, and acknowledge them as it prints
+1792183634	to-main	branch-outcome: the supervision session handled this wake and recorded captain outcomes for you (store rows 1); run bin/fm-wake-drain.sh, act on its BRANCH OUTCOMES section, and acknowledge them as it prints

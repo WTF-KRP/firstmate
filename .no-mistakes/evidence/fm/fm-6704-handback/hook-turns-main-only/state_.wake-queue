@@ -1,0 +1,4 @@
+1792183613	1	signal	demo.status	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-turns-main-only/state/demo.status
+1792183613	2	signal	demo.status	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-turns-main-only/state/demo.status
+1792183616	3	signal	demo.status	needs-decision: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-turns-main-only/state/demo.status
+1792183616	4	signal	demo.status	needs-decision: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-turns-main-only/state/demo.status

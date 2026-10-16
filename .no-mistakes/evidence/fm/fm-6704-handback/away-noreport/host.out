@@ -1,0 +1,3 @@
+watcher: started pid=13835 (beacon fresh)
+signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/away-noreport/state/demo.status
+supervision-host: the away session could not take this wake: the engine turn recorded no outcome for its wake; this wake is yours

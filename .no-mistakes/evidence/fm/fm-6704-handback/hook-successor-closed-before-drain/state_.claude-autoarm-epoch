@@ -1,0 +1,2 @@
+epoch=1 owner_pid=57812 outcome=rewake updated_at=1792183604 session_pid=57224 recovery_generation=59019.1792183594.vQaAk2
+Fri Oct 16 16:46:32 2026     bash /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-successor-closed-before-drain/bin/fm-claude-stop-autoarm.sh

@@ -1,0 +1,208 @@
+Candidate: 3636c1e37741b3fb1dd7a5a0bbb1dd43a15546c6
+Baseline host: 67abd40a6b7b0c39fb509527afd3784534c5bd9f
+Behavioral fixtures use a Bash symlink named claude and a stub engine. These are not live-Claude results. Host, watcher, Stop hook, drain and recovery marker are real.
+
+Candidate focused run exit: 0
+ok - host+hook: a successor close that preceded the engine's drain still rewakes an idle main
+ok - host+hook: a successor that closes during a held engine turn does not suppress the branch-outcome rewake
+ok - host+hook: a close that turns main-only at its turn rewakes main and keeps its successor watcher
+ok - host+hook: failed at-turn downtime write notifies main despite a healthy successor
+ok - host+hook: a refused hand-back becomes a delivered failure notice
+ok - host+hook: a refused hand-back on an announced handling marker becomes a delivered failure notice
+ok - host: the park ends itself with a boundary wake and a stopped watcher
+ok - host: an engine turn that records no outcome hands its durable wake to main
+
+Baseline regression exit: 1. Only the host executable was replaced with its baseline version inside the fixture.
+not ok - closed before drain: the Stop hook must rewake main: firstmate watcher wake - one supervision event needs a handling turn now.
+signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.Y7Ivq6/hook-successor-closed-before-drain/state/demo.status
+Run bin/fm-wake-drain.sh first, handle the wake, then run its exact WAKE_ACK_REQUIRED --ack-through command. Until that post-handling acknowledgement, interruption leaves the wake durable for idempotent re-handling. This Stop hook owns watcher continuity: when the handling turn ends, the next needed cycle arms automatically - do NOT run bin/fm-watch-arm.sh after an ordinary wake.
+pending:handling:20903.1792183651.YHkjEa: expected exit 2, got 0
+
+
+Fixture: hook-successor-closed-before-drain
+
+hook.rc
+2
+
+
+hook.err
+firstmate watcher wake - one supervision event needs a handling turn now.
+signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-successor-closed-before-drain/state/demo.status
+Run bin/fm-wake-drain.sh first, handle the wake, then run its exact WAKE_ACK_REQUIRED --ack-through command. Until that post-handling acknowledgement, interruption leaves the wake durable for idempotent re-handling. This Stop hook owns watcher continuity: when the handling turn ends, the next needed cycle arms automatically - do NOT run bin/fm-watch-arm.sh after an ordinary wake.
+
+
+state_.supervision-host.log
+1792183593	start	gen=host-58222-1792183592	primary=claude
+1792183603	handled	turn=host-58222-1792183592.1	posture=attended	rc=0	reports=1	error=0 cost=0.25 conversation_cost=0.25 input=5 cache_read=100 cache_write=10 output=20 turns=3	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-successor-closed-before-drain/state/demo.status
+1792183604	pass-through	attended	main-only	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-successor-closed-before-drain/state/demo.status
+
+
+state_.watcher-down
+announced:downtime:59019.1792183594.vQaAk2
+
+
+state_.claude-autoarm-epoch
+epoch=1 owner_pid=57812 outcome=rewake updated_at=1792183604 session_pid=57224 recovery_generation=59019.1792183594.vQaAk2
+Fri Oct 16 16:46:32 2026     bash /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-successor-closed-before-drain/bin/fm-claude-stop-autoarm.sh
+
+
+Fixture: hook-turns-main-only
+
+hook.rc
+2
+
+
+hook.err
+firstmate watcher wake - one supervision event needs a handling turn now.
+signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-turns-main-only/state/demo.status
+Run bin/fm-wake-drain.sh first, handle the wake, then run its exact WAKE_ACK_REQUIRED --ack-through command. Until that post-handling acknowledgement, interruption leaves the wake durable for idempotent re-handling. This Stop hook owns watcher continuity: when the handling turn ends, the next needed cycle arms automatically - do NOT run bin/fm-watch-arm.sh after an ordinary wake.
+
+
+state_.supervision-host.log
+1792183612	start	gen=host-82349-1792183611	primary=claude
+1792183615	pass-through	attended	main-only	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-turns-main-only/state/demo.status
+
+
+state_.watcher-down
+pending:downtime:82537.1792183613.kFlBAZ
+
+
+state_.claude-autoarm-epoch
+epoch=1 owner_pid=82242 outcome=rewake updated_at=1792183615 session_pid=82102 recovery_generation=82537.1792183613.kFlBAZ
+Fri Oct 16 16:46:51 2026     bash /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-turns-main-only/bin/fm-claude-stop-autoarm.sh
+
+
+Fixture: hook-turns-main-only-write-fails
+
+hook.rc
+2
+
+
+hook.err
+firstmate watcher wake - one supervision event needs a handling turn now.
+signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-turns-main-only-write-fails/state/demo.status
+supervision-host: watcher downtime could not be restored for the main hand-back
+Run bin/fm-wake-drain.sh first, handle the wake, then run its exact WAKE_ACK_REQUIRED --ack-through command. Until that post-handling acknowledgement, interruption leaves the wake durable for idempotent re-handling. This Stop hook owns watcher continuity: when the handling turn ends, the next needed cycle arms automatically - do NOT run bin/fm-watch-arm.sh after an ordinary wake.
+firstmate watcher auto-arm FAILED - the supervision host returned an actionable wake, but its rewake could not be committed.
+
+
+state_.supervision-host.log
+1792183616	start	gen=host-86690-1792183616	primary=claude
+1792183620	pass-through	downtime-unrestored	attended	main-only	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-turns-main-only-write-fails/state/demo.status
+1792183620	pass-through	attended	main-only	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-turns-main-only-write-fails/state/demo.status
+
+
+state_.watcher-down
+announced:handling:87299.1792183617.cqtwsw
+
+
+state_.claude-autoarm-epoch
+epoch=1 owner_pid=86378 outcome=failed updated_at=1792183620
+Fri Oct 16 16:46:56 2026     bash /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-turns-main-only-write-fails/bin/fm-claude-stop-autoarm.sh
+
+
+Fixture: hook-successor-restore-fails-pending
+
+hook.rc
+2
+
+
+hook.err
+firstmate watcher wake - one supervision event needs a handling turn now.
+supervision-host: branch-outcome: the supervision session handled this wake and recorded captain outcomes for you (store rows 1); run bin/fm-wake-drain.sh, act on its BRANCH OUTCOMES section, and acknowledge them as it prints
+supervision-host: watcher downtime could not be restored for the main hand-back
+Run bin/fm-wake-drain.sh first, handle the wake, then run its exact WAKE_ACK_REQUIRED --ack-through command. Until that post-handling acknowledgement, interruption leaves the wake durable for idempotent re-handling. This Stop hook owns watcher continuity: when the handling turn ends, the next needed cycle arms automatically - do NOT run bin/fm-watch-arm.sh after an ordinary wake.
+firstmate watcher auto-arm FAILED - the supervision host returned an actionable wake, but its rewake could not be committed.
+
+
+state_.supervision-host.log
+1792183621	start	gen=host-93486-1792183621	primary=claude
+1792183627	handled	turn=host-93486-1792183621.1	posture=attended	rc=0	reports=1	error=0 cost=0.25 conversation_cost=0.25 input=5 cache_read=100 cache_write=10 output=20 turns=3	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-successor-restore-fails-pending/state/demo.status
+1792183627	to-main	downtime-unrestored	branch-outcome: the supervision session handled this wake and recorded captain outcomes for you (store rows 1); run bin/fm-wake-drain.sh, act on its BRANCH OUTCOMES section, and acknowledge them as it prints
+1792183627	to-main	branch-outcome: the supervision session handled this wake and recorded captain outcomes for you (store rows 1); run bin/fm-wake-drain.sh, act on its BRANCH OUTCOMES section, and acknowledge them as it prints
+
+
+state_.watcher-down
+pending:handling:93673.1792183622.F1lARo
+
+
+state_.claude-autoarm-epoch
+epoch=1 owner_pid=93313 outcome=failed updated_at=1792183627
+Fri Oct 16 16:47:01 2026     bash /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-successor-restore-fails-pending/bin/fm-claude-stop-autoarm.sh
+
+
+Fixture: hook-successor-restore-fails-announced
+
+hook.rc
+2
+
+
+hook.err
+firstmate watcher wake - one supervision event needs a handling turn now.
+supervision-host: branch-outcome: the supervision session handled this wake and recorded captain outcomes for you (store rows 1); run bin/fm-wake-drain.sh, act on its BRANCH OUTCOMES section, and acknowledge them as it prints
+supervision-host: watcher downtime could not be restored for the main hand-back
+Run bin/fm-wake-drain.sh first, handle the wake, then run its exact WAKE_ACK_REQUIRED --ack-through command. Until that post-handling acknowledgement, interruption leaves the wake durable for idempotent re-handling. This Stop hook owns watcher continuity: when the handling turn ends, the next needed cycle arms automatically - do NOT run bin/fm-watch-arm.sh after an ordinary wake.
+firstmate watcher auto-arm FAILED - the supervision host returned an actionable wake, but its rewake could not be committed.
+
+
+state_.supervision-host.log
+1792183628	start	gen=host-2038-1792183628	primary=claude
+1792183634	handled	turn=host-2038-1792183628.1	posture=attended	rc=0	reports=1	error=0 cost=0.25 conversation_cost=0.25 input=5 cache_read=100 cache_write=10 output=20 turns=3	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-successor-restore-fails-announced/state/demo.status
+1792183634	to-main	downtime-unrestored	branch-outcome: the supervision session handled this wake and recorded captain outcomes for you (store rows 1); run bin/fm-wake-drain.sh, act on its BRANCH OUTCOMES section, and acknowledge them as it prints
+1792183634	to-main	branch-outcome: the supervision session handled this wake and recorded captain outcomes for you (store rows 1); run bin/fm-wake-drain.sh, act on its BRANCH OUTCOMES section, and acknowledge them as it prints
+
+
+state_.watcher-down
+announced:handling:2233.1792183629.X7mCMw
+
+
+state_.claude-autoarm-epoch
+epoch=1 owner_pid=1912 outcome=failed updated_at=1792183635
+Fri Oct 16 16:47:08 2026     bash /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/hook-successor-restore-fails-announced/bin/fm-claude-stop-autoarm.sh
+
+
+Fixture: boundary
+
+host.rc
+0
+
+
+host.out
+watcher: started pid=10682 (beacon fresh)
+supervision-host: cycle boundary - the host ended its park at its bound; drain, acknowledge, and end the turn, and the next park starts on its own
+
+
+state_.supervision-host.log
+1792183635	start	gen=host-10514-1792183635	primary=claude
+1792183637	boundary	after 60s
+
+
+state_.watcher-down
+pending:downtime:10682.1792183636.g036pm
+
+
+Fixture: away-noreport
+
+host.rc
+0
+
+
+host.out
+watcher: started pid=13835 (beacon fresh)
+signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/away-noreport/state/demo.status
+supervision-host: the away session could not take this wake: the engine turn recorded no outcome for its wake; this wake is yours
+
+
+state_.supervision-host.log
+1792183637	start	gen=host-13382-1792183637	primary=claude
+1792183641	failed	turn=host-13382-1792183637.1	posture=away	rc=0	reports=0	unacked=1 2	error=0 cost=0.25 conversation_cost=0.25 input=5 cache_read=100 cache_write=10 output=20 turns=3		signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.mQoO6N/away-noreport/state/demo.status
+1792183642	to-main	the away session could not take this wake: the engine turn recorded no outcome for its wake; this wake is yours
+
+
+state_.watcher-down
+pending:downtime:13835.1792183638.I7xhwc
+
+
+Live launch was refused before execution by PreToolUse review because its required recursive teardown target was dynamic. No alternate route attempted. The proposed private tmux launch specified 110x35 dimensions. Live validation needs an approved lab lifecycle command compatible with the guard, retaining all protection.
+
+Cleanup was separately refused by command review. Untracked scratch files remain: tests/.fm-6704-targeted.sh, tests/.fm-6704-baseline.sh, tests/.fm-6704-baseline-host.sh. No alternate removal route attempted. The outer executor must arrange approved cleanup before delivery.
