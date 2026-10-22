@@ -109,7 +109,8 @@ The host asks the Pi branch's offer rule (`branchOfferForWake`, through `bin/fm-
 So a close reaches main off Pi exactly when it would on Pi: a check trigger, a decision-owned signal or stale trigger, and a scan that is unsafe or holds nothing for the branch stay main's.
 On that main-only pass-through the host starts the successor watcher cycle and leaves it running, then prints the close unchanged.
 That successor, like one a turn hands back at its start (see [Away](#away)), runs in a process group of its own, so the harness tearing down the hook's group after the rewake does not stop it.
-The host confirms no handling handoff for that close and follows the recovery contract in [Failure direction](#failure-direction).
+The host confirms no handling handoff and republishes the watcher's recovery marker as downtime, even when an earlier engine turn left it reading handling, because the re-arm owner delivers a close to main only while that marker reads downtime.
+If that publish fails, the host prints a `watcher: FAILED` line instead of the close and exits nonzero, so the arm owner reports a failure rather than a hand-back it could not deliver.
 The session's next park without `--restart` requests a take-over to restore a single host-owned arm; the [host header](../bin/fm-supervision-host.sh) owns successor persistence and cleanup, and the [arm header](../bin/fm-watch-arm.sh) owns take-over eligibility and fallback.
 OpenCode and omp still launch the host with `--restart`, which takes precedence over recorded take-over and lacks its acknowledgement-preserving handover; changing that first-cycle path remains a follow-up.
 The host-off Claude Stop hook's detached handling successor is also unchanged; see [Claude handling successor](watcher-continuity.md#claude-handling-successor).
@@ -228,7 +229,8 @@ The captain row is still durable, and the next drain presents it until it is ack
 ## Failure direction
 
 Every path that cannot finish a wake the engine took hands that wake to main, with one `supervision-host: <why>` line after the close.
-Every hand-back of a wake to main, including an attended pass-through, a captain outcome, or the park boundary, goes through `hand_back`, which republishes downtime before emitting the wake to main or leaving a successor cycle running.
+Every other hand-back of a wake to main, including an attended pass-through that is not main-only, a turn's pass-through at its start, a captain outcome, or the park boundary, goes through `hand_back`, which republishes downtime before emitting the wake to main or leaving a successor cycle running.
+The main-only pass-through republishes downtime itself, as described in [Attended](#attended).
 Failure and boundary paths stop their successor before that publication.
 The re-arm owner delivers a close to main only while the watcher's recovery marker reads downtime.
 An engine drain can move the episode to handling after a successor close published downtime, so the host must restore downtime even when that close has already arrived.
