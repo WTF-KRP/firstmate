@@ -50,8 +50,8 @@
 #     (bin/fm-branch-dispatch.mjs offer) says the branch may take this close,
 #     so main-only classes (check triggers, decision-owned triggers, a scan
 #     that is unsafe or holds nothing for the branch) stay main's. That
-#     pass-through starts the successor watcher cycle and leaves it running
-#     before the close is printed, so supervision continues when the session
+#     main-only pass-through starts the successor watcher cycle and leaves it
+#     running before the close is printed, so supervision continues when the session
 #     drops the handoff. It confirms no handling handoff and republishes the
 #     recovery marker as downtime, even over handling an earlier engine turn
 #     left, so the re-arm owner delivers the close to main; a failed publish
@@ -583,8 +583,9 @@ retire_successor() {
 }
 
 # Give main a wake and exit: every exit that hands main a wake comes through
-# here, except the attended main-only pass-through, whose own republish
-# leave_successor_for_main owns. The re-arm owner delivers a close only while the recovery marker reads
+# here while the host owns triage, except the initial attended main-only
+# pass-through, whose own republish leave_successor_for_main owns. The re-arm
+# owner delivers a close only while the recovery marker reads
 # downtime, and a close the host read after an engine turn can find its episode
 # moved to handling since it was published (the branch's own drain does that
 # when the close lands before it), so the hand-back first republishes downtime
