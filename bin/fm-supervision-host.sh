@@ -621,8 +621,8 @@ retire_successor() {
 # episode contract in docs/watcher-continuity.md. When the publication
 # fails the successor is stopped instead, so no live watcher hides the lost
 # hand-back from the owner, and the exit adds one line and is nonzero.
-# The caller logs <ledger> before an optional acknowledged hand-back; this
-# function uses it to identify publication failures.
+# Callers log <ledger>, a kind and tab-separated detail; this function uses
+# it to identify publication failures.
 hand_back() {  # <ledger> <leave> [line...]
   local ledger=$1 leave=$2 failure='' rc=0 restored=0
   shift 2

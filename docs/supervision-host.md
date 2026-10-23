@@ -135,7 +135,7 @@ The engine turn runs beside a captain who is present, so its guarded actions tak
 ### Away
 
 Every close goes to the engine; captain outcomes remain in the store until the return drain presents them (see [Captain outcomes](#captain-outcomes)).
-Every turn that starts attended meets the attended rule again at its start, and the offer's scan is the scope the turn claims: a close accepted away whose turn starts attended, because the captain returned in between, or an attended close whose task turned main-only (a decision appeared) while the successor started, reaches main unchanged and leaves that successor cycle running.
+Every turn that starts attended meets the attended rule again at its start, and the offer's scan is the scope the turn claims: a close accepted away whose turn starts attended, because the captain returned in between, or an attended close whose task turned main-only (a decision appeared) while the successor started, reaches main unchanged and leaves that successor cycle running, with the handoff that turn had confirmed handed back to downtime as already announced, so that successor does not announce the same close again.
 A captain who leaves while an attended turn runs turns its captain outcomes into away outcomes: they wait for the return too.
 
 ### Quiet mode
@@ -262,6 +262,8 @@ All other primaries and the host-off Stop path retain their existing behavior.
 With acknowledged hand-back disabled, every path that cannot finish a wake the engine took hands that wake to main, with one `supervision-host: <why>` line after the close.
 Engine failures, attended pass-throughs, captain outcomes, and park boundaries republish downtime before emitting a wake to main or leaving a successor cycle running.
 `hand_back` owns that publication except on the initial main-only pass-through, where `leave_successor_for_main` retains its own publication path.
+When `hand_back` leaves a successor cycle running, it hands downtime back as already announced so that successor does not announce the same close again.
+Other hand-backs, including the initial main-only pass-through, use ordinary watcher publication under the [recovery-episode contract](watcher-continuity.md#recovery-episode-acknowledgement).
 Failure and boundary paths stop their successor before that publication.
 The re-arm owner delivers a close to main only while the watcher's recovery marker reads downtime.
 An engine drain can move the episode to handling after a successor close published downtime, so the host must restore downtime even when that close has already arrived.
