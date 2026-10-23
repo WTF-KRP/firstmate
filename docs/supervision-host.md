@@ -68,7 +68,7 @@ The host's header owns the output contract they read.
 |---|---|---|
 | Claude | the Stop auto-arm, `bin/fm-claude-stop-autoarm.sh`, inside its single-flight generation | the hook's exit-2 rewake (`Stop hook feedback`) |
 | Cursor | the `stop` hook park, `bin/fm-turnend-guard-cursor.sh` | the park's `watcher` follow-up |
-| OpenCode | the TUI plugin, `.opencode/plugins/fm-primary-watch-arm.js`, which restarts its own successor after each close | a `watcher` prompt through `promptAsync` |
+| OpenCode | the TUI plugin, `.opencode/plugins/fm-primary-watch-arm.js`, which restarts its own successor after each close | a `watcher` prompt through `ctx.session.prompt` |
 | omp | the watch extension, `.omp/extensions/fm-primary-omp-watch.ts`, which restarts its own successor after each close | the extension's `watcher` follow-up |
 | Grok | the model's tracked background call, rendered as `bin/fm-supervision-host.sh park` at session start | the background task's completion notification |
 | Codex | the foreground checkpoint, `bin/fm-watch-checkpoint.sh`, in the watcher's place | the checkpoint's own output |
@@ -126,13 +126,14 @@ A close the engine takes is handled as in [One wake](#one-wake), with the dialog
 A handled wake with only routine outcomes never reaches main.
 A handled wake that recorded a captain outcome while the captain is still attended exits with one `supervision-host: branch-outcome:` line naming its store rows, without the close it handled; see [Captain outcomes](#captain-outcomes).
 A turn that fails hands its close to main with one `supervision-host:` line, as away.
-Main-only rows that share the queue with the branch's rows stay queued for main, which is woken for each on its own triggering close, as on Pi.
+Main-only rows that share the queue with the branch's rows stay queued for main.
+The [handling-successor recovery contract](watcher-continuity.md#durable-queue-and-turn-end-backstop) guarantees that a main-only row appended after the predecessor closes, including before the successor initializes or while the host is parked, reaches main as a pass-through.
 The engine turn runs beside a captain who is present, so its guarded actions take the task leases that keep it and main off the same task.
 
 ### Away
 
 Every close goes to the engine; captain outcomes remain in the store until the return drain presents them (see [Captain outcomes](#captain-outcomes)).
-Every turn that starts attended meets the attended rule again at its start, and the offer's scan is the scope the turn claims: a close accepted away whose turn starts attended, because the captain returned in between, or an attended close whose task turned main-only (a decision appeared) while the successor started, reaches main unchanged and leaves that successor cycle running.
+Every turn that starts attended meets the attended rule again at its start, and the offer's scan is the scope the turn claims: a close accepted away whose turn starts attended, because the captain returned in between, or an attended close whose task turned main-only (a decision appeared) while the successor started, reaches main unchanged and leaves that successor cycle running, with the handoff that turn had confirmed handed back to downtime as already announced, so that successor does not announce the same close again.
 A captain who leaves while an attended turn runs turns its captain outcomes into away outcomes: they wait for the return too.
 
 ### Quiet mode
@@ -167,7 +168,8 @@ On each actionable close the engine takes, the host runs these steps:
 3. It runs one bounded engine turn with the branch prompt and the wake message carrying, attended, the dialog mirror and, away, the record's read-back.
    The engine drains, handles, reports through `bin/fm-branch-report.sh`, and acknowledges, exactly as the Pi branch does.
 4. It releases the branch's leases and grant, whether or not the wake was handled.
-5. It parks on the successor only for a handled wake.
+5. For a handled wake, it settles the handling-successor recovery transition and then parks on that successor.
+   If settlement fails, it logs `handling-settle-failed` and still parks, leaving a later main-only pass-through to restore the handoff or deliver the restore failure to main.
    A main-only pass-through is not a park: the host exits after leaving that cycle running, as [Attended](#attended) describes.
 
 The host counts the wake handled only when all three hold:
@@ -231,6 +233,7 @@ The captain row is still durable, and the next drain presents it until it is ack
 Every path that cannot finish a wake the engine took hands that wake to main, with one `supervision-host: <why>` line after the close.
 Engine failures, attended pass-throughs, captain outcomes, and park boundaries republish downtime before emitting a wake to main or leaving a successor cycle running.
 `hand_back` owns that publication except on the initial main-only pass-through, where `leave_successor_for_main` retains its own publication path.
+When `hand_back` leaves a successor cycle running, it hands downtime back as already announced so that successor does not announce the same close again; otherwise the downtime stays pending for the next watcher.
 Failure and boundary paths stop their successor before that publication.
 The re-arm owner delivers a close to main only while the watcher's recovery marker reads downtime.
 An engine drain can move the episode to handling after a successor close published downtime, so the host must restore downtime even when that close has already arrived.
