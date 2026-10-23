@@ -233,7 +233,8 @@ The captain row is still durable, and the next drain presents it until it is ack
 Every path that cannot finish a wake the engine took hands that wake to main, with one `supervision-host: <why>` line after the close.
 Engine failures, attended pass-throughs, captain outcomes, and park boundaries republish downtime before emitting a wake to main or leaving a successor cycle running.
 `hand_back` owns that publication except on the initial main-only pass-through, where `leave_successor_for_main` retains its own publication path.
-When `hand_back` leaves a successor cycle running, it hands downtime back as already announced so that successor does not announce the same close again; otherwise the downtime stays pending for the next watcher.
+When `hand_back` leaves a successor cycle running, it hands downtime back as already announced so that successor does not announce the same close again.
+Other hand-backs, including the initial main-only pass-through, use ordinary watcher publication under the [recovery-episode contract](watcher-continuity.md#recovery-episode-acknowledgement).
 Failure and boundary paths stop their successor before that publication.
 The re-arm owner delivers a close to main only while the watcher's recovery marker reads downtime.
 An engine drain can move the episode to handling after a successor close published downtime, so the host must restore downtime even when that close has already arrived.

@@ -601,7 +601,8 @@ retire_successor() {
 # a successor stay up for main: <leave> names the function that leaves it, or
 # is empty. A successor left up must not announce the close this exit already
 # delivers, so that downtime is handed back as already announced; with no
-# successor left it stays pending for the next watcher. When the publication
+# successor left, ordinary watcher publication applies under the recovery
+# episode contract in docs/watcher-continuity.md. When the publication
 # fails the successor is stopped instead, so no live watcher hides the lost
 # hand-back from the owner, and the exit adds one line and is nonzero.
 # <ledger> is the log entry, a kind and a tab-separated detail.
