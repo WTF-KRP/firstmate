@@ -1,0 +1,7 @@
+Focused fixture runner exited 0 after all 15 selected cases passed.
+Teardown raced a late watcher-exit ledger write.
+Remaining fixture: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.xrA7Il/hook-successor-close/state/.watch-cycle-exits.log
+Exact-root process inspection found no surviving process.
+Git status --short was empty at candidate ce717579d55903cf25766d975040aee51035064f.
+Automatic command review rejected removal: rm -f style commands are not permitted. Use a safer approach.
+No alternate removal route was attempted. The fixture log and its three parent fixture directories remain.
