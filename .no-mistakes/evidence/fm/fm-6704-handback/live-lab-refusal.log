@@ -1,0 +1,6 @@
+Candidate: a614a55d559cd17a77320b6549c73c2403c051f6
+Real Claude lab launch attempted with bin/fm-lab-home.sh create, a private tmux -L fm-lab server with 120x40 grid, FM_HOME scoped to the disposable lab, and same-turn teardown.
+PreToolUse refused the entire command before execution:
+BLOCKED: Recursive delete check: rm target '"$LAB"' depends on a variable, command substitution or other expansion, so it cannot be checked
+No lab was created, no Claude session launched, and no alternative deletion or launch route was attempted.
+This is the previously declined live-lab cleanup refusal, not a new product defect.

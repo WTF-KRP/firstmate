@@ -1,0 +1,1128 @@
+Candidate: a614a55d559cd17a77320b6549c73c2403c051f6
+Existing fixture selectors, with real host/watcher/Stop-hook scripts and fake Claude parent/engine. Not live Claude validation.
+SELECTOR: test_uncomputable_close_after_handled_turn_restores_inherited_handling
+ok - host+hook: a pass-through for any reason after a handled turn restores inherited handling and rewakes main
+
+PRODUCT OUTPUT hook-inherited-handling-uncomputable/hook.err
+firstmate watcher wake - one supervision event needs a handling turn now.
+signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-inherited-handling-uncomputable/state/beta.status
+Run bin/fm-wake-drain.sh first, handle the wake, then run its exact WAKE_ACK_REQUIRED --ack-through command. Until that post-handling acknowledgement, interruption leaves the wake durable for idempotent re-handling. This Stop hook owns watcher continuity: when the handling turn ends, the next needed cycle arms automatically - do NOT run bin/fm-watch-arm.sh after an ordinary wake.
+
+PRODUCT OUTPUT hook-inherited-handling-uncomputable/hook.rc
+2
+
+PRODUCT OUTPUT hook-inherited-handling-uncomputable/offer-drain-marker
+pending:handling:17209.1792936209.WYy11N
+
+PRODUCT OUTPUT hook-inherited-handling-uncomputable/state/.watcher-down
+pending:downtime:17209.1792936209.WYy11N
+
+PRODUCT OUTPUT hook-inherited-handling-uncomputable/state/.claude-autoarm-epoch
+epoch=1 owner_pid=16234 outcome=rewake updated_at=1792936222 session_pid=16070 recovery_generation=17209.1792936209.WYy11N
+Sun Oct 25 09:50:06 2026     bash /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-inherited-handling-uncomputable/bin/fm-claude-stop-autoarm.sh
+
+PRODUCT OUTPUT hook-inherited-handling-uncomputable/state/.supervision-host.log
+1792936207	start	gen=host-16402-1792936206	primary=claude
+1792936219	handled	turn=host-16402-1792936206.1	posture=attended	rc=0	reports=1	error=0 cost=0.25 conversation_cost=0.25 input=5 cache_read=100 cache_write=10 output=20 turns=3	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-inherited-handling-uncomputable/state/demo.status
+1792936222	pass-through	attended	branch eligibility could not be computed	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-inherited-handling-uncomputable/state/beta.status
+SELECTOR: test_main_only_close_after_handled_turn_restores_inherited_handling
+ok - host+hook: a main-only close after a handled turn restores inherited handling and rewakes main
+
+PRODUCT OUTPUT hook-inherited-handling-restore/hook.err
+firstmate watcher wake - one supervision event needs a handling turn now.
+signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-inherited-handling-restore/state/beta.status
+Run bin/fm-wake-drain.sh first, handle the wake, then run its exact WAKE_ACK_REQUIRED --ack-through command. Until that post-handling acknowledgement, interruption leaves the wake durable for idempotent re-handling. This Stop hook owns watcher continuity: when the handling turn ends, the next needed cycle arms automatically - do NOT run bin/fm-watch-arm.sh after an ordinary wake.
+
+PRODUCT OUTPUT hook-inherited-handling-restore/hook.rc
+2
+
+PRODUCT OUTPUT hook-inherited-handling-restore/state/.watcher-down
+announced:downtime:51387.1792936224.qAtXJY
+
+PRODUCT OUTPUT hook-inherited-handling-restore/state/.claude-autoarm-epoch
+epoch=1 owner_pid=50930 outcome=rewake updated_at=1792936231 session_pid=50664 recovery_generation=51387.1792936224.qAtXJY
+Sun Oct 25 09:50:23 2026     bash /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-inherited-handling-restore/bin/fm-claude-stop-autoarm.sh
+
+PRODUCT OUTPUT hook-inherited-handling-restore/state/.supervision-host.log
+1792936223	start	gen=host-51174-1792936223	primary=claude
+1792936230	handled	turn=host-51174-1792936223.1	posture=attended	rc=0	reports=1	error=0 cost=0.25 conversation_cost=0.25 input=5 cache_read=100 cache_write=10 output=20 turns=3	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-inherited-handling-restore/state/demo.status
+1792936230	pass-through	attended	main-only	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-inherited-handling-restore/state/beta.status
+SELECTOR: test_claude_stop_hook_delivers_a_close_that_turns_main_only_at_its_turn
+ok - host+hook: a close that turns main-only at its turn rewakes main and keeps its successor watcher
+
+PRODUCT OUTPUT hook-turns-main-only/hook.err
+firstmate watcher wake - one supervision event needs a handling turn now.
+signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-turns-main-only/state/demo.status
+Run bin/fm-wake-drain.sh first, handle the wake, then run its exact WAKE_ACK_REQUIRED --ack-through command. Until that post-handling acknowledgement, interruption leaves the wake durable for idempotent re-handling. This Stop hook owns watcher continuity: when the handling turn ends, the next needed cycle arms automatically - do NOT run bin/fm-watch-arm.sh after an ordinary wake.
+
+PRODUCT OUTPUT hook-turns-main-only/hook.rc
+2
+
+PRODUCT OUTPUT hook-turns-main-only/state/.watcher-down
+pending:downtime:66152.1792936235.q8jH7X
+
+PRODUCT OUTPUT hook-turns-main-only/state/.claude-autoarm-epoch
+epoch=1 owner_pid=62971 outcome=rewake updated_at=1792936235 session_pid=62509 recovery_generation=66152.1792936235.q8jH7X
+Sun Oct 25 09:50:32 2026     bash /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-turns-main-only/bin/fm-claude-stop-autoarm.sh
+
+PRODUCT OUTPUT hook-turns-main-only/state/.supervision-host.log
+1792936232	start	gen=host-63240-1792936232	primary=claude
+1792936235	pass-through	attended	main-only	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-turns-main-only/state/demo.status
+SELECTOR: test_claude_stop_hook_restores_handoff_when_successor_closed_before_exit_to_main
+ok - host+hook: a successor closed before exit_to_main does not suppress the branch-outcome rewake
+
+PRODUCT OUTPUT hook-successor-closed-before-return/hook.err
+firstmate watcher wake - one supervision event needs a handling turn now.
+supervision-host: branch-outcome: the supervision session handled this wake and recorded captain outcomes for you (store rows 1); run bin/fm-wake-drain.sh, act on its BRANCH OUTCOMES section, and acknowledge them as it prints
+Run bin/fm-wake-drain.sh first, handle the wake, then run its exact WAKE_ACK_REQUIRED --ack-through command. Until that post-handling acknowledgement, interruption leaves the wake durable for idempotent re-handling. This Stop hook owns watcher continuity: when the handling turn ends, the next needed cycle arms automatically - do NOT run bin/fm-watch-arm.sh after an ordinary wake.
+
+PRODUCT OUTPUT hook-successor-closed-before-return/hook.rc
+2
+
+PRODUCT OUTPUT hook-successor-closed-before-return/state/.watcher-down
+pending:downtime:73746.1792936241.8COYit
+
+PRODUCT OUTPUT hook-successor-closed-before-return/state/.claude-autoarm-epoch
+epoch=1 owner_pid=69229 outcome=rewake updated_at=1792936242 session_pid=68605 recovery_generation=73746.1792936241.8COYit
+Sun Oct 25 09:50:36 2026     bash /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-successor-closed-before-return/bin/fm-claude-stop-autoarm.sh
+
+PRODUCT OUTPUT hook-successor-closed-before-return/state/.supervision-host.log
+1792936236	start	gen=host-69703-1792936236	primary=claude
+1792936242	handled	turn=host-69703-1792936236.1	posture=attended	rc=0	reports=1	error=0 cost=0.25 conversation_cost=0.25 input=5 cache_read=100 cache_write=10 output=20 turns=3	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-successor-closed-before-return/state/demo.status
+1792936242	to-main	branch-outcome: the supervision session handled this wake and recorded captain outcomes for you (store rows 1); run bin/fm-wake-drain.sh, act on its BRANCH OUTCOMES section, and acknowledge them as it prints
+SELECTOR: test_claude_stop_hook_restores_handoff_when_successor_closed_mid_engine_turn
+ok - host+hook: a successor that closes during a held engine turn does not suppress the branch-outcome rewake
+
+PRODUCT OUTPUT hook-successor-closed-before-outcome/hook.err
+firstmate watcher wake - one supervision event needs a handling turn now.
+supervision-host: branch-outcome: the supervision session handled this wake and recorded captain outcomes for you (store rows 1); run bin/fm-wake-drain.sh, act on its BRANCH OUTCOMES section, and acknowledge them as it prints
+Run bin/fm-wake-drain.sh first, handle the wake, then run its exact WAKE_ACK_REQUIRED --ack-through command. Until that post-handling acknowledgement, interruption leaves the wake durable for idempotent re-handling. This Stop hook owns watcher continuity: when the handling turn ends, the next needed cycle arms automatically - do NOT run bin/fm-watch-arm.sh after an ordinary wake.
+
+PRODUCT OUTPUT hook-successor-closed-before-outcome/hook.rc
+2
+
+PRODUCT OUTPUT hook-successor-closed-before-outcome/state/.watcher-down
+pending:downtime:78913.1792936244.Q1KNrH
+
+PRODUCT OUTPUT hook-successor-closed-before-outcome/state/.claude-autoarm-epoch
+epoch=1 owner_pid=78559 outcome=rewake updated_at=1792936249 session_pid=78403 recovery_generation=78913.1792936244.Q1KNrH
+Sun Oct 25 09:50:43 2026     bash /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-successor-closed-before-outcome/bin/fm-claude-stop-autoarm.sh
+
+PRODUCT OUTPUT hook-successor-closed-before-outcome/state/.supervision-host.log
+1792936243	start	gen=host-78689-1792936243	primary=claude
+1792936249	handled	turn=host-78689-1792936243.1	posture=attended	rc=0	reports=1	error=0 cost=0.25 conversation_cost=0.25 input=5 cache_read=100 cache_write=10 output=20 turns=3	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-successor-closed-before-outcome/state/demo.status
+1792936249	to-main	branch-outcome: the supervision session handled this wake and recorded captain outcomes for you (store rows 1); run bin/fm-wake-drain.sh, act on its BRANCH OUTCOMES section, and acknowledge them as it prints
+SELECTOR: test_incomplete_engine_result_hands_the_wake_to_main
+ok - host: an engine turn whose result is incomplete hands its wake to main
+
+PRODUCT OUTPUT away-emptyresult/host.out
+watcher: started pid=86161 (beacon fresh)
+signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/away-emptyresult/state/demo.status
+supervision-host: the away session could not take this wake: the engine turn ended with an error or an incomplete result; this wake is yours
+
+PRODUCT OUTPUT away-emptyresult/host.rc
+0
+
+PRODUCT OUTPUT away-emptyresult/state/.watcher-down
+pending:downtime:88576.1792936254.bO5xOG
+
+PRODUCT OUTPUT away-emptyresult/state/.supervision-host.log
+1792936250	start	gen=host-85878-1792936250	primary=claude
+1792936254	failed	turn=host-85878-1792936250.1	posture=away	rc=0	reports=1	unacked=none	error=1 cost=0 conversation_cost=0 input=0 cache_read=0 cache_write=0 output=0 turns=0		signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/away-emptyresult/state/demo.status
+1792936254	to-main	the away session could not take this wake: the engine turn ended with an error or an incomplete result; this wake is yours
+SELECTOR: test_park_boundary_ends_the_park_before_the_hook_timeout
+ok - host: the park ends itself with a boundary wake and a stopped watcher
+
+PRODUCT OUTPUT boundary/host.out
+watcher: started pid=94012 (beacon fresh)
+supervision-host: cycle boundary - the host ended its park at its bound; drain, acknowledge, and end the turn, and the next park starts on its own
+
+PRODUCT OUTPUT boundary/host.rc
+0
+
+PRODUCT OUTPUT boundary/state/.watcher-down
+pending:downtime:94012.1792936256.PrgTU5
+
+PRODUCT OUTPUT boundary/state/.supervision-host.log
+1792936255	start	gen=host-93705-1792936255	primary=claude
+1792936256	boundary	after 60s
+SELECTOR: test_main_only_close_after_handled_turn_delivers_restore_failure
+bash: line 183: 96957 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+ok - host+hook: a refused inherited handling restore delivers a failure instead of silent success
+
+PRODUCT OUTPUT hook-inherited-handling-refuse/hook.err
+firstmate watcher auto-arm FAILED - the Stop-owned automatic supervision mechanism is broken after 1 bounded attempts, and no live watcher with a fresh beacon was verified.
+watcher: started pid=98698 (beacon fresh)
+watcher: FAILED - the main-only hand-back could not restore watcher downtime
+The supervision host (docs/supervision-host.md) ran these cycles; its last one exited 1 without a wake.
+Do not launch a manual background arm from this notice; investigate the automatic Stop hook and watcher startup before ending blind.
+
+PRODUCT OUTPUT hook-inherited-handling-refuse/hook.rc
+2
+
+PRODUCT OUTPUT hook-inherited-handling-refuse/state/.watcher-down
+pending:handling:98698.1792936259.cc9Cf6
+
+PRODUCT OUTPUT hook-inherited-handling-refuse/state/.claude-autoarm-epoch
+epoch=1 owner_pid=97662 outcome=failed updated_at=1792936268
+Sun Oct 25 09:50:58 2026     bash /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-inherited-handling-refuse/bin/fm-claude-stop-autoarm.sh
+
+PRODUCT OUTPUT hook-inherited-handling-refuse/state/.supervision-host.log
+1792936258	start	gen=host-98002-1792936258	primary=claude
+1792936266	handled	turn=host-98002-1792936258.1	posture=attended	rc=0	reports=1	error=0 cost=0.25 conversation_cost=0.25 input=5 cache_read=100 cache_write=10 output=20 turns=3	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-inherited-handling-refuse/state/demo.status
+1792936266	handling-settle-failed	turn=host-98002-1792936258.1	successor=2708
+1792936266	pass-through	attended	main-only	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-inherited-handling-refuse/state/beta.status
+1792936267	pass-through	downtime-unrestored	signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/hook-inherited-handling-refuse/state/beta.status
+SELECTOR: test_lost_boundary_handoff
+ok - host+hook: boundary survives a lost continuation, retries, and transfers one watcher after acknowledgement
+
+PRODUCT OUTPUT lost-handoff-boundary/hook.err
+
+PRODUCT OUTPUT lost-handoff-boundary/state/.watcher-down
+pending:downtime:23670.1792936279.bN3ais
+
+PRODUCT OUTPUT lost-handoff-boundary/state/.claude-autoarm-epoch
+epoch=2 owner_pid=21494 outcome=arming updated_at=1792936278
+Sun Oct 25 09:51:17 2026     bash /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.h7PsJA/lost-handoff-boundary/bin/fm-claude-stop-autoarm.sh
+
+PRODUCT OUTPUT lost-handoff-boundary/state/.supervision-host.log
+1792936268	start	gen=host-12608-1792936268	primary=claude
+1792936269	boundary	after 3600s
+1792936272	handoff	host-12608-1792936268
+1792936278	start	gen=host-22045-1792936278	primary=claude
+1792936278	take-over	arm=19543
+
+PRODUCT OUTPUT lost-handoff-boundary/state/.supervision-handoff.log
+1792936274	retry	host-12608-1792936268	deferred
+1792936277	retry	host-12608-1792936268	deferred
+bash: line 183: 62509 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 62509 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 62509 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 68605 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 62509 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 68605 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 62509 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 68605 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 78403 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 62509 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 68605 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 78403 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 62509 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 68605 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 78403 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 62509 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 68605 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 78403 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 62509 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 68605 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 78403 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 62509 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 68605 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 78403 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 62509 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 68605 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 78403 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 62509 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 68605 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+bash: line 183: 78403 Terminated: 15          FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_CREW_STATE_BIN="$home/fakebin/fm-crew-state.sh" PATH="$home/fakebin:$PATH" "$FAKE_CLAUDE" -c '
+      printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+      printf "%s\n" "$$" >> "$FM_HOME/claude-pids"
+      for seed in "$FM_HOME"/mirror-seed.*; do
+        [ -f "$seed" ] || continue
+        "$FM_HOME/bin/fm-host-mirror.sh" hook claude < "$seed"
+      done
+      while [ ! -e "$FM_HOME/session.stop" ] && [ -d "$FM_HOME" ] \
+        && kill -0 "$FM_TEST_SUITE_PID" 2>/dev/null; do
+        if [ -e "$FM_HOME/stop.go" ]; then
+          rm -f "$FM_HOME/stop.go"
+          if [ -e "$FM_HOME/hook.own-group" ]; then
+            # Claude owns the hook as a process group of its own and tears the
+            # whole group down once the hook has exited.
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" > "$FM_HOME/hook.stdin"
+            set -m
+            "$FM_HOME/bin/fm-claude-stop-autoarm.sh" < "$FM_HOME/hook.stdin" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err" &
+            printf "%s\n" "$!" > "$FM_HOME/hook.pgid"
+            wait "$!"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+            set +m
+          else
+            printf "{\"session_id\":\"sess-host-hook\",\"stop_hook_active\":false}\n" \
+              | "$FM_HOME/bin/fm-claude-stop-autoarm.sh" > "$FM_HOME/hook.out" 2> "$FM_HOME/hook.err"
+            printf "%s\n" "$?" > "$FM_HOME/hook.rc"
+          fi
+        fi
+        sleep 0.1
+      done
+    ' 2>> "$home/claude.err"
+
+Driver exit status: 0
