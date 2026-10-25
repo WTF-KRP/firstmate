@@ -1,0 +1,366 @@
+safe linked worktree registers both entries
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=0
+trusted: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]
+trusted (project root): /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]
+observations={"exit_matches": true, "intended_paths_trusted": true, "no_new_import_consent": true, "unrelated_state_preserved": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]": {"hasTrustDialogAccepted": true}, "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]": {"hasTrustDialogAccepted": true}, "/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+repeat registration is safe
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=0
+trusted: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]
+trusted (project root): /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]
+observations={"exit_matches": true, "intended_paths_trusted": true, "no_new_import_consent": true, "unrelated_state_preserved": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]": {"hasTrustDialogAccepted": true}, "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]": {"hasTrustDialogAccepted": true}, "/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+project equals HOME
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]' is the home directory, not a project root
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+project equals HOME through linked project argument
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/linked-project
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]' is the home directory, not a project root
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+project contains HOME
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]/users/me
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]/users/me', so it is not a project root
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+project contains HOME through linked project argument
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]/users/me
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/linked-project
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]/users/me', so it is not a project root
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+project equals config
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]' is the Claude config directory, not a project root
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+project equals config through linked project argument
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/linked-project
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]' is the Claude config directory, not a project root
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+project contains config
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]/settings/claude
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]' contains the Claude config directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]/settings/claude', so it is not a project root
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+project contains config through linked project argument
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]/settings/claude
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/linked-project
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]' contains the Claude config directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]/settings/claude', so it is not a project root
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+worktree filesystem root
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh / '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/' is the filesystem root, not a task worktree
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+worktree target equals HOME
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' is the home directory, not a task worktree
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+worktree target contains HOME
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/users/me
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/users/me', so it is not a task worktree
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+worktree target equals config
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' is the Claude config directory, not a task worktree
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+worktree target contains config
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/settings/claude
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' contains the Claude config directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/settings/claude', so it is not a task worktree
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+secondmate filesystem root
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh --secondmate-home / trust-check
+exit_status=1
+error: refusing to pre-register Claude trust: '/' is the filesystem root, not a secondmate home
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+secondmate target equals HOME
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh --secondmate-home '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' trust-check
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' is the home directory, not a secondmate home
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+secondmate target contains HOME
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/users/me
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh --secondmate-home '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' trust-check
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/users/me', so it is not a secondmate home
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+secondmate target equals config
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh --secondmate-home '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' trust-check
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' is the Claude config directory, not a secondmate home
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+secondmate target contains config
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/settings/claude
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh --secondmate-home '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' trust-check
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' contains the Claude config directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/settings/claude', so it is not a secondmate home
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+lab filesystem root
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh --lab-home /
+exit_status=1
+error: refusing to pre-register Claude trust: '/' is the filesystem root, not a lab home
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+lab target equals HOME
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh --lab-home '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' is the home directory, not a lab home
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+lab target contains HOME
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/users/me
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh --lab-home '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/users/me', so it is not a lab home
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+lab target equals config
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh --lab-home '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' is the Claude config directory, not a lab home
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+lab target contains config
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/settings/claude
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh --lab-home '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' contains the Claude config directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/settings/claude', so it is not a lab home
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+symlinked project cannot hide HOME
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]/users/me
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/project-alias
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]/users/me', so it is not a project root
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+symlinked target cannot hide config
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/settings/claude
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/target-alias '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' contains the Claude config directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/settings/claude', so it is not a task worktree
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+symlinked HOME cannot hide project ancestor
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/home-alias
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]/users/me', so it is not a project root
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+symlinked config cannot hide target ancestor
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/config-alias
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' contains the Claude config directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/settings/claude', so it is not a task worktree
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+dot-dot target cannot hide HOME
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/users/me
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/users/..' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]/users/me', so it is not a task worktree
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+prefix sibling directories are allowed
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]-owner
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=0
+trusted: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]
+trusted (project root): /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]
+observations={"exit_matches": true, "intended_paths_trusted": true, "no_new_import_consent": true, "unrelated_state_preserved": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]": {"hasTrustDialogAccepted": true}, "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]": {"hasTrustDialogAccepted": true}, "/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+normal project below HOME remains allowed
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/normal-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/normal-home/.claude
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/normal-home/projects/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/normal-home/projects/project [x]'
+exit_status=0
+trusted: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/normal-home/projects/task [x]
+trusted (project root): /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/normal-home/projects/project [x]
+observations={"exit_matches": true, "intended_paths_trusted": true, "no_new_import_consent": true, "unrelated_state_preserved": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/normal-home/projects/project [x]": {"hasTrustDialogAccepted": true}, "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/normal-home/projects/task [x]": {"hasTrustDialogAccepted": true}, "/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+baseline reproduces unsafe project HOME registration
+revision=ffb2aca0546ca8f540df67ed41c227a30e22d2f0
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/baseline-bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=0
+trusted: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]
+trusted (project root): /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]
+observations={"exit_matches": true, "intended_paths_trusted": true, "no_new_import_consent": true, "unrelated_state_preserved": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]": {"hasTrustDialogAccepted": true}, "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]": {"hasTrustDialogAccepted": true}, "/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+candidate refuses reproduced unsafe project HOME registration
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/task [x]' '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]'
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/main/project [x]' is the home directory, not a project root
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+valid marked lab home remains allowed
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/owner-home
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh --lab-home /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/lab-home
+exit_status=0
+trusted: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/lab-home
+observations={"exit_matches": true, "intended_paths_trusted": true, "no_new_import_consent": true, "unrelated_state_preserved": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/lab-home": {"hasTrustDialogAccepted": true}, "/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+marked lab cannot trust HOME ancestor
+revision=011aa891ae99eebef85dfadae29fcf4ed1871e5c
+HOME=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/lab-home/users/me
+CLAUDE_CONFIG_DIR=/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/claude-config
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/bin/fm-claude-trust.sh --lab-home /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/lab-home
+exit_status=1
+error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/lab-home' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5T6FA1J8D8K1WXV377R66TT/.trust-live-tuj_p06y/lab-home/users/me', so it is not a lab home
+observations={"diagnostic_matches": true, "exit_matches": true, "store_byte_identical": true}
+persisted_store={"onboardingSentinel": "keep-exactly", "projects": {"/unrelated/disposable-project": {"custom": ["keep", 42], "hasTrustDialogAccepted": false}}}
+
+Cleanup: disposable repositories, homes, stores and baseline copy removed.
