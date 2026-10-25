@@ -1282,8 +1282,8 @@ test_claude_stop_hook_delivers_a_main_only_pass_through() {
 
 # A second task closes the successor while the first turn still owns handling
 # Its queued rows keep that handling episode open after the first turn's ack
-# uncomputable: branch eligibility then fails, so the close passes through for
-# that reason instead of as main-only
+# uncomputable: a drain races the next offer after the handled-turn settle,
+# then branch eligibility fails and the close passes through as uncomputable
 assert_main_only_close_after_handled_turn() {  # <restore|refuse|uncomputable>
   local mode=$1 home successor real_mktemp real_node
   home=$(make_primary_home "hook-inherited-handling-$mode")
@@ -1315,7 +1315,12 @@ SH
     cat > "$home/fakebin/node" <<SH
 #!/usr/bin/env bash
 case "\$*" in
-  *'fm-branch-dispatch.mjs offer'*) [ ! -e "\$FM_HOME/fail-offer" ] || exit 1 ;;
+  *'fm-branch-dispatch.mjs offer'*)
+    if [ -e "\$FM_HOME/fail-offer" ]; then
+      "\$FM_HOME/bin/fm-wake-drain.sh" > "\$FM_HOME/offer-drain.out" 2>&1 || exit 1
+      cat "\$FM_HOME/state/.watcher-down" > "\$FM_HOME/offer-drain-marker"
+      exit 1
+    fi ;;
 esac
 exec "$real_node" "\$@"
 SH
@@ -1355,6 +1360,8 @@ SH
       "the inherited episode must become deliverable downtime"
     watcher_live "$home" || fail "the repaired hand-back must keep its successor alive"
   elif [ "$mode" = uncomputable ]; then
+    assert_re '^pending:handling:' "$home/offer-drain-marker" \
+      "fixture: a drain racing the failed offer must move the episode back to handling"
     assert_rewoke_main "$home" "inherited handling, uncomputable"
     assert_re '^(pending|announced):downtime:' "$home/state/.watcher-down" \
       "the inherited episode must become deliverable downtime on every pass-through"
