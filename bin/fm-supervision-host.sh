@@ -176,7 +176,7 @@
 # the boundary), FM_SUPERVISION_HOST_TURN_TIMEOUT (1200), FM_SUPERVISION_HOST_ROTATE_TURNS (20:
 # a new engine conversation after this many turns; every main session start
 # also opens a new one), FM_SUPERVISION_HOST_READY_TIMEOUT (an explicit strict
-# total successor cap; fm-startup-progress-lib.sh owns the default allowance),
+# total startup cap; fm-startup-progress-lib.sh owns the default allowance),
 # FM_SUPERVISION_HOST_POLL (1).
 # Park duration uses Bash's process-relative SECONDS counter (including Bash
 # 3.2), while durable timestamps still use epoch time. This is not a portable
@@ -1220,7 +1220,8 @@ trap 'exit 130' INT
 activate || { echo "supervision-host stood down: the host record could not be written"; exit 0; }
 log_line "start	gen=$GEN	primary=$PRIMARY"
 
-# The first cycle.
+# The first cycle shares the same allowance, including arm initialization.
+fm_startup_progress_create || { echo "watcher: FAILED - the supervision host could not start a watcher cycle"; exit 1; }
 if [ "$FIRST_ARM_RESTART" -eq 1 ]; then
   start_arm "$OWNER_PREDECESSOR" --restart
 elif [ -n "$LEFT_ARM" ]; then
@@ -1231,6 +1232,18 @@ else
 fi || { echo "watcher: FAILED - the supervision host could not start a watcher cycle"; exit 1; }
 ARM_PID=$STARTED_ARM_PID
 ARM_OUT=$STARTED_ARM_OUT
+
+# shellcheck disable=SC2329 # Passed to the shared startup wait.
+initial_startup_owned() { host_still_owner && ! boundary_reached; }
+if ! fm_startup_progress_wait "$ARM_PID" "$ARM_OUT" 0 initial_startup_owned; then
+  # Preserve an early actionable close or the arm's own failure. Otherwise use
+  # the same initial confirmation failure, then retire only this host's arm.
+  if ! grep -Eq '^(signal:|stale:|check:|heartbeat($|:)|watcher: FAILED)' "$ARM_OUT"; then
+    printf '%s\n' 'watcher: FAILED - no live watcher with a fresh beacon' >> "$ARM_OUT"
+  fi
+  retire_arm "$ARM_PID" ''
+fi
+fm_startup_progress_clear
 
 while :; do
   boundary_reached && boundary_exit

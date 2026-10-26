@@ -3482,9 +3482,10 @@ journal_begin() {  # <name> <direct|ack> [explicit total cap]
   local home=$ST_HOME
   [ "$2" != ack ] || : > "$home/config/supervision-handoff-ack"
   : > "$home/startup-hold"
-  printf '10000000\n' > "$home/startup-clock"
+  ST_BEGIN=$(date +%s)
+  printf '%s\n' "$ST_BEGIN" > "$home/startup-clock"
   cat > "$home/config/watch.env" <<'ENV'
-if [ -n "${FM_STARTUP_PROGRESS_JOURNAL:-}" ]; then
+if [ -n "${FM_WATCH_PREDECESSOR_ARM_PID:-}" ]; then
   printf '%s\n' "$FM_STARTUP_PROGRESS_JOURNAL" > "$FM_HOME/startup-journal"
   printf '%s\n' "$FM_STARTUP_PROGRESS_CAP" > "$FM_HOME/startup-cap"
   printf '%s\n' "$$" > "$FM_HOME/startup-arm"
@@ -3499,7 +3500,7 @@ ENV
   IFS= read -r ST_JOURNAL < "$home/startup-journal"
 }
 
-journal_tick() { printf '%s\n' "$((10000000 + $1))" > "$ST_HOME/startup-clock"; }
+journal_tick() { printf '%s\n' "$((ST_BEGIN + $1))" > "$ST_HOME/startup-clock"; }
 journal_stage() { printf '%s\n' "stage $1 ${ST_JOURNAL##*/}" >> "$ST_JOURNAL"; }
 journal_pending() { [ ! -s "$ST_HOME/host.rc" ] || fail "journal: successor was accepted or retired before the bound"; }
 
@@ -3608,8 +3609,89 @@ ENV
   pass "startup: $mode real initialization and recovery contention beyond 25s complete honestly"
 }
 
+test_initial_real_elapsed_progress() {
+  local home holder real_bash
+  home=$(make_home initial-startup-elapsed attended)
+  : > "$home/config/supervision-host-off"
+  : > "$home/initial-hold"
+  real_bash=$(command -v bash)
+  cat > "$home/fakebin/bash" <<SH
+#!/bin/bash
+case "\$1" in */fm-watch.sh)
+  : > "\$FM_HOME/initial-entered"
+  while [ -e "\$FM_HOME/initial-hold" ]; do sleep 0.1; done ;;
+esac
+exec "$real_bash" "\$@"
+SH
+  chmod +x "$home/fakebin/bash"
+  start_host "$home"
+  wait_until 200 test -e "$home/initial-entered" || fail "initial elapsed: watcher did not reach its exec barrier: $(cat "$home/host.out")"
+  FM_HOME="$home" bash -c '
+    . "$1"
+    fm_lock_acquire_wait "$STATE/.watcher-down.lock" || exit 1
+    : > "$FM_HOME/recovery-held"
+    while [ ! -e "$FM_HOME/recovery-release" ]; do sleep 0.1; done
+    fm_lock_release "$STATE/.watcher-down.lock"
+  ' _ "$ROOT/bin/fm-wake-lib.sh" > "$home/holder.out" 2>&1 &
+  holder=$!
+  printf '%s\n' "$holder" >> "$home/orphan-pid"
+  wait_until 100 test -e "$home/recovery-held" || fail "initial elapsed: recovery lock was not held"
+  sleep 20
+  rm -f "$home/initial-hold"
+  wait_until 150 watcher_live "$home" || fail "initial elapsed: watcher did not establish its singleton"
+  sleep 20
+  : > "$home/recovery-release"
+  wait "$holder" || fail "initial elapsed: recovery holder failed"
+  wait_until 300 grep -q 'watcher: started' "$home/host.out" || fail "initial elapsed: progressing initial confirmation expired"
+  assert_no_re '^watcher: FAILED' "$home/host.out" "initial elapsed: initial confirmation failed despite real progress"
+  watcher_live "$home" || fail "initial elapsed: confirmed watcher did not survive"
+  append_status "$home" 'initial ready'
+  wait_until 250 host_exited "$home" || fail "initial elapsed: confirmed arm did not deliver its close"
+  assert_re '^signal: .*demo.status' "$home/host.out" "initial elapsed: confirmation did not preserve the real close"
+  stop_home_processes "$home"
+  pass "startup: initial confirmation completes after real progress beyond its former 30s budget"
+}
+
+test_initial_journal_bound() {  # <stall|explicit|dead|cancel>
+  local home journal host mode=$1
+  home=$(make_home "initial-journal-$mode" attended)
+  printf '10000000\n' > "$home/startup-clock"
+  cat > "$home/config/watch.env" <<'ENV'
+printf '%s\n' "${FM_STARTUP_PROGRESS_JOURNAL:-}" > "$FM_HOME/initial-journal"
+printf '%s\n' "$$" > "$FM_HOME/initial-arm"
+: > "$FM_HOME/initial-entered"
+while :; do sleep 0.1; done
+ENV
+  FM_TEST_STARTUP_CLOCK="$home/startup-clock" FM_SUPERVISION_HOST_READY_TIMEOUT="$([ "$mode" != explicit ] || printf 12)" start_host "$home"
+  wait_until 200 test -e "$home/initial-entered" || fail "initial journal: arm did not enter configuration"
+  IFS= read -r journal < "$home/initial-journal"
+  [ -f "$journal" ] || fail "initial journal: no launch journal"
+  case "$mode" in
+    stall)
+      printf '10000024\n' > "$home/startup-clock"
+      sleep 0.5
+      [ ! -s "$home/host.rc" ] || fail "initial journal: expired before the 25s stall allowance"
+      printf '10000025\n' > "$home/startup-clock" ;;
+    explicit) printf '10000012\n' > "$home/startup-clock" ;;
+    dead) kill -TERM "$(cat "$home/initial-arm")" ;;
+    cancel)
+      host=$(awk -F '\t' '$1 == "host" { print $2; exit }' "$home/state/.supervision-host")
+      kill -TERM "$host" ;;
+  esac
+  wait_until 300 host_exited "$home" || fail "initial journal: failed startup did not return to main"
+  [ ! -e "$journal" ] || fail "initial journal: failed attempt survived cleanup"
+  if [ "$mode" != cancel ]; then
+    assert_grep 'watcher: FAILED' "$home/host.out" "initial journal: unverified startup was accepted"
+  fi
+  assert_no_re '^watcher: (started|attached)' "$home/host.out" "initial journal: progress supplied confirmation"
+  stop_home_processes "$home"
+  pass "startup: initial $mode preserves its bounded failure and cleanup"
+}
+
 run_startup_tests() {
   local mode failure
+  test_initial_real_elapsed_progress
+  for failure in stall explicit dead cancel; do test_initial_journal_bound "$failure"; done
   for mode in direct ack; do
     test_startup_real_elapsed_progress "$mode"
     for failure in stall unchanged total explicit dead forged; do test_startup_journal_bound "$mode" "$failure"; done

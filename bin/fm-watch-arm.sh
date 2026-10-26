@@ -341,6 +341,7 @@ report_attached() {
   fm_startup_progress_append 2
   age=$(fm_path_age "$BEAT")
   echo "watcher: attached pid=$HEALTHY_PID (beacon ${age}s)"
+  fm_startup_progress_forget
 }
 
 # Header, "arm ground removed". Sets ARM_GROUND_MISSING to the first missing
@@ -833,6 +834,7 @@ while :; do
       else
         echo "watcher: started pid=$child (beacon fresh)"
       fi
+      fm_startup_progress_forget
       wait "$child"
       rc=$?
       owned_child_finished "$rc"

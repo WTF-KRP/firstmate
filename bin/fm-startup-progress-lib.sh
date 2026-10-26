@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Successor startup allowance. Source after fm-wake-lib.sh.
+# Initial and successor startup allowance. Source after fm-wake-lib.sh.
 # The enclosing host creates one exclusive empty journal in its home state dir
 # before spawning, exporting its path, filename nonce, start and total cap.
 # The acknowledged hand-back owner inherits that same allowance; its later
@@ -15,7 +15,8 @@
 # started|attached line, and the acknowledged path's existing watcher-health
 # check. Death, lost ownership or expiry retains the existing hand-to-main.
 # Bounds are checked before and after readiness work, at scheduled checks.
-# Initial arms without this context retain their separate confirmation budget.
+# The host creates the first arm's journal before launch too. Standalone arms
+# without a host context retain FM_ARM_CONFIRM_TIMEOUT's confirmation budget.
 # FM_TEST_STARTUP_CLOCK may supply the clock only when FM_TEST_SEAM=1.
 # shellcheck disable=SC2153 # STATE and SCRIPT_DIR are supplied by the caller.
 
@@ -49,7 +50,7 @@ fm_startup_progress_append() {  # <1|2|3>; advisory, never a readiness result
   printf '%s\n' "stage $1 $FM_STARTUP_PROGRESS_NONCE" >> "$FM_STARTUP_PROGRESS_JOURNAL" || true
 }
 
-fm_startup_progress_deadline() {  # <output-variable>; preserves initial-arm budget
+fm_startup_progress_deadline() {  # <output-variable>; enclosing attempt when present
   [ -n "${FM_STARTUP_PROGRESS_JOURNAL:-}" ] || return 0
   printf -v "$1" '%s' "$((FM_STARTUP_PROGRESS_BEGIN + FM_STARTUP_PROGRESS_CAP))"
 }
@@ -91,6 +92,10 @@ fm_startup_progress_clear() {
   case "${FM_STARTUP_PROGRESS_JOURNAL:-}" in "$STATE"/.watch-startup.*)
     rm -f -- "$FM_STARTUP_PROGRESS_JOURNAL" ;;
   esac
+  fm_startup_progress_forget
+}
+
+fm_startup_progress_forget() {  # An arm must not reuse its completed startup.
   unset FM_STARTUP_PROGRESS_JOURNAL FM_STARTUP_PROGRESS_NONCE
   unset FM_STARTUP_PROGRESS_BEGIN FM_STARTUP_PROGRESS_CAP
 }

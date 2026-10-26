@@ -355,12 +355,12 @@ The primary-authoritative propagation contract, including removal of a mate's lo
 `config/supervision-host` is local to each home and not inherited, because each home's engine and model are its own choice.
 While the home runs the host, main's lease-checked commands also take the per-task lease lock, so a claim by the host's engine cannot race a mutation main already started (`bin/fm-lease-lib.sh`).
 
-### Successor startup allowance
+### Watcher startup allowance
 
-The default successor allowance follows completed startup progress while retaining the existing readiness checks and fail-safe hand-back to main.
+The host's default initial and successor allowance follows completed startup progress while retaining the existing readiness checks and fail-safe hand-back to main.
 `FM_SUPERVISION_HOST_READY_TIMEOUT`, when explicitly set, remains a strict total startup cap.
 The [startup progress owner](../bin/fm-startup-progress-lib.sh) defines the default bounds, journal mechanics, and invalid-value fallback for direct and acknowledged hand-backs.
-Initial-arm confirmation uses its separate existing budget.
+Standalone arms without a host startup context retain their `FM_ARM_CONFIRM_TIMEOUT` budget.
 
 ### Acknowledged hand-back (config/supervision-handoff-ack)
 
@@ -3069,7 +3069,7 @@ FM_CLAUDE_AUTOARM_ATTEMPTS=2   # bounded Stop-owned arm attempts per Claude auto
 FM_CLAUDE_AUTOARM_SYNC_WAIT_MS=800   # milliseconds the --claude turn-end guard waits for watcher health, an open Stop auto-arm generation claim, or a fresh epoch before deciding recovery ownership or failure progression
 FM_CLAUDE_AUTOARM_EPOCH_FRESH=15   # seconds a recorded auto-arm outcome remains eligible for the current event epoch's recovery or failure decision
 FM_CLAUDE_TURNEND_BLOCK_BUDGET=3   # consecutive --claude guard re-blocks before the verified one-time attended fail-open; safely below Claude Code's 8-block override
-FM_ARM_CONFIRM_TIMEOUT=10   # seconds fm-watch-arm waits to confirm a fresh watcher before reporting FAILED; default 30 on Git Bash/MSYS
+FM_ARM_CONFIRM_TIMEOUT=10   # standalone-arm confirmation budget without a host startup context; default 30 on Git Bash/MSYS
 FM_ARM_ATTACH_POLL=0.5  # seconds between checks while fm-watch-arm follows an attached watcher cycle (bin/fm-watch-arm.sh header)
 FM_OPENCODE_ARM_READY_TIMEOUT_MS=12000   # milliseconds the OpenCode primary watcher plugin waits for an arm attempt to report started, healthy, wake, or failure; default 35000 on Windows to stay above the MSYS confirm budget
 FM_PI_ARM_READY_TIMEOUT_MS=12000   # milliseconds the Pi watcher extension waits for a successor arm to report started or attached; default 35000 on Windows to stay above the MSYS confirm budget
