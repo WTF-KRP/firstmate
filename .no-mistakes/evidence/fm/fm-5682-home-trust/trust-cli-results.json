@@ -1,0 +1,713 @@
+{
+  "candidate": "468d55a9997c042fe5fd715daaaa3822e9c2cfac",
+  "cases": [
+    {
+      "name": "safe worktree writes both trust entries and preserves consent",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/claude-store",
+      "exit": 0,
+      "output": "trusted: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]\ntrusted (project root): /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]",
+      "store_unchanged": false,
+      "pass": true,
+      "store": {
+        "sentinel": {
+          "keep": true
+        },
+        "projects": {
+          "unrelated": {
+            "value": 37
+          },
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]": {
+            "hasClaudeMdExternalIncludesApproved": true,
+            "hasClaudeMdExternalIncludesWarningShown": true,
+            "custom": "keep",
+            "hasTrustDialogAccepted": true
+          },
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]": {
+            "hasTrustDialogAccepted": true,
+            "hasClaudeMdExternalIncludesApproved": true,
+            "hasClaudeMdExternalIncludesWarningShown": true
+          }
+        }
+      }
+    },
+    {
+      "name": "repeat safe registration is idempotent",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/claude-store",
+      "exit": 0,
+      "output": "trusted: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]\ntrusted (project root): /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "sentinel": {
+          "keep": true
+        },
+        "projects": {
+          "unrelated": {
+            "value": 37
+          },
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]": {
+            "hasClaudeMdExternalIncludesApproved": true,
+            "hasClaudeMdExternalIncludesWarningShown": true,
+            "custom": "keep",
+            "hasTrustDialogAccepted": true
+          },
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]": {
+            "hasTrustDialogAccepted": true,
+            "hasClaudeMdExternalIncludesApproved": true,
+            "hasClaudeMdExternalIncludesWarningShown": true
+          }
+        }
+      }
+    },
+    {
+      "name": "safe symlink project resolves canonical trust entry",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project-alias"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/claude-store",
+      "exit": 0,
+      "output": "trusted: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]\ntrusted (project root): /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "sentinel": {
+          "keep": true
+        },
+        "projects": {
+          "unrelated": {
+            "value": 37
+          },
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]": {
+            "hasClaudeMdExternalIncludesApproved": true,
+            "hasClaudeMdExternalIncludesWarningShown": true,
+            "custom": "keep",
+            "hasTrustDialogAccepted": true
+          },
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]": {
+            "hasTrustDialogAccepted": true,
+            "hasClaudeMdExternalIncludesApproved": true,
+            "hasClaudeMdExternalIncludesWarningShown": true
+          }
+        }
+      }
+    },
+    {
+      "name": "linked-worktree project argument resolves canonical checkout",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/second-worktree"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/claude-store",
+      "exit": 0,
+      "output": "trusted: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]\ntrusted (project root): /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "sentinel": {
+          "keep": true
+        },
+        "projects": {
+          "unrelated": {
+            "value": 37
+          },
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]": {
+            "hasClaudeMdExternalIncludesApproved": true,
+            "hasClaudeMdExternalIncludesWarningShown": true,
+            "custom": "keep",
+            "hasTrustDialogAccepted": true
+          },
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]": {
+            "hasTrustDialogAccepted": true,
+            "hasClaudeMdExternalIncludesApproved": true,
+            "hasClaudeMdExternalIncludesWarningShown": true
+          }
+        }
+      }
+    },
+    {
+      "name": "project equals HOME",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/claude-store",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]' is the home directory, not a project root",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "sentinel": "untouched",
+        "projects": {}
+      }
+    },
+    {
+      "name": "project contains HOME",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]/users/me",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/claude-store",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]/users/me', so it is not a project root",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "sentinel": "untouched",
+        "projects": {}
+      }
+    },
+    {
+      "name": "project equals config",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]' is the Claude config directory, not a project root",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "sentinel": "untouched",
+        "projects": {}
+      }
+    },
+    {
+      "name": "project contains config",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]/claude-config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]' contains the Claude config directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]/claude-config', so it is not a project root",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "sentinel": "untouched",
+        "projects": {}
+      }
+    },
+    {
+      "name": "project alias cannot hide protected canonical HOME",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project-alias"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/claude-store",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]' is the home directory, not a project root",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "sentinel": "untouched",
+        "projects": {}
+      }
+    },
+    {
+      "name": "linked project cannot hide protected canonical HOME",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/second-worktree"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/claude-store",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]' is the home directory, not a project root",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "sentinel": "untouched",
+        "projects": {}
+      }
+    },
+    {
+      "name": "HOME symlink cannot hide project ancestor",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/home-alias",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/claude-store",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]/users/me', so it is not a project root",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "sentinel": "untouched",
+        "projects": {}
+      }
+    },
+    {
+      "name": "config symlink cannot hide project ancestor",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/config-alias",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]' contains the Claude config directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]/claude-config', so it is not a project root",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "sentinel": "untouched",
+        "projects": {}
+      }
+    },
+    {
+      "name": "worktree safe target control",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree-user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree-config",
+      "exit": 0,
+      "output": "trusted: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]\ntrusted (project root): /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]",
+      "store_unchanged": false,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]": {
+            "hasTrustDialogAccepted": true
+          },
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "worktree target equals HOME",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree-config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]' is the home directory, not a task worktree",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]": {
+            "hasTrustDialogAccepted": true
+          },
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "worktree target contains HOME",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]/nested/home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree-config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]/nested/home', so it is not a task worktree",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]": {
+            "hasTrustDialogAccepted": true
+          },
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "worktree target equals config",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree-user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]' is the Claude config directory, not a task worktree",
+      "store_unchanged": true,
+      "pass": true
+    },
+    {
+      "name": "worktree target contains config",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree-user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]/nested/config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]' contains the Claude config directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]/nested/config', so it is not a task worktree",
+      "store_unchanged": true,
+      "pass": true
+    },
+    {
+      "name": "worktree rejects filesystem root",
+      "args": [
+        "/",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree-user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree-config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/' is the filesystem root, not a task worktree",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]": {
+            "hasTrustDialogAccepted": true
+          },
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "worktree target symlink cannot hide HOME ancestor",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree-target-alias",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]/nested/home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree-config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]/nested/home', so it is not a task worktree",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]": {
+            "hasTrustDialogAccepted": true
+          },
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "secondmate safe target control",
+      "args": [
+        "--secondmate-home",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate",
+        "testmate"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/secondmate-user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/secondmate-config",
+      "exit": 0,
+      "output": "trusted: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate",
+      "store_unchanged": false,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "secondmate target equals HOME",
+      "args": [
+        "--secondmate-home",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate",
+        "testmate"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/secondmate-config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate' is the home directory, not a secondmate home",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "secondmate target contains HOME",
+      "args": [
+        "--secondmate-home",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate",
+        "testmate"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate/nested/home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/secondmate-config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate/nested/home', so it is not a secondmate home",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "secondmate target equals config",
+      "args": [
+        "--secondmate-home",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate",
+        "testmate"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/secondmate-user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate' is the Claude config directory, not a secondmate home",
+      "store_unchanged": true,
+      "pass": true
+    },
+    {
+      "name": "secondmate target contains config",
+      "args": [
+        "--secondmate-home",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate",
+        "testmate"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/secondmate-user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate/nested/config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate' contains the Claude config directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate/nested/config', so it is not a secondmate home",
+      "store_unchanged": true,
+      "pass": true
+    },
+    {
+      "name": "secondmate rejects filesystem root",
+      "args": [
+        "--secondmate-home",
+        "/",
+        "testmate"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/secondmate-user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/secondmate-config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/' is the filesystem root, not a secondmate home",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "secondmate target symlink cannot hide HOME ancestor",
+      "args": [
+        "--secondmate-home",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/secondmate-target-alias",
+        "testmate"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate/nested/home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/secondmate-config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate/nested/home', so it is not a secondmate home",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/seeded-secondmate": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "lab safe target control",
+      "args": [
+        "--lab-home",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-config",
+      "exit": 0,
+      "output": "trusted: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary",
+      "store_unchanged": false,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "lab target equals HOME",
+      "args": [
+        "--lab-home",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary' is the home directory, not a lab home",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "lab target contains HOME",
+      "args": [
+        "--lab-home",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary/nested/home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary/nested/home', so it is not a lab home",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "lab target equals config",
+      "args": [
+        "--lab-home",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary' is the Claude config directory, not a lab home",
+      "store_unchanged": true,
+      "pass": true
+    },
+    {
+      "name": "lab target contains config",
+      "args": [
+        "--lab-home",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary/nested/config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary' contains the Claude config directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary/nested/config', so it is not a lab home",
+      "store_unchanged": true,
+      "pass": true
+    },
+    {
+      "name": "lab rejects filesystem root",
+      "args": [
+        "--lab-home",
+        "/"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-user-home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/' is the filesystem root, not a lab home",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "lab target symlink cannot hide HOME ancestor",
+      "args": [
+        "--lab-home",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-target-alias"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary/nested/home",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary' contains the home directory '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary/nested/home', so it is not a lab home",
+      "store_unchanged": true,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/lab-primary": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "baseline reproduces unsafe HOME project trust",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/baseline-config",
+      "exit": 0,
+      "output": "trusted: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]\ntrusted (project root): /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]",
+      "store_unchanged": false,
+      "pass": true,
+      "store": {
+        "projects": {
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]": {
+            "hasTrustDialogAccepted": true
+          },
+          "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]": {
+            "hasTrustDialogAccepted": true
+          }
+        }
+      }
+    },
+    {
+      "name": "candidate rejects same HOME project registration",
+      "args": [
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/worktree [safe]",
+        "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]"
+      ],
+      "HOME": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]",
+      "CLAUDE_CONFIG_DIR": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/candidate-config",
+      "exit": 1,
+      "output": "error: refusing to pre-register Claude trust: '/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5VM9XD7JY0VADV7RV94A3T9/.trust-live-6mpp84gu/project [safe]' is the home directory, not a project root",
+      "store_unchanged": true,
+      "pass": true
+    }
+  ]
+}
