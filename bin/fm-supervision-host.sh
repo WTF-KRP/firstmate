@@ -175,8 +175,9 @@
 # registration lets turns run past the boundary up to it, any other value is
 # the boundary), FM_SUPERVISION_HOST_TURN_TIMEOUT (1200), FM_SUPERVISION_HOST_ROTATE_TURNS (20:
 # a new engine conversation after this many turns; every main session start
-# also opens a new one), FM_SUPERVISION_HOST_READY_TIMEOUT (25: how long a
-# successor cycle may take to verify), FM_SUPERVISION_HOST_POLL (1).
+# also opens a new one), FM_SUPERVISION_HOST_READY_TIMEOUT (an explicit strict
+# total successor cap; fm-startup-progress-lib.sh owns the default allowance),
+# FM_SUPERVISION_HOST_POLL (1).
 # Park duration uses Bash's process-relative SECONDS counter (including Bash
 # 3.2), while durable timestamps still use epoch time. This is not a portable
 # monotonic-clock guarantee. Arm exit probes use ordinary 0.5-second child
@@ -196,6 +197,8 @@ CONFIG="${FM_CONFIG_OVERRIDE:-$FM_HOME/config}"
 
 # shellcheck source=bin/fm-wake-lib.sh
 . "$SCRIPT_DIR/fm-wake-lib.sh"
+# shellcheck source=bin/fm-startup-progress-lib.sh
+. "$SCRIPT_DIR/fm-startup-progress-lib.sh"
 # shellcheck source=bin/fm-session-lock-lib.sh
 . "$SCRIPT_DIR/fm-session-lock-lib.sh"
 # shellcheck source=bin/fm-timeout-lib.sh
@@ -236,7 +239,6 @@ PARK_LIMIT=$(numeric_or "${FM_SUPERVISION_HOST_PARK_LIMIT:-}" "$PARK_SECONDS")
 { [ "$PARK_LIMIT" -lt 28800 ] && [ "$PARK_LIMIT" -ge "$PARK_SECONDS" ]; } 2>/dev/null || PARK_LIMIT=$PARK_SECONDS
 TURN_TIMEOUT=$(numeric_or "${FM_SUPERVISION_HOST_TURN_TIMEOUT:-}" 1200)
 ROTATE_TURNS=$(numeric_or "${FM_SUPERVISION_HOST_ROTATE_TURNS:-}" 20)
-READY_TIMEOUT=$(numeric_or "${FM_SUPERVISION_HOST_READY_TIMEOUT:-}" 25)
 POLL=$(numeric_or "${FM_SUPERVISION_HOST_POLL:-}" 1)
 WARM_COMPACT_TICK=$(numeric_or "${FM_WARM_COMPACT_TICK:-}" 60)
 COOLDOWN=$FM_SUPERVISION_HOST_COOLDOWN
@@ -450,6 +452,7 @@ cleanup() {
   fi
   retire_arm "$SUCCESSOR_PID" "$SUCCESSOR_OUT"
   retire_arm "$ARM_PID" "$ARM_OUT"
+  fm_startup_progress_clear
   if [ "$GRANT_ACTIVE" -eq 1 ]; then
     "$SCRIPT_DIR/fm-wake-grant.sh" release "$GEN" >/dev/null 2>&1 || true
     "$SCRIPT_DIR/fm-wake-grant.sh" deactivate "$HOST_PID" "$GEN" >/dev/null 2>&1 || true
@@ -716,7 +719,7 @@ exit_to_main() {  # <why> [further lines]
 acknowledged_handback() {  # [extra output lines]; returns only when disabled
   [ "$PRIMARY" = claude ] && [ -e "$CONFIG/supervision-handoff-ack" ] || return 1
   host_still_owner || stand_down "this session no longer owns supervision"
-  local predecessor=${SUCCESSOR_PID:-${ARM_PID:-${CLOSED_ARM_PID:-$HOST_PID}}} pid out deadline tmp
+  local predecessor=${SUCCESSOR_PID:-${ARM_PID:-${CLOSED_ARM_PID:-$HOST_PID}}} pid out tmp
   retire_arm "$ARM_PID" "$ARM_OUT"
   ARM_PID=''
   ARM_OUT=''
@@ -730,25 +733,21 @@ acknowledged_handback() {  # [extra output lines]; returns only when disabled
     exit 1
   fi
   out=$(mktemp "$STATE/.supervision-handoff-start.XXXXXX") || exit 1
+  fm_startup_progress_create || exit 1
   set -m
-  FM_SUPERVISION_HOST_READY_TIMEOUT="$READY_TIMEOUT" \
-    nohup "$SCRIPT_DIR/fm-supervision-handoff.sh" "$GEN" "$predecessor" > "$out" 2>&1 </dev/null &
+  nohup "$SCRIPT_DIR/fm-supervision-handoff.sh" "$GEN" "$predecessor" > "$out" 2>&1 </dev/null &
   pid=$!
   set +m
   record_process handoff "$pid"
-  deadline=$((SECONDS + READY_TIMEOUT))
-  while fm_pid_alive "$pid" && [ "$SECONDS" -lt "$deadline" ]; do
-    if grep -Eq '^watcher: (started|attached) pid=[0-9]+' "$out" \
-      && fm_watcher_healthy "$STATE" "$SCRIPT_DIR/fm-watch.sh" "$GRACE" "$FM_HOME"; then
+  if fm_startup_progress_wait "$pid" "$out" 1 host_still_owner; then
       disown "$pid" 2>/dev/null || true
       forget_process "$pid"
+      fm_startup_progress_clear
       rm -f "$out"
       log_line "handoff	$GEN"
       emit "$@"
       exit 0
-    fi
-    sleep 0.2
-  done
+  fi
   kill -TERM "$pid" 2>/dev/null || true
   rm -f "$out"
   emit "$@" 'supervision-host: the acknowledged hand-back successor could not be verified'
@@ -810,27 +809,23 @@ stand_down() {  # <why>
 # Start the successor cycle and wait until it proves a live watcher. Sets
 # SUCCESSOR_WATCHER and SUCCESSOR_GENERATION (empty when the arm attached).
 start_successor() {  # <predecessor-arm-pid>
-  local deadline line
+  local line
   SUCCESSOR_WATCHER=
   SUCCESSOR_GENERATION=
-  start_arm "$1" || return 1
+  fm_startup_progress_create && start_arm "$1" || return 1
   SUCCESSOR_PID=$STARTED_ARM_PID
   SUCCESSOR_OUT=$STARTED_ARM_OUT
-  deadline=$(( $(date +%s) + READY_TIMEOUT ))
-  while :; do
-    line=$(grep -E '^watcher: (started|attached) pid=[0-9]+' "$SUCCESSOR_OUT" 2>/dev/null | head -n 1)
-    if [ -n "$line" ]; then
+  if fm_startup_progress_wait "$SUCCESSOR_PID" "$SUCCESSOR_OUT" 0 host_still_owner; then
+      line=$FM_STARTUP_PROGRESS_LINE
       SUCCESSOR_WATCHER=$(printf '%s\n' "$line" | sed -E 's/^watcher: (started|attached) pid=([0-9]+).*/\2/')
       case "$line" in
         *' recovery-generation='*) SUCCESSOR_GENERATION=${line##* recovery-generation=} ;;
       esac
       refresh_process "$SUCCESSOR_PID"
+      fm_startup_progress_clear
       return 0
-    fi
-    fm_pid_alive "$SUCCESSOR_PID" || return 1
-    [ "$(date +%s)" -lt "$deadline" ] || return 1
-    sleep 0.2
-  done
+  fi
+  return 1
 }
 
 # Record the successor for the next host to take over, then drop it from this

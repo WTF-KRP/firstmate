@@ -355,6 +355,13 @@ The primary-authoritative propagation contract, including removal of a mate's lo
 `config/supervision-host` is local to each home and not inherited, because each home's engine and model are its own choice.
 While the home runs the host, main's lease-checked commands also take the per-task lease lock, so a claim by the host's engine cannot race a mutation main already started (`bin/fm-lease-lib.sh`).
 
+### Successor startup allowance
+
+The default successor allowance follows completed startup progress while retaining the existing readiness checks and fail-safe hand-back to main.
+`FM_SUPERVISION_HOST_READY_TIMEOUT`, when explicitly set, remains a strict total startup cap.
+The [startup progress owner](../bin/fm-startup-progress-lib.sh) defines the default bounds, journal mechanics, and invalid-value fallback for direct and acknowledged hand-backs.
+Initial-arm confirmation uses its separate existing budget.
+
 ### Acknowledged hand-back (config/supervision-handoff-ack)
 
 Create the empty, home-local `config/supervision-handoff-ack` file to enable acknowledged hand-backs on a Claude primary that runs the supervision host.
