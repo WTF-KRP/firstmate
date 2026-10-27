@@ -21,9 +21,10 @@
 # FM_SUPERVISION_HOST_PRIMARY, which the engine carries as the primary pin.
 #
 # OUTPUT, the contract every owner reads. The first cycle's status line
-# ("watcher: started ..." or "watcher: attached ...") is printed as soon as the
-# arm prints it, so an owner that waits for arm readiness sees it at once;
-# everything else is printed in one write when the host exits: the close as
+# ("watcher: started ..." or "watcher: attached ...") is printed after the
+# shared startup wait accepts readiness. Rejected initial attempts expose no
+# started/attached lines, but retain actionable wakes and failure details.
+# Everything else is printed in one write when the host exits: the close as
 # the arm printed it (without that status line), then any "supervision-host:"
 # lines. A "supervision-host:" line is a wake in its own right (the park
 # boundary prints nothing else); "supervision-host stood down: ..." means this
@@ -183,7 +184,7 @@
 # monotonic-clock guarantee. Arm exit probes use ordinary 0.5-second child
 # sleeps within the unchanged POLL-cadence maintenance and boundary checks;
 # close observation and a shell-only caught signal may wait that interval plus
-# work/scheduling time. No stop-signal disposition or cleanup bound changes.
+# work/scheduling time.
 # FM_TEST_SUPERVISION_HOST_CLOCK names a file holding the park's elapsed
 # seconds, which the park and turn boundary checks read in place of SECONDS
 # only when FM_TEST_SEAM=1; tests/lib.sh arms the marker for isolated suites.
