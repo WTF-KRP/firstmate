@@ -1,0 +1,11 @@
+OBSERVED expected=dead actual=dead: the reported chain alone holds no harness, so a foreground shell with no live process below it is dead
+OBSERVED expected=alive actual=alive: a harness running below the shell foreground, through a wrapper, is alive
+OBSERVED expected=busy actual=busy: an OSC 7501 record from the harness below the shell foreground is trusted
+OBSERVED expected=dead actual=dead: a shell foreground with only non-harness processes below it is dead
+OBSERVED expected=unknown actual=unknown: a record from a non-harness process below the shell foreground is ignored
+OBSERVED expected=alive actual=alive: a harness foreground is still alive
+ok - fm_backend_agent_state rex: a harness below a shell foreground is alive and its records are trusted; a bare shell stays dead
+OBSERVED PATH restored after current scenario
+Requested utility claude does not match executable name
+OBSERVED expected=0 actual=0: multicall sleep accepts its own name
+OBSERVED expected=1 actual=1: multicall sleep rejects a harness name

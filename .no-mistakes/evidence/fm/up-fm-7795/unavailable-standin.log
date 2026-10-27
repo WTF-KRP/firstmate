@@ -1,0 +1,6 @@
+skip: no long-running stand-in survives a rename, so the shell descendant case cannot run
+OBSERVED expected=0 actual=0: unavailable stand-in returns a successful skip
+OBSERVED PATH restored after unavailable scenario
+Requested utility claude does not match executable name
+OBSERVED expected=0 actual=0: multicall sleep accepts its own name
+OBSERVED expected=1 actual=1: multicall sleep rejects a harness name

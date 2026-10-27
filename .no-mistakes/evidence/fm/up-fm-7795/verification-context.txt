@@ -1,0 +1,7 @@
+Candidate: 419f33d0836977b4c26fc034f9efc2c7377095c2
+Base: 7da4c3621370534ff9689843d2b77f34158057fb
+Closure command: bash bin/fm-test-run.sh tests/fm-backend-rex.test.sh
+Additional commands: bash tests/.nm7795-driver.sh current; bash tests/.nm7795-driver.sh baseline; bash tests/.nm7795-driver.sh unavailable
+The disposable driver and baseline helper are retained as driver.sh and baseline-helper.sh. They were removed from tests/ after execution. The baseline mode replaces only start_shell_tree with the base-commit implementation, while retaining the candidate regression. Expected baseline result: exit 1, fixture process never started. Current and unavailable modes: exit 0.
+The first current-driver attempt used an incorrect supplemental probe path multicall/bin/sleep. Corrected to multicall/fakebin/sleep, then reran successfully. No product code was changed.
+All checks are fixture-based tests, not live Rex sessions. Only tests/fm-backend-rex.test.sh changes in the candidate. No runtime product surface changes. No lint, full suite, model CLI, lifecycle, publication, PR or CI commands were run.
