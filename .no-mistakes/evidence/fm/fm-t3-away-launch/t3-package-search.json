@@ -1,0 +1,81 @@
+[
+
+{"name":"t3code-cli","keywords":["claude","cli","codex","t3code"],"version":"0.18.0","description":"CLI for t3code","sanitized_name":"t3code-cli","publisher":{"email":"Taras.Fomin@gmail.com","username":"tarik02"},"maintainers":[{"email":"Taras.Fomin@gmail.com","username":"tarik02"}],"license":"MIT","date":"2026-10-15T12:13:34.252Z","links":{"homepage":"https://github.com/tarik02-org/t3code-cli#readme","repository":"git+https://github.com/tarik02-org/t3code-cli.git","bugs":"https://github.com/tarik02-org/t3code-cli/issues","npm":"https://www.npmjs.com/package/t3code-cli"}}
+
+,
+
+{"name":"@bvdm/t3code-cli","keywords":["t3-code","orchestrator-v2","cli","handover","codex","threads","agents"],"version":"0.3.0","description":"Manage T3 Code projects, handover threads, and cross-thread messages. Requires a T3 Code build with orchestrator V2; for older T3 builds, install @bvdm/t3code-cli@0.2.","sanitized_name":"@bvdm/t3code-cli","publisher":{"email":"npm-oidc-no-reply@github.com","trustedPublisher":{"oidcConfigId":"***","id":"github"},"username":"GitHub Actions"},"maintainers":[{"email":"bartvandermeeren@gmail.com","username":"majesteitbart"}],"license":"MIT","date":"2026-10-04T08:27:18.262Z","links":{"homepage":"https://github.com/MajesteitBart/t3code-cli#readme","repository":"git+https://github.com/MajesteitBart/t3code-cli.git","bugs":"https://github.com/MajesteitBart/t3code-cli/issues","npm":"https://www.npmjs.com/package/@bvdm/t3code-cli"}}
+
+,
+
+{"name":"@t3code/t3-linux-x64","keywords":[],"version":"0.1.0","description":"T3 Code CLI executable for linux-x64","sanitized_name":"@t3code/t3-linux-x64","publisher":{"email":"npm-oidc-no-reply@github.com","trustedPublisher":{"oidcConfigId":"***","id":"github"},"username":"GitHub Actions"},"maintainers":[{"email":"julius0216@outlook.com","username":"juliusmarminge"}],"license":"MIT","date":"2026-10-15T23:23:12.475Z","links":{"homepage":"https://github.com/pingdotgg/t3code#readme","repository":"git+https://github.com/pingdotgg/t3code.git","bugs":"https://github.com/pingdotgg/t3code/issues","npm":"https://www.npmjs.com/package/@t3code/t3-linux-x64"}}
+
+,
+
+{"name":"@t3code/t3-win32-arm64","keywords":[],"version":"0.1.0","description":"T3 Code CLI executable for win32-arm64","sanitized_name":"@t3code/t3-win32-arm64","publisher":{"email":"npm-oidc-no-reply@github.com","trustedPublisher":{"oidcConfigId":"***","id":"github"},"username":"GitHub Actions"},"maintainers":[{"email":"julius0216@outlook.com","username":"juliusmarminge"}],"license":"MIT","date":"2026-10-15T23:22:10.369Z","links":{"homepage":"https://github.com/pingdotgg/t3code#readme","repository":"git+https://github.com/pingdotgg/t3code.git","bugs":"https://github.com/pingdotgg/t3code/issues","npm":"https://www.npmjs.com/package/@t3code/t3-win32-arm64"}}
+
+,
+
+{"name":"@t3code/t3-win32-x64","keywords":[],"version":"0.1.0","description":"T3 Code CLI executable for win32-x64","sanitized_name":"@t3code/t3-win32-x64","publisher":{"email":"npm-oidc-no-reply@github.com","trustedPublisher":{"oidcConfigId":"***","id":"github"},"username":"GitHub Actions"},"maintainers":[{"email":"julius0216@outlook.com","username":"juliusmarminge"}],"license":"MIT","date":"2026-10-16T00:13:04.906Z","links":{"homepage":"https://github.com/pingdotgg/t3code#readme","repository":"git+https://github.com/pingdotgg/t3code.git","bugs":"https://github.com/pingdotgg/t3code/issues","npm":"https://www.npmjs.com/package/@t3code/t3-win32-x64"}}
+
+,
+
+{"name":"@t3code/t3-darwin-arm64","keywords":[],"version":"0.1.0","description":"T3 Code CLI executable for darwin-arm64","sanitized_name":"@t3code/t3-darwin-arm64","publisher":{"email":"npm-oidc-no-reply@github.com","trustedPublisher":{"oidcConfigId":"***","id":"github"},"username":"GitHub Actions"},"maintainers":[{"email":"julius0216@outlook.com","username":"juliusmarminge"}],"license":"MIT","date":"2026-10-15T23:22:14.273Z","links":{"homepage":"https://github.com/pingdotgg/t3code#readme","repository":"git+https://github.com/pingdotgg/t3code.git","bugs":"https://github.com/pingdotgg/t3code/issues","npm":"https://www.npmjs.com/package/@t3code/t3-darwin-arm64"}}
+
+,
+
+{"name":"claude-lhc","keywords":["long-horizon-context","claude-code","t3code","sidecar"],"version":"0.1.1","description":"Claude Code sidecar for t3code: runs the Claude Agent SDK, records into LHC, forwards the native stream over JSONL stdio.","sanitized_name":"claude-lhc","publisher":{"email":"liminal.builder@gmail.com","username":"liminalbuilder"},"maintainers":[{"email":"liminal.builder@gmail.com","username":"liminalbuilder"}],"license":"MIT","date":"2026-09-24T20:34:49.999Z","links":{"homepage":"https://github.com/liminal-ai/long-horizon-context/tree/main/packages/claude-lhc","repository":"git+https://github.com/liminal-ai/long-horizon-context.git","bugs":"https://github.com/liminal-ai/long-horizon-context/issues","npm":"https://www.npmjs.com/package/claude-lhc"}}
+
+,
+
+{"name":"@t3code/t3-linux-arm64","keywords":[],"version":"0.1.0","description":"T3 Code CLI executable for linux-arm64","sanitized_name":"@t3code/t3-linux-arm64","publisher":{"email":"npm-oidc-no-reply@github.com","trustedPublisher":{"oidcConfigId":"***","id":"github"},"username":"GitHub Actions"},"maintainers":[{"email":"julius0216@outlook.com","username":"juliusmarminge"}],"license":"MIT","date":"2026-10-15T23:22:18.623Z","links":{"homepage":"https://github.com/pingdotgg/t3code#readme","repository":"git+https://github.com/pingdotgg/t3code.git","bugs":"https://github.com/pingdotgg/t3code/issues","npm":"https://www.npmjs.com/package/@t3code/t3-linux-arm64"}}
+
+,
+
+{"name":"@jamesainslie/t3code-linux-arm64","keywords":[],"version":"0.0.0-bootstrap.0","description":"Placeholder that creates the package so trusted publishing can take over. Real T3 Code Fork CLI executables for linux-arm64 are published by release-fork.yml.","sanitized_name":"@jamesainslie/t3code-linux-arm64","publisher":{"email":"james@yaklab.org","username":"jamesainslie"},"maintainers":[{"email":"james@yaklab.org","username":"jamesainslie"}],"license":"MIT","date":"2026-09-18T15:14:45.759Z","links":{"homepage":"https://github.com/jamesainslie/t3code#readme","repository":"git+https://github.com/jamesainslie/t3code.git","bugs":"https://github.com/jamesainslie/t3code/issues","npm":"https://www.npmjs.com/package/@jamesainslie/t3code-linux-arm64"}}
+
+,
+
+{"name":"@jamesainslie/t3code-linux-x64","keywords":[],"version":"0.0.0-bootstrap.0","description":"Placeholder that creates the package so trusted publishing can take over. Real T3 Code Fork CLI executables for linux-x64 are published by release-fork.yml.","sanitized_name":"@jamesainslie/t3code-linux-x64","publisher":{"email":"james@yaklab.org","username":"jamesainslie"},"maintainers":[{"email":"james@yaklab.org","username":"jamesainslie"}],"license":"MIT","date":"2026-09-18T15:14:43.369Z","links":{"homepage":"https://github.com/jamesainslie/t3code#readme","repository":"git+https://github.com/jamesainslie/t3code.git","bugs":"https://github.com/jamesainslie/t3code/issues","npm":"https://www.npmjs.com/package/@jamesainslie/t3code-linux-x64"}}
+
+,
+
+{"name":"@jamesainslie/t3code-darwin-arm64","keywords":[],"version":"0.0.0-bootstrap.0","description":"Placeholder that creates the package so trusted publishing can take over. Real T3 Code Fork CLI executables for darwin-arm64 are published by release-fork.yml.","sanitized_name":"@jamesainslie/t3code-darwin-arm64","publisher":{"email":"james@yaklab.org","username":"jamesainslie"},"maintainers":[{"email":"james@yaklab.org","username":"jamesainslie"}],"license":"MIT","date":"2026-09-18T15:14:07.939Z","links":{"homepage":"https://github.com/jamesainslie/t3code#readme","repository":"git+https://github.com/jamesainslie/t3code.git","bugs":"https://github.com/jamesainslie/t3code/issues","npm":"https://www.npmjs.com/package/@jamesainslie/t3code-darwin-arm64"}}
+
+,
+
+{"name":"t3code-rtl","keywords":["rtl","right-to-left","bidi","bidirectional-text","persian","farsi","arabic","unicode","i18n","localization","t3code","t3-code","electron","cli","patch"],"version":"0.2.10","description":"Right-to-left (RTL) support for T3 Code: patches the app so Persian (Farsi) and Arabic chat messages read right to left.","sanitized_name":"t3code-rtl","publisher":{"email":"farcom7@gmail.com","username":"farhadeidi"},"maintainers":[{"email":"farcom7@gmail.com","username":"farhadeidi"}],"license":"MIT","date":"2026-10-16T18:33:20.361Z","links":{"homepage":"https://github.com/farhadeidi/t3code-rtl#readme","repository":"git+https://github.com/farhadeidi/t3code-rtl.git","bugs":"https://github.com/farhadeidi/t3code-rtl/issues","npm":"https://www.npmjs.com/package/t3code-rtl"}}
+
+,
+
+{"name":"@threahq/t3code-remote","keywords":["threa","t3code","agent","connector"],"version":"0.1.11","description":"A T3 Code connector that bridges a local T3 Code server to a Threa scratchpad: each Threa turn becomes one T3 thread run, with its activity traced back as steps.","sanitized_name":"@threahq/t3code-remote","publisher":{"email":"npm-oidc-no-reply@github.com","trustedPublisher":{"oidcConfigId":"***","id":"github"},"username":"GitHub Actions"},"maintainers":[{"email":"kristoffer.remback@gmail.com","username":"kristoffer_remback"}],"license":"MIT","date":"2026-10-27T18:33:41.878Z","links":{"homepage":"https://threa.io/developers","repository":"git+https://github.com/threahq/threa.git","bugs":"https://github.com/threahq/threa/issues","npm":"https://www.npmjs.com/package/@threahq/t3code-remote"}}
+
+,
+
+{"name":"@wyrd-company/t3code-client","keywords":["client","rpc","t3","t3code","websocket"],"version":"0.6.0","description":"TypeScript client for the T3 Code server: HTTP API, WebSocket RPC, and the auth control plane.","sanitized_name":"@wyrd-company/t3code-client","publisher":{"email":"npm-oidc-no-reply@github.com","trustedPublisher":{"oidcConfigId":"***","id":"github"},"username":"GitHub Actions"},"maintainers":[{"email":"bob.langley@wyrd.company","username":"boblangley"}],"license":"MIT","date":"2026-10-17T06:09:39.605Z","links":{"homepage":"https://github.com/wyrd-company/t3code-client#readme","repository":"git+https://github.com/wyrd-company/t3code-client.git","bugs":"https://github.com/wyrd-company/t3code-client/issues","npm":"https://www.npmjs.com/package/@wyrd-company/t3code-client"}}
+
+,
+
+{"name":"t3code-alpha","keywords":[],"version":"0.0.45-alpha.20261001.158","description":"T3 Code Alpha CLI. Installs the self-contained executable for this platform.","sanitized_name":"t3code-alpha","publisher":{"email":"npm-oidc-no-reply@github.com","trustedPublisher":{"oidcConfigId":"***","id":"github"},"username":"GitHub Actions"},"maintainers":[{"email":"amit@theblank.club","username":"niyxuis"}],"license":"MIT","date":"2026-10-01T06:59:27.059Z","links":{"homepage":"https://github.com/TheBlankClub/t3code-alpha#readme","repository":"git+https://github.com/TheBlankClub/t3code-alpha.git","bugs":"https://github.com/TheBlankClub/t3code-alpha/issues","npm":"https://www.npmjs.com/package/t3code-alpha"}}
+
+,
+
+{"name":"@adaptive-ds/t3code","keywords":[],"version":"0.0.0-oidc-bootstrap","description":"Temporary OIDC setup placeholder; not a release.","sanitized_name":"@adaptive-ds/t3code","publisher":{"email":"david1gruppenplan@gmail.com","username":"david1gp"},"maintainers":[{"email":"david1gruppenplan@gmail.com","username":"david1gp"}],"license":"UNLICENSED","date":"2026-09-24T08:35:28.002Z","links":{"npm":"https://www.npmjs.com/package/@adaptive-ds/t3code"}}
+
+,
+
+{"name":"t3-hermes-linux-arm64","keywords":[],"version":"0.0.0-bootstrap.0","description":"T3 Code CLI executable for linux-arm64","sanitized_name":"t3-hermes-linux-arm64","publisher":{"email":"nathanweaver03@gmail.com","username":"nateweavr"},"maintainers":[{"email":"nathanweaver03@gmail.com","username":"nateweavr"}],"license":"MIT","date":"2026-09-28T22:10:24.294Z","links":{"homepage":"https://github.com/NateWeav/t3code-hermes#readme","repository":"git+https://github.com/NateWeav/t3code-hermes.git","bugs":"https://github.com/NateWeav/t3code-hermes/issues","npm":"https://www.npmjs.com/package/t3-hermes-linux-arm64"}}
+
+,
+
+{"name":"nateweav-hermes-winbin-x64","keywords":[],"version":"0.0.0-bootstrap.0","description":"T3 Code CLI executable for win32-x64","sanitized_name":"nateweav-hermes-winbin-x64","publisher":{"email":"nathanweaver03@gmail.com","username":"nateweavr"},"maintainers":[{"email":"nathanweaver03@gmail.com","username":"nateweavr"}],"license":"MIT","date":"2026-09-30T14:13:27.810Z","links":{"homepage":"https://github.com/NateWeav/t3code-hermes#readme","repository":"git+https://github.com/NateWeav/t3code-hermes.git","bugs":"https://github.com/NateWeav/t3code-hermes/issues","npm":"https://www.npmjs.com/package/nateweav-hermes-winbin-x64"}}
+
+,
+
+{"name":"t3-hermes-darwin-arm64","keywords":[],"version":"0.0.0-bootstrap.0","description":"T3 Code CLI executable for darwin-arm64","sanitized_name":"t3-hermes-darwin-arm64","publisher":{"email":"nathanweaver03@gmail.com","username":"nateweavr"},"maintainers":[{"email":"nathanweaver03@gmail.com","username":"nateweavr"}],"license":"MIT","date":"2026-09-28T22:10:22.434Z","links":{"homepage":"https://github.com/NateWeav/t3code-hermes#readme","repository":"git+https://github.com/NateWeav/t3code-hermes.git","bugs":"https://github.com/NateWeav/t3code-hermes/issues","npm":"https://www.npmjs.com/package/t3-hermes-darwin-arm64"}}
+
+,
+
+{"name":"t3-hermes-linux-x64","keywords":[],"version":"0.0.0-bootstrap.0","description":"T3 Code CLI executable for linux-x64","sanitized_name":"t3-hermes-linux-x64","publisher":{"email":"nathanweaver03@gmail.com","username":"nateweavr"},"maintainers":[{"email":"nathanweaver03@gmail.com","username":"nateweavr"}],"license":"MIT","date":"2026-09-28T22:10:26.441Z","links":{"homepage":"https://github.com/NateWeav/t3code-hermes#readme","repository":"git+https://github.com/NateWeav/t3code-hermes.git","bugs":"https://github.com/NateWeav/t3code-hermes/issues","npm":"https://www.npmjs.com/package/t3-hermes-linux-x64"}}
+]
+

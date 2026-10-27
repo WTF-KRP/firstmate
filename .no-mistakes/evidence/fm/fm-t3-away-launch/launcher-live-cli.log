@@ -1,0 +1,61 @@
+Marked disposable home created inside the gate worktree. No test seams or entry overrides enabled.
+Detected primary harness: codex
+$ fm-afk-launch.sh run-external
+fm-afk-launch: run-external requires the T3 record written by prepare-external
+exit=1
+Serialized lifecycle input: 'none\t-\tnative\n'
+$ fm-afk-launch.sh run-external
+fm-afk-launch: run-external requires the T3 record written by prepare-external
+exit=1
+Serialized lifecycle input: 'none\tmcp:lab-primary\tt3code:claude\n'
+$ fm-afk-launch.sh run-external
+fm-afk-launch: run-external requires the T3 record written by prepare-external
+exit=1
+Serialized lifecycle input: 'none\tmcp:lab-primary\tt3code:pi\n'
+$ fm-afk-launch.sh run-external
+fm-afk-launch: run-external requires the T3 record written by prepare-external
+exit=1
+Serialized lifecycle input: 'none\tbad target\tt3code:codex\n'
+$ fm-afk-launch.sh run-external
+fm-afk-launch: daemon terminal record is malformed; refusing to act on it
+fm-afk-launch: run-external requires the T3 record written by prepare-external
+exit=1
+$ fm-afk-launch.sh enter --words Isolated launcher verification.
+Away posture recorded at 2026-10-27T19:28:37Z: hold-for-return only. No phone channel is configured; anything that needs you waits for your return. Your away instructions are recorded verbatim; the away session will carry them out where it can, and anything it is unsure of, or that needs you, waits for your return. Destructive, irreversible, and security-sensitive actions are never pre-authorizable, whatever the words say. Expected return: not given. Spend cap: 4 concurrent workers.
+Away posture (recorded):
+  entered: 2026-10-27T19:28:37Z
+  expected return: not given
+  spend cap: 4 concurrent workers
+  reach: hold-for-return only. No phone channel is configured; anything that needs you waits for your return.
+  your words (verbatim):
+    Isolated launcher verification.
+exit=0
+$ fm-afk-launch.sh prepare-external
+fm-afk-launch: external launch requires a t3code supervisor
+exit=1
+$ fm-afk-launch.sh prepare-external
+fm-afk-launch: the away daemon is not launched on this codex home, which runs the supervision host (docs/supervision-host.md); the away-posture record is the posture here (run bin/fm-afk-launch.sh enter and stop)
+exit=1
+$ fm-afk-launch.sh prepare-external
+Run in a separate operator terminal and keep it open:
+  env FM_HOME=/Users/daddy/.no-mistakes-upstream-codex/worktrees/8b90b3e2a236/01M5ZCDBWWQXYNTDPKGB2WD62X/fm-lab.i8o1xpl0 /Users/daddy/.no-mistakes-upstream-codex/worktrees/8b90b3e2a236/01M5ZCDBWWQXYNTDPKGB2WD62X/bin/fm-afk-launch.sh run-external
+exit=0
+Persisted lifecycle: 'none\tmcp:lab-primary\tt3code:codex\n'
+$ fm-afk-launch.sh run-external
+fm-afk-launch: return catch-up is still pending; run bin/fm-afk-return.sh check before re-entering away mode
+exit=1
+$ fm-afk-launch.sh run-external
+fm-afk-launch: reconciling leaked daemon terminal none:mcp:lab-primary
+afk: starting supervise daemon in foreground; keep this command as a tracked background session
+error: supervisor target 'mcp:lab-primary' does not resolve to a t3code pane; set FM_SUPERVISOR_TARGET
+exit=1
+Actual daemon reached recorded T3 target validation and exited because this lab has no T3 server credential. Delivery and a running-daemon singleton remain untested live.
+Daemon log:
+[2026-10-27T15:28:39-0400] startup failed: target 'mcp:lab-primary' not found (backend=t3code)
+
+$ fm-afk-launch.sh stop
+fm-afk-launch: away-posture record archived at /Users/daddy/.no-mistakes-upstream-codex/worktrees/8b90b3e2a236/01M5ZCDBWWQXYNTDPKGB2WD62X/fm-lab.i8o1xpl0/state/afk-contracts/1793129317.afk-contract
+fm-afk-launch: away mode stopped; no daemon terminal was running, .afk cleared, and the posture record archived
+exit=0
+Ordinary stop removed lifecycle and away flag, archived the posture, and left no daemon pid or launcher lock.
+Disposable lab removed.
