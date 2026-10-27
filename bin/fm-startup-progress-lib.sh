@@ -7,6 +7,8 @@
 # Producers append one short `stage <n> <nonce>` line with a single printf and
 # O_APPEND, after real operations: 1 arm admission, 2 watcher establishment,
 # 3 recovery-generation inspection (including the arm's recovery lock).
+# Records are nonce-scoped advisory hints, not producer or watcher identity
+# proof. Readers ignore malformed records and records with another nonce.
 # Only a new higher stage renews 25 seconds without observed progress. Repeated
 # stages, file timestamps and live PIDs do not. The whole attempt is capped at
 # 100 seconds. Explicit FM_SUPERVISION_HOST_READY_TIMEOUT is a pure total window
@@ -18,6 +20,8 @@
 # Bounds are checked before and after readiness work, at scheduled checks.
 # The host creates the first arm's journal before launch too. Standalone arms
 # without a host context retain FM_ARM_CONFIRM_TIMEOUT's confirmation budget.
+# Creating another attempt first clears the owner's previous journal, so a
+# failed successor cannot leave it behind when acknowledged hand-back starts.
 # FM_TEST_STARTUP_CLOCK may supply the clock only when FM_TEST_SEAM=1.
 # shellcheck disable=SC2153 # STATE and SCRIPT_DIR are supplied by the caller.
 

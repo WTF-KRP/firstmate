@@ -714,6 +714,8 @@ handle_arm_signal() {
     # publishing the home-bound lock identity. Do not TERM it in the middle of
     # stale-lock acquisition: that can abandon the steal mutex. Let startup
     # reach that cleanup-ready point (or exit naturally) before forwarding TERM.
+    # This cancellation clock is separate from the startup allowance and stays
+    # below the host's ten-second arm-retirement grace, even before lock publication.
     while fm_pid_alive "$child"; do
       if fm_watcher_lock_matches_pid "$STATE" "$WATCH" "$child" "$FM_HOME" \
         || [ "$SECONDS" -ge "$cancel_deadline" ]; then
