@@ -60,7 +60,7 @@ valid_task() {  # <task-id>
 STOP_REQUESTED=0
 
 cmd_run() {  # <state-dir> <task-id> <job-dir>
-  local state=$1 task=$2 dir=$3 a deadline limit status=0 outcome=exited RUN_CHILD
+  local state=$1 task=$2 dir=$3 a deadline limit status=0 outcome=exited RUN_CHILD owner rc
   local argv=()
   trap 'STOP_REQUESTED=1' TERM INT
   [ -f "$dir/job" ] && [ -f "$dir/argv" ] || exit 1
@@ -72,30 +72,31 @@ cmd_run() {  # <state-dir> <task-id> <job-dir>
   [ "${#argv[@]}" -gt 0 ] || exit 1
   deadline=$(fm_meta_get "$dir/job" deadline)
   case "$deadline" in ''|*[!0-9]*) exit 1 ;; esac
-  # The command leads its own process group, so a timeout or stop reaches
-  # everything it started without touching this runner.
-  # shellcheck disable=SC2016 # Perl owns every $ expression in this literal program.
-  perl -e 'setpgrp(0, 0) or exit 125; exec { $ARGV[0] } @ARGV or exit 127' -- "${argv[@]}" \
-    > "$dir/output" 2>&1 < /dev/null &
+  fm_current_pid owner || exit 1
+  fm_task_job_write_record "$dir/runner" "pid=$owner" \
+    "start=$(fm_task_job_pid_start "$owner")" || exit 1
+  [ "$STOP_REQUESTED" = 0 ] || exit 143
+  "${argv[@]}" > "$dir/output" 2>&1 < /dev/null &
   RUN_CHILD=$!
   fm_task_job_write_record "$dir/child" "pid=$RUN_CHILD" \
     "start=$(fm_task_job_pid_start "$RUN_CHILD" || true)" || true
   limit=$((SECONDS + deadline - $(date +%s)))
-  while kill -0 "$RUN_CHILD" 2>/dev/null; do
-    if [ "$STOP_REQUESTED" = 1 ]; then
-      fm_task_job_stop_child "$dir" || exit 1
-      exit 143
-    fi
-    if [ "$SECONDS" -ge "$limit" ]; then
-      outcome=timed-out
-      fm_task_job_stop_child "$dir" || exit 1
+  while :; do
+    rc=0
+    fm_task_job_group_members "$owner" "$owner" >/dev/null || rc=$?
+    [ "$rc" -ne 1 ] || break
+    if [ "$STOP_REQUESTED" = 1 ] || [ "$SECONDS" -ge "$limit" ]; then
+      [ "$STOP_REQUESTED" = 1 ] || outcome=timed-out
+      if ! fm_task_job_stop_owned_group "$owner"; then
+        sleep 1
+        continue
+      fi
       break
     fi
     sleep 1
   done
   wait "$RUN_CHILD" 2>/dev/null || status=$?
   if [ "$STOP_REQUESTED" = 1 ]; then
-    fm_task_job_stop_child "$dir" || exit 1
     exit 143
   fi
   fm_task_job_publish_exit "$dir" "$outcome" "$status" || true
@@ -114,6 +115,8 @@ cmd_start() (
   done
   [ "$#" -ge 1 ] || usage "start needs a command after --"
   case "$timeout" in ''|*[!0-9]*) usage "--timeout needs a whole number of seconds" ;; esac
+  while [ "${timeout#0}" != "$timeout" ]; do timeout=${timeout#0}; done
+  timeout=${timeout:-0}
   if [ "${#timeout}" -gt 6 ] || [ "$timeout" -lt 1 ] || [ "$timeout" -gt 604800 ]; then
     usage "--timeout must be from 1 to 604800 seconds"
   fi
@@ -131,7 +134,6 @@ cmd_start() (
   fm_lock_acquire_wait "$lock" || die "cannot lock the task"
   trap 'fm_lock_release "$lock"' EXIT
   trap 'exit 143' TERM INT
-  [ -d "$inbox" ] || die "the task inbox is missing; the task may have been retired"
   [ -f "$meta" ] && [ ! -L "$meta" ] || die "no task metadata for $task at $meta; the task may have been retired"
   gen=$(fm_meta_get "$meta" spawn_gen)
   [ -n "$gen" ] || die "the metadata for $task records no spawn_gen, so its completion cannot be keyed"
@@ -159,16 +161,13 @@ cmd_start() (
     "$BASH" "$SCRIPT_DIR/fm-task-job.sh" _run "$state" "$task" "$dir" \
     < /dev/null >> "$dir/runner.log" 2>&1 &
   runner=$!
-  fm_task_job_write_record "$dir/runner" "pid=$runner" \
-    "start=$(fm_task_job_pid_start "$runner" || true)" \
-    || die "the job started but its runner record could not be written under $dir"
 
   # Confirm the runner reached its command before reporting the job started.
   i=0
   while [ ! -f "$dir/child" ] && [ ! -f "$dir/exit" ]; do
     rc=0
     fm_task_job_runner_state "$dir" || rc=$?
-    if [ "$rc" -eq 1 ]; then
+    if [ "$rc" -eq 1 ] || { [ "$rc" -eq 2 ] && ! kill -0 "$runner" 2>/dev/null; }; then
       rm -rf "$dir"
       die "the job runner exited before starting the command; nothing is running"
     fi

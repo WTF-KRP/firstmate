@@ -20,9 +20,9 @@
 #              task's spawn_gen at start), timeout, started, deadline
 #   argv       the command, NUL-delimited
 #   runner     key=value: pid and start (ps lstart) of the detached runner,
-#              written by bin/fm-task-job.sh start right after the launch
-#   child      key=value: pid and start of the command, which leads its own
-#              process group; written by the runner once the command runs
+#              written by the runner before it starts the command
+#   child      key=value: pid and start of the command in the runner's process
+#              group; written by the runner once the command runs
 #   output     the command's combined stdout and stderr
 #   exit       key=value: outcome (exited, timed-out, or lost), status, ended;
 #              published once by an exclusive link, so its presence means the
@@ -72,7 +72,15 @@ FM_TASK_JOB_START_GRACE_DEFAULT=30
 FM_TASK_JOB_KILL_GRACE_DEFAULT=5
 
 fm_task_job_secs() {  # <value> <default>
-  case "$1" in ''|*[!0-9]*) printf '%s' "$2" ;; *) printf '%s' "$1" ;; esac
+  local value=$1
+  case "$value" in ''|*[!0-9]*) printf '%s' "$2"; return ;; esac
+  while [ "${value#0}" != "$value" ]; do value=${value#0}; done
+  value=${value:-0}
+  if [ "${#value}" -gt 6 ] || [ "$value" -gt 604800 ]; then
+    printf '%s' "$2"
+  else
+    printf '%s' "$value"
+  fi
 }
 
 fm_task_job_root() {  # <state-dir> <task-id>
@@ -143,49 +151,74 @@ fm_task_job_publish_exit() {  # <job-dir> <outcome> <status>
   return "$rc"
 }
 
-fm_task_job_group_state() {
-  local snapshot
+fm_task_job_group_members() {
+  local snapshot probe
   case "$1" in ''|*[!0-9]*|0|1) return 2 ;; esac
-  snapshot=$(LC_ALL=C ps -axo pgid=,stat= 2>/dev/null) || return 2
-  printf '%s\n' "$snapshot" | awk -v group="$1" '
-    $1 == group && $2 !~ /^Z/ { live = 1 }
+  fm_current_pid probe || return 2
+  snapshot=$(LC_ALL=C exec perl -MPOSIX -e 'defined(POSIX::setsid()) or exit 125; exec "ps", "-axo", "pid=,pgid=,stat=" or exit 127' 2>/dev/null) || return 2
+  awk -v group="$1" -v owner="${2:-}" -v probe="$probe" '
+    $2 == group && $1 != owner && $1 != probe && $3 !~ /^Z/ { print $1; live = 1 }
     END { exit !live }
-  '
+  ' <<< "$snapshot"
 }
 
-fm_task_job_stop_group() {
-  local pid=$1 start=$2 signal=${3:-TERM} grace i=0 rc=0
-  fm_task_job_group_state "$pid" || rc=$?
+fm_task_job_stop_owned_group() {
+  local owner=$1 members pid grace limit rc=0 i=0
+  members=$(fm_task_job_group_members "$owner" "$owner") || rc=$?
   [ "$rc" -ne 1 ] || return 0
   [ "$rc" -eq 0 ] || return 1
-  fm_task_job_proc_state "$pid" "$start" || return 1
-  kill "-$signal" -- "-$pid" 2>/dev/null || return 1
+  while IFS= read -r pid; do
+    kill -TERM "$pid" 2>/dev/null || true
+  done <<< "$members"
   grace=$(fm_task_job_secs "${FM_TASK_JOB_KILL_GRACE_SECS:-}" "$FM_TASK_JOB_KILL_GRACE_DEFAULT")
-  [ "$signal" != KILL ] || grace=0
-  while [ "$i" -lt "$((grace * 10))" ]; do
+  limit=$((SECONDS + grace))
+  while [ "$SECONDS" -lt "$limit" ]; do
     rc=0
-    fm_task_job_group_state "$pid" || rc=$?
+    fm_task_job_group_members "$owner" "$owner" >/dev/null || rc=$?
     [ "$rc" -ne 1 ] || return 0
     [ "$rc" -eq 0 ] || return 1
     sleep 0.1
-    i=$((i + 1))
   done
-  kill -KILL -- "-$pid" 2>/dev/null || true
-  i=0
   while [ "$i" -lt 100 ]; do
     rc=0
-    fm_task_job_group_state "$pid" || rc=$?
+    members=$(fm_task_job_group_members "$owner" "$owner") || rc=$?
     [ "$rc" -ne 1 ] || return 0
     [ "$rc" -eq 0 ] || return 1
+    while IFS= read -r pid; do
+      kill -KILL "$pid" 2>/dev/null || true
+    done <<< "$members"
     sleep 0.1
     i=$((i + 1))
   done
   return 1
 }
 
-fm_task_job_stop_child() {
-  [ -f "$1/child" ] || return 0
-  fm_task_job_stop_group "$(fm_meta_get "$1/child" pid)" "$(fm_meta_get "$1/child" start)"
+fm_task_job_stop_runner() {
+  local dir=$1 pid start rc=0 signal=TERM grace limit
+  [ -f "$dir/runner" ] || { [ ! -f "$dir/child" ]; return; }
+  pid=$(fm_meta_get "$dir/runner" pid)
+  start=$(fm_meta_get "$dir/runner" start)
+  fm_task_job_group_members "$pid" >/dev/null || rc=$?
+  [ "$rc" -ne 1 ] || return 0
+  [ "$rc" -eq 0 ] || return 1
+  rc=0
+  fm_task_job_proc_state "$pid" "$start" || rc=$?
+  [ "$rc" -ne 2 ] || return 1
+  if [ "$rc" -eq 1 ]; then
+    kill -0 "$pid" 2>/dev/null && return 1
+    signal=KILL
+  fi
+  kill "-$signal" -- "-$pid" 2>/dev/null || true
+  grace=$(fm_task_job_secs "${FM_TASK_JOB_KILL_GRACE_SECS:-}" "$FM_TASK_JOB_KILL_GRACE_DEFAULT")
+  limit=$((SECONDS + grace + 15))
+  while [ "$SECONDS" -lt "$limit" ]; do
+    rc=0
+    fm_task_job_group_members "$pid" >/dev/null || rc=$?
+    [ "$rc" -ne 1 ] || return 0
+    [ "$rc" -eq 0 ] || return 1
+    sleep 0.1
+  done
+  return 1
 }
 
 # The completion notice. Every value comes from the job's own records, so the
@@ -268,7 +301,7 @@ fm_task_job_reconcile() {  # <state-dir> <task-id>
       if [ "$rc" -eq 2 ]; then
         [ -f "$dir/job" ] && [ "$(fm_path_age "$dir/job")" -ge "$grace" ] || continue
       fi
-      fm_task_job_stop_child "$dir" || continue
+      fm_task_job_stop_runner "$dir" || continue
       fm_task_job_publish_exit "$dir" lost '' || [ -f "$dir/exit" ] || continue
     fi
     fm_task_job_deliver "$1" "$2" "$dir" || true
@@ -276,8 +309,7 @@ fm_task_job_reconcile() {  # <state-dir> <task-id>
   return 0
 }
 
-# Stop every live job of a task without delivering anything: the runner first,
-# then its command group.
+# Stop every live job of a task without delivering anything through its runner.
 # Teardown runs this before it removes the inbox.
 fm_task_job_stop_all() {  # <state-dir> <task-id>
   local root dir failed=0
@@ -285,11 +317,7 @@ fm_task_job_stop_all() {  # <state-dir> <task-id>
   [ -d "$root" ] || return 0
   for dir in "$root"/*; do
     [ -d "$dir" ] && [ ! -L "$dir" ] || continue
-    if [ -f "$dir/runner" ]; then
-      fm_task_job_stop_group "$(fm_meta_get "$dir/runner" pid)" \
-        "$(fm_meta_get "$dir/runner" start)" KILL || failed=1
-    fi
-    fm_task_job_stop_child "$dir" || failed=1
+    fm_task_job_stop_runner "$dir" || failed=1
   done
   return "$failed"
 }

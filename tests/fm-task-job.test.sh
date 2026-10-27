@@ -33,6 +33,7 @@ WATCH="$ROOT/bin/fm-watch.sh"
 TMP_ROOT=$(fm_test_tmproot fm-task-job)
 TMP_ROOT=$(cd "$TMP_ROOT" && pwd)
 DOORBELL="Firstmate instruction waiting: list \"\$FM_TASK_INBOX\"/*.msg in your 't1.inbox' steering inbox"
+command -v tasks-axi >/dev/null 2>&1 || { echo 'skip: tasks-axi not found'; exit 0; }
 
 # A fake tmux: every literal send-keys is logged to FM_SEND_LOG so a doorbell
 # is observable, FM_FAKE_TMUX_SEND_FAIL=1 makes sends fail, and capture-pane
@@ -76,7 +77,9 @@ SH
 
 setup_case() {  # <name> -> echoes the case dir; task t1 lives in <dir>/state
   local dir="$TMP_ROOT/$1"
-  mkdir -p "$dir/state/t1.inbox/handled"
+  mkdir -p "$dir/state/t1.inbox/handled" "$dir/data" "$dir/config"
+  fm_test_tasks_toml "$dir/.tasks.toml"
+  printf '## In flight\n\n## Queued\n\n## Done\n' > "$dir/data/backlog.md"
   make_stubs "$dir"
   : > "$dir/send.log"
   fm_write_meta "$dir/state/t1.meta" "window=sess:fm-t1" "kind=ship" "harness=grok" "spawn_gen=gen-A"
@@ -88,8 +91,41 @@ setup_case() {  # <name> -> echoes the case dir; task t1 lives in <dir>/state
 job_start() {  # <dir> <start args...>
   local dir=$1
   shift
-  PATH="$dir/fakebin:$PATH" FM_TASK_INBOX="$dir/state/t1.inbox" FM_SEND_LOG="$dir/send.log" \
+  PATH="$dir/fakebin:$PATH" FM_HOME="$dir" FM_DATA_OVERRIDE="$dir/data" FM_CONFIG_OVERRIDE="$dir/config" \
+    FM_TASK_INBOX="$dir/state/t1.inbox" FM_SEND_LOG="$dir/send.log" \
     "$JOB" start "$@"
+}
+
+case_command() {
+  local dir=$1
+  shift
+  PATH="$dir/fakebin:$PATH" FM_HOME="$dir" FM_STATE_OVERRIDE="$dir/state" \
+    FM_DATA_OVERRIDE="$dir/data" FM_CONFIG_OVERRIDE="$dir/config" "$@"
+}
+
+wait_for_file() {
+  local i=0
+  while [ "$i" -lt 200 ]; do
+    [ -s "$1" ] && return 0
+    sleep 0.1
+    i=$((i + 1))
+  done
+  return 1
+}
+
+start_stubborn_job() {
+  cat > "$1/stubborn.pl" <<'PL'
+$SIG{TERM} = "IGNORE";
+open(my $ready, ">", $ARGV[0]) or die $!;
+print $ready "$$\n";
+close($ready);
+sleep 60;
+PL
+  cat > "$1/monitor.sh" <<'SH'
+perl "$1/stubborn.pl" "$1/grandchild.pid" &
+wait
+SH
+  job_start "$1" --timeout "$2" -- sh "$1/monitor.sh" "$1"
 }
 
 start_waiting_job() {
@@ -102,7 +138,8 @@ SH
 job_lib() {  # <dir> <function> [args...]
   local dir=$1
   shift
-  PATH="$dir/fakebin:$PATH" FM_STATE_OVERRIDE="$dir/state" FM_SEND_LOG="$dir/send.log" bash -c '
+  PATH="$dir/fakebin:$PATH" FM_HOME="$dir" FM_DATA_OVERRIDE="$dir/data" FM_CONFIG_OVERRIDE="$dir/config" \
+    FM_STATE_OVERRIDE="$dir/state" FM_SEND_LOG="$dir/send.log" bash -c '
     . "$1"
     fn=$2
     shift 2
@@ -112,7 +149,8 @@ job_lib() {  # <dir> <function> [args...]
 
 # One watcher steering-inbox pass, as the poll loop runs it.
 steer_check() {  # <dir>
-  PATH="$1/fakebin:$PATH" FM_STATE_OVERRIDE="$1/state" FM_SEND_LOG="$1/send.log" \
+  PATH="$1/fakebin:$PATH" FM_HOME="$1" FM_DATA_OVERRIDE="$1/data" FM_CONFIG_OVERRIDE="$1/config" \
+    FM_STATE_OVERRIDE="$1/state" FM_SEND_LOG="$1/send.log" \
     FM_TASK_INBOX_GRACE_SECS=1 \
     bash -c '. "$1" && inbox_steer_check sess:fm-t1 t1' _ "$WATCH" >/dev/null 2>&1
 }
@@ -267,6 +305,132 @@ test_captain_hold_defers_completion() {
   pass "task job: captain holds suppress immediate and watcher completion rings"
 }
 
+test_backlog_captain_hold_defers_completion() {
+  local dir out rec
+  dir=$(setup_case backlog-held)
+  (cd "$dir" && tasks-axi add t1 "Run the monitor" --kind ship --repo sample >/dev/null) \
+    || fail "could not create the backlog work item"
+  out=$(start_waiting_job "$dir") || fail "start failed: $out"
+  case_command "$dir" "$ROOT/bin/fm-captain-hold.sh" hold t1 \
+    --reason "captain approval required" >/dev/null || fail "could not hold the running work item"
+  assert_no_grep 'captain-held' "$dir/state/t1.status" "this hold must exist only in the backlog"
+  touch "$dir/release"
+  wait_for_record "$dir" || fail "the backlog-held completion was not recorded"
+  wait_gone "$(sed -n 's/^pid=//p' "$(job_dir_of "$dir" "$out")/runner")" || fail "the runner outlived delivery"
+  [ ! -s "$dir/send.log" ] || fail "immediate delivery rang a backlog-held task"
+  rec=$(records "$dir")
+  age_path "$rec"
+  steer_check "$dir"
+  steer_check "$dir"
+  [ ! -s "$dir/send.log" ] || fail "watcher redelivery rang a backlog-held task"
+  [ -f "$rec" ] || fail "the backlog-held completion disappeared"
+  printf 'Continue the work.\n' > "$dir/decision.txt"
+  case_command "$dir" "$ROOT/bin/fm-captain-hold.sh" answer t1 \
+    --decision-file "$dir/decision.txt" --release >/dev/null || fail "could not release the backlog hold"
+  steer_check "$dir"
+  [ "$(grep -cF "$DOORBELL" "$dir/send.log" || true)" = 1 ] || fail "release did not ring the completion exactly once"
+  pass "task job: a backlog hold placed during a running job suppresses every ring until release"
+}
+
+test_first_job_creates_inbox_for_live_task() {
+  local dir out
+  dir=$(setup_case first-inbox)
+  rm -rf "$dir/state/t1.inbox"
+  out=$(job_start "$dir" --timeout 60 -- true) || fail "first job refused valid task metadata: $out"
+  wait_for_record "$dir" || fail "the first job did not create its completion inbox"
+  wait_gone "$(sed -n 's/^pid=//p' "$(job_dir_of "$dir" "$out")/runner")" || fail "the runner outlived delivery"
+  assert_grep "$DOORBELL" "$dir/send.log" "the first job should ring its live task"
+  pass "task job: valid live metadata permits first inbox creation"
+}
+
+test_runner_waits_for_descendants_after_command_exit() {
+  local dir out jobdir runner child descendant
+  dir=$(setup_case command-exited)
+  cat > "$dir/descendant.sh" <<'SH'
+printf '%s\n' "$$" > "$1/descendant.pid"
+while [ ! -f "$1/release" ]; do sleep 0.1; done
+SH
+  cat > "$dir/parent.sh" <<'SH'
+sh "$1/descendant.sh" "$1" &
+exit 4
+SH
+  out=$(job_start "$dir" --timeout 60 -- sh "$dir/parent.sh" "$dir") || fail "start failed: $out"
+  jobdir=$(job_dir_of "$dir" "$out")
+  runner=$(sed -n 's/^pid=//p' "$jobdir/runner")
+  child=$(sed -n 's/^pid=//p' "$jobdir/child")
+  wait_for_file "$dir/descendant.pid" || fail "the descendant did not start"
+  descendant=$(cat "$dir/descendant.pid")
+  wait_gone "$child" || fail "the command leader did not exit"
+  kill -0 "$runner" 2>/dev/null || fail "the runner abandoned its descendant"
+  [ ! -e "$jobdir/exit" ] || fail "completion was published before the group emptied"
+  [ "$(record_count "$dir")" = 0 ] || fail "a live descendant allowed completion delivery"
+  touch "$dir/release"
+  wait_for_record "$dir" || fail "the emptied group did not produce a completion"
+  wait_gone "$runner" || fail "the runner outlived completion"
+  wait_gone "$descendant" || fail "the descendant outlived completion"
+  assert_grep 'status=4' "$jobdir/exit" "the completion should preserve the command's exit status"
+  pass "task job: the runner owns surviving descendants after the command leader exits"
+}
+
+test_teardown_during_timeout_cleanup() {
+  local dir out jobdir runner child descendant
+  dir=$(setup_case interrupted-stop)
+  out=$(FM_TASK_JOB_KILL_GRACE_SECS=03 start_stubborn_job "$dir" 1) || fail "start failed: $out"
+  jobdir=$(job_dir_of "$dir" "$out")
+  runner=$(sed -n 's/^pid=//p' "$jobdir/runner")
+  child=$(sed -n 's/^pid=//p' "$jobdir/child")
+  wait_for_file "$dir/grandchild.pid" || fail "the TERM-resistant descendant did not start"
+  descendant=$(cat "$dir/grandchild.pid")
+  wait_gone "$child" || fail "timeout TERM did not stop the command leader"
+  kill -0 "$descendant" 2>/dev/null || fail "the descendant did not survive TERM"
+  kill -0 "$runner" 2>/dev/null || fail "the runner exited during cleanup"
+  FM_TASK_JOB_KILL_GRACE_SECS=03 case_command "$dir" "$JOB" stop-all "$dir/state" t1 \
+    || fail "teardown could not complete interrupted timeout cleanup"
+  wait_gone "$runner" || fail "teardown left the runner alive"
+  wait_gone "$descendant" || fail "teardown left a TERM-resistant descendant alive"
+  [ ! -e "$jobdir/exit" ] || fail "teardown published a completion during cleanup"
+  [ "$(record_count "$dir")" = 0 ] || fail "teardown delivered a completion during cleanup"
+  pass "task job: teardown retains runner ownership through timeout cleanup"
+}
+
+test_recovery_after_runner_dies_during_cleanup() {
+  local dir out jobdir runner child descendant
+  dir=$(setup_case interrupted-recovery)
+  out=$(FM_TASK_JOB_KILL_GRACE_SECS=08 start_stubborn_job "$dir" 1) || fail "start failed: $out"
+  jobdir=$(job_dir_of "$dir" "$out")
+  runner=$(sed -n 's/^pid=//p' "$jobdir/runner")
+  child=$(sed -n 's/^pid=//p' "$jobdir/child")
+  wait_for_file "$dir/grandchild.pid" || fail "the TERM-resistant descendant did not start"
+  descendant=$(cat "$dir/grandchild.pid")
+  wait_gone "$child" || fail "timeout TERM did not stop the command leader"
+  kill -0 "$descendant" 2>/dev/null || fail "the descendant did not survive TERM"
+  kill -0 "$runner" 2>/dev/null || fail "the leading-zero grace failed before recovery"
+  kill -KILL "$runner"
+  wait_gone "$runner" || fail "the runner did not stop"
+  job_lib "$dir" fm_task_job_reconcile "$dir/state" t1 || fail "recovery failed"
+  wait_gone "$descendant" || fail "recovery left a TERM-resistant descendant alive"
+  [ "$(record_count "$dir")" = 1 ] || fail "recovery did not publish exactly one completion"
+  assert_grep 'outcome=lost' "$jobdir/exit" "an interrupted runner's outcome must be lost"
+  pass "task job: lost-runner recovery stops descendants after the command leader has exited"
+}
+
+test_decimal_timeouts_and_graces() {
+  local value dir out jobdir started deadline
+  for value in 010 00008 00009; do
+    dir=$(setup_case "decimal-$value")
+    out=$(job_start "$dir" --timeout "$value" -- sleep 60) || fail "decimal timeout $value refused: $out"
+    jobdir=$(job_dir_of "$dir" "$out")
+    started=$(sed -n 's/^started=//p' "$jobdir/job")
+    deadline=$(sed -n 's/^deadline=//p' "$jobdir/job")
+    [ "$((deadline - started))" -eq "$value" ] || fail "timeout $value did not keep its decimal duration"
+    FM_TASK_JOB_KILL_GRACE_SECS=0000 case_command "$dir" "$JOB" stop-all "$dir/state" t1 \
+      || fail "a zero-padded grace broke cleanup"
+  done
+  [ "$(job_lib "$dir" fm_task_job_secs 08 5)" = 8 ] || fail "kill grace 08 was not normalized"
+  [ "$(job_lib "$dir" fm_task_job_secs 010 5)" = 10 ] || fail "kill grace 010 was not normalized"
+  pass "task job: leading-zero timeout and grace inputs retain decimal meaning"
+}
+
 test_runner_rings_a_preexisting_completion() {
   local dir out jobdir rec
   dir=$(setup_case preexisting)
@@ -297,7 +461,7 @@ test_finished_live_runner_is_owned_until_stopped() {
   job_lib "$dir" fm_task_job_publish_exit "$jobdir" exited 0 || fail "could not publish exit"
   job_lib "$dir" fm_task_job_reconcile "$dir/state" t1 || fail "reconcile failed"
   [ "$(record_count "$dir")" = 0 ] || fail "reconcile delivered while the runner was alive"
-  FM_TASK_JOB_KILL_GRACE_SECS=1 "$JOB" stop-all "$dir/state" t1 || fail "stop-all failed"
+  FM_TASK_JOB_KILL_GRACE_SECS=1 case_command "$dir" "$JOB" stop-all "$dir/state" t1 || fail "stop-all failed"
   wait_gone "$runner" || fail "stop-all left a runner with an exit record running"
   wait_gone "$child" || fail "stop-all left the command running"
   [ "$(record_count "$dir")" = 0 ] || fail "stop-all delivered the completion"
@@ -326,7 +490,8 @@ test_watcher_rerings_until_acknowledged() {
 }
 
 watch_bg() {  # <dir> <out>
-  PATH="$1/fakebin:$PATH" FM_STATE_OVERRIDE="$1/state" FM_SEND_LOG="$1/send.log" \
+  PATH="$1/fakebin:$PATH" FM_HOME="$1" FM_DATA_OVERRIDE="$1/data" FM_CONFIG_OVERRIDE="$1/config" \
+    FM_STATE_OVERRIDE="$1/state" FM_SEND_LOG="$1/send.log" \
     FM_CREW_STATE_BIN="$1/fakebin/fm-crew-state.sh" \
     FM_FAKE_CREW_STATE='state: working · source: run-step · validating (running)' \
     FM_POLL=1 FM_SIGNAL_GRACE=1 FM_CHECK_INTERVAL=999999 FM_HEARTBEAT=999999 \
@@ -377,7 +542,7 @@ test_stop_all_stops_without_delivering() {
   jobdir=$(job_dir_of "$dir" "$out")
   runner=$(sed -n 's/^pid=//p' "$jobdir/runner")
   child=$(sed -n 's/^pid=//p' "$jobdir/child")
-  FM_TASK_JOB_KILL_GRACE_SECS=1 "$JOB" stop-all "$dir/state" t1 || fail "stop-all failed"
+  FM_TASK_JOB_KILL_GRACE_SECS=1 case_command "$dir" "$JOB" stop-all "$dir/state" t1 || fail "stop-all failed"
   wait_gone "$runner" || fail "stop-all left the runner running"
   wait_gone "$child" || fail "stop-all left the command running"
   [ ! -e "$jobdir/exit" ] || fail "a stopped job must not publish an exit"
@@ -395,6 +560,52 @@ test_removed_inbox_is_never_recreated() {
   [ ! -e "$dir/state/t1.inbox" ] || fail "a retired task's job recreated its inbox"
   [ ! -s "$dir/send.log" ] || fail "a retired task's job rang its old endpoint"
   pass "task job: a job whose task inbox is gone delivers nothing and recreates nothing"
+}
+
+test_delivery_serializes_with_retirement() {
+  local dir out jobdir runner delivery retirement rc=0
+  dir=$(setup_case retiring-race)
+  out=$(start_waiting_job "$dir") || fail "start failed: $out"
+  jobdir=$(job_dir_of "$dir" "$out")
+  runner=$(sed -n 's/^pid=//p' "$jobdir/runner")
+  FM_TASK_JOB_KILL_GRACE_SECS=0 case_command "$dir" "$JOB" stop-all "$dir/state" t1 || fail "stop-all failed"
+  wait_gone "$runner" || fail "the runner was not stopped"
+  job_lib "$dir" fm_task_job_publish_exit "$jobdir" exited 0 || fail "could not publish exit"
+  cat > "$dir/deliver.sh" <<'SH'
+. "$1/bin/fm-task-job-lib.sh"
+fm_task_job_message() {
+  printf ready > "$FM_HOME/message-ready"
+  while [ ! -e "$FM_HOME/deliver-release" ]; do sleep 0.1; done
+  printf completion
+}
+fm_task_job_deliver "$FM_HOME/state" t1 "$2"
+SH
+  cat > "$dir/retire.sh" <<'SH'
+. "$1/bin/fm-wake-lib.sh"
+lock=$(fm_meta_lock_path "$FM_HOME/state/t1.meta") || exit 1
+printf ready > "$FM_HOME/retire-started"
+fm_lock_acquire_wait "$lock" || exit 1
+trap 'fm_lock_release "$lock"' EXIT
+rm -rf "$FM_HOME/state/t1.inbox"
+rm -f "$FM_HOME/state/t1.meta"
+printf retired > "$FM_HOME/retired"
+SH
+  case_command "$dir" bash "$dir/deliver.sh" "$ROOT" "$jobdir" > "$dir/deliver.out" 2> "$dir/deliver.err" &
+  delivery=$!
+  wait_for_file "$dir/message-ready" || fail "delivery did not reach its enqueue boundary"
+  [ -e "$dir/state/.meta-t1.lock" ] || fail "delivery reached enqueue without holding the task lock"
+  case_command "$dir" bash "$dir/retire.sh" "$ROOT" > "$dir/retire.out" 2> "$dir/retire.err" &
+  retirement=$!
+  wait_for_file "$dir/retire-started" || fail "retirement did not start"
+  [ ! -e "$dir/retired" ] || fail "retirement bypassed an in-flight enqueue"
+  touch "$dir/deliver-release"
+  wait "$delivery" || fail "delivery failed while its task was live"
+  wait "$retirement" || fail "retirement failed after enqueue finished"
+  job_lib "$dir" fm_task_job_deliver "$dir/state" t1 "$jobdir" || rc=$?
+  [ "$rc" -ne 0 ] || fail "a retired task accepted a stale completion"
+  [ ! -e "$dir/state/t1.inbox" ] || fail "delivery recreated a retired inbox"
+  [ ! -s "$dir/send.log" ] || fail "delivery rang a retired endpoint"
+  pass "task job: enqueue and retirement serialize and stale redelivery cannot recreate the inbox"
 }
 
 test_start_refuses_without_identity_or_timeout() {
@@ -417,6 +628,12 @@ test_start_refuses_without_identity_or_timeout() {
   assert_contains "$out" "no spawn_gen" "the refusal should name the missing generation"
   [ ! -d "$dir/state/t1.inbox/jobs" ] || [ -z "$(ls "$dir/state/t1.inbox/jobs")" ] \
     || fail "a refused start left a job record behind"
+  rm -f "$dir/state/t1.meta"
+  rm -rf "$dir/state/t1.inbox"
+  rc=0
+  out=$(job_start "$dir" --timeout 5 -- true 2>&1) || rc=$?
+  expect_code 1 "$rc" "start after task retirement"
+  [ ! -e "$dir/state/t1.inbox" ] || fail "a retired task's start recreated its inbox"
   pass "task job: start refuses without a task identity, a spawn generation, or a valid timeout"
 }
 
@@ -426,10 +643,17 @@ fm_test_run \
   test_timeout_stops_the_command_group \
   test_hold_defers_the_ring_until_the_decision_closes \
   test_captain_hold_defers_completion \
+  test_backlog_captain_hold_defers_completion \
+  test_first_job_creates_inbox_for_live_task \
+  test_runner_waits_for_descendants_after_command_exit \
+  test_teardown_during_timeout_cleanup \
+  test_recovery_after_runner_dies_during_cleanup \
+  test_decimal_timeouts_and_graces \
   test_runner_rings_a_preexisting_completion \
   test_finished_live_runner_is_owned_until_stopped \
   test_watcher_rerings_until_acknowledged \
   test_watcher_delivers_a_lost_runner_once \
   test_stop_all_stops_without_delivering \
   test_removed_inbox_is_never_recreated \
+  test_delivery_serializes_with_retirement \
   test_start_refuses_without_identity_or_timeout
