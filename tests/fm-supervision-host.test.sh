@@ -3610,8 +3610,8 @@ ENV
 }
 
 test_initial_real_elapsed_progress() {
-  local home holder real_bash
-  home=$(make_home initial-startup-elapsed attended)
+  local home holder real_bash initial_hold=${1:-20} recovery_hold=${2:-20}
+  home=$(make_home "initial-startup-elapsed-$initial_hold-$recovery_hold" attended)
   : > "$home/config/supervision-host-off"
   : > "$home/initial-hold"
   real_bash=$(command -v bash)
@@ -3636,10 +3636,10 @@ SH
   holder=$!
   printf '%s\n' "$holder" >> "$home/orphan-pid"
   wait_until 100 test -e "$home/recovery-held" || fail "initial elapsed: recovery lock was not held"
-  sleep 20
+  sleep "$initial_hold"
   rm -f "$home/initial-hold"
   wait_until 150 watcher_live "$home" || fail "initial elapsed: watcher did not establish its singleton"
-  sleep 20
+  sleep "$recovery_hold"
   : > "$home/recovery-release"
   wait "$holder" || fail "initial elapsed: recovery holder failed"
   wait_until 300 grep -q 'watcher: started' "$home/host.out" || fail "initial elapsed: progressing initial confirmation expired"
@@ -3650,6 +3650,30 @@ SH
   assert_re '^signal: .*demo.status' "$home/host.out" "initial elapsed: confirmation did not preserve the real close"
   stop_home_processes "$home"
   pass "startup: initial confirmation completes after real progress beyond its former 30s budget"
+}
+
+test_initial_explicit_long_stage() {
+  FM_SUPERVISION_HOST_READY_TIMEOUT=45 test_initial_real_elapsed_progress 30 0
+}
+
+test_nonstartup_invocation_preserves_journal() {
+  local home journal nonce
+  home=$(make_home nonstartup-journal attended)
+  journal=$(mktemp "$home/state/.watch-startup.XXXXXX")
+  nonce=${journal##*/}
+  printf 'stage 2 %s\n' "$nonce" > "$journal"
+  cp "$journal" "$home/journal-before"
+  FM_HOME="$home" FM_STARTUP_PROGRESS_JOURNAL="$journal" FM_STARTUP_PROGRESS_NONCE="$nonce" \
+    FM_STARTUP_PROGRESS_BEGIN=1 FM_STARTUP_PROGRESS_CAP=100 \
+    bash "$ROOT/bin/fm-watch-arm.sh" --stop > "$home/stop.out" 2>&1 \
+    || fail "nonstartup: stop failed: $(cat "$home/stop.out")"
+  cmp -s "$home/journal-before" "$journal" || fail "nonstartup: stop published startup progress"
+  FM_HOME="$home" FM_STARTUP_PROGRESS_JOURNAL="$journal" FM_STARTUP_PROGRESS_NONCE="$nonce" \
+    FM_STARTUP_PROGRESS_BEGIN=1 FM_STARTUP_PROGRESS_CAP=100 \
+    bash "$ROOT/bin/fm-watch-arm.sh" --handling-delivered fixture --watcher-pid 999999 \
+    > "$home/delivered.out" 2>&1 && fail "nonstartup: absent watcher was accepted"
+  cmp -s "$home/journal-before" "$journal" || fail "nonstartup: delivery confirmation published startup progress"
+  pass "startup: non-startup arm invocations leave the inherited journal unchanged"
 }
 
 test_initial_journal_bound() {  # <stall|explicit|dead|cancel>
@@ -3690,6 +3714,8 @@ ENV
 
 run_startup_tests() {
   local mode failure
+  test_initial_explicit_long_stage
+  test_nonstartup_invocation_preserves_journal
   test_initial_real_elapsed_progress
   for failure in stall explicit dead cancel; do test_initial_journal_bound "$failure"; done
   for mode in direct ack; do

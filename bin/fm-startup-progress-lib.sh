@@ -9,8 +9,9 @@
 # 3 recovery-generation inspection (including the arm's recovery lock).
 # Only a new higher stage renews 25 seconds without observed progress. Repeated
 # stages, file timestamps and live PIDs do not. The whole attempt is capped at
-# 100 seconds; explicit FM_SUPERVISION_HOST_READY_TIMEOUT is a strict total cap,
-# with invalid values retaining the previous 25-second fallback.
+# 100 seconds. Explicit FM_SUPERVISION_HOST_READY_TIMEOUT is a pure total window
+# without the no-progress rule; invalid values retain the 25-second fallback.
+# The enclosing owner exports that explicit-window choice with the attempt.
 # Progress never grants readiness. Wait still requires the arm's genuine
 # started|attached line, and the acknowledged path's existing watcher-health
 # check. Death, lost ownership or expiry retains the existing hand-to-main.
@@ -31,7 +32,9 @@ fm_startup_progress_now() {
 
 fm_startup_progress_create() {
   FM_STARTUP_PROGRESS_CAP=100
+  FM_STARTUP_PROGRESS_EXPLICIT=0
   if [ -n "${FM_SUPERVISION_HOST_READY_TIMEOUT:-}" ]; then
+    FM_STARTUP_PROGRESS_EXPLICIT=1
     FM_STARTUP_PROGRESS_CAP=$FM_SUPERVISION_HOST_READY_TIMEOUT
     case "$FM_STARTUP_PROGRESS_CAP" in 0*|*[!0-9]*) FM_STARTUP_PROGRESS_CAP=25 ;; esac
   fi
@@ -41,6 +44,7 @@ fm_startup_progress_create() {
   FM_STARTUP_PROGRESS_NONCE=${FM_STARTUP_PROGRESS_JOURNAL##*/}
   export FM_STARTUP_PROGRESS_JOURNAL FM_STARTUP_PROGRESS_NONCE
   export FM_STARTUP_PROGRESS_BEGIN FM_STARTUP_PROGRESS_CAP
+  export FM_STARTUP_PROGRESS_EXPLICIT
 }
 
 fm_startup_progress_append() {  # <1|2|3>; advisory, never a readiness result
@@ -68,7 +72,8 @@ fm_startup_progress_check() {
   fi
   [ "$FM_STARTUP_PROGRESS_NOW" -ge "$FM_STARTUP_PROGRESS_BEGIN" ] \
     && [ $((FM_STARTUP_PROGRESS_NOW - FM_STARTUP_PROGRESS_BEGIN)) -lt "$FM_STARTUP_PROGRESS_CAP" ] \
-    && [ $((FM_STARTUP_PROGRESS_NOW - FM_STARTUP_PROGRESS_LAST)) -lt 25 ]
+    && { [ "${FM_STARTUP_PROGRESS_EXPLICIT:-0}" = 1 ] \
+      || [ $((FM_STARTUP_PROGRESS_NOW - FM_STARTUP_PROGRESS_LAST)) -lt 25 ]; }
 }
 
 fm_startup_progress_wait() {  # <spawned-pid> <arm-output> <check-health:0|1> [owner predicate]
@@ -98,4 +103,5 @@ fm_startup_progress_clear() {
 fm_startup_progress_forget() {  # An arm must not reuse its completed startup.
   unset FM_STARTUP_PROGRESS_JOURNAL FM_STARTUP_PROGRESS_NONCE
   unset FM_STARTUP_PROGRESS_BEGIN FM_STARTUP_PROGRESS_CAP
+  unset FM_STARTUP_PROGRESS_EXPLICIT
 }

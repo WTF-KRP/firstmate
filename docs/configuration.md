@@ -358,9 +358,10 @@ While the home runs the host, main's lease-checked commands also take the per-ta
 ### Watcher startup allowance
 
 The host's default initial and successor allowance follows completed startup progress while retaining the existing readiness checks and fail-safe hand-back to main.
-`FM_SUPERVISION_HOST_READY_TIMEOUT`, when explicitly set, remains a strict total startup cap.
+`FM_SUPERVISION_HOST_READY_TIMEOUT`, when explicitly set, provides a pure total startup window without the default no-progress rule.
 The [startup progress owner](../bin/fm-startup-progress-lib.sh) defines the default bounds, journal mechanics, and invalid-value fallback for direct and acknowledged hand-backs.
 Standalone arms without a host startup context retain their `FM_ARM_CONFIRM_TIMEOUT` budget.
+The OpenCode host-mode owner allows the host's total startup window plus a small publication margin; its ordinary arm budget remains separate.
 
 ### Acknowledged hand-back (config/supervision-handoff-ack)
 

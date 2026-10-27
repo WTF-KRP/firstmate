@@ -143,6 +143,7 @@ while session_owned && [ -e "$CONFIG/supervision-handoff-ack" ] && [ ! -e "$STAT
     fm_startup_progress_clear
   else
     unset FM_STARTUP_PROGRESS_JOURNAL FM_STARTUP_PROGRESS_NONCE FM_STARTUP_PROGRESS_BEGIN FM_STARTUP_PROGRESS_CAP
+    unset FM_STARTUP_PROGRESS_EXPLICIT
   fi
   if [ "$READY_PRINTED" -eq 0 ]; then
     grep -E -m1 '^watcher: (started|attached) pid=[0-9]+' "$OUT"
