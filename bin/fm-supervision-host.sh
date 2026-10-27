@@ -1242,6 +1242,8 @@ if ! fm_startup_progress_wait "$ARM_PID" "$ARM_OUT" 0 initial_startup_owned; the
     printf '%s\n' 'watcher: FAILED - no live watcher with a fresh beacon' >> "$ARM_OUT"
   fi
   retire_arm "$ARM_PID" ''
+  ARM_TEXT=$(sed -E '/^watcher: (started|attached)( |$)/d' "$ARM_OUT")
+  printf '%s\n' "$ARM_TEXT" > "$ARM_OUT"
 fi
 fm_startup_progress_clear
 

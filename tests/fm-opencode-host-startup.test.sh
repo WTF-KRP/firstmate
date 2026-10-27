@@ -99,3 +99,106 @@ JS
 }
 
 for kind in host-ready host-expiry host-explicit arm; do test_readiness_window "$kind"; done
+
+test_rejected_host_readiness() (
+  kind=$1
+  close=${2:-failure}
+  home="$TMP_ROOT/rejected-$kind-$close"
+  mkdir -p "$home/state" "$home/config" "$home/fakebin"
+  fm_test_track_watcher_state "$home/state"
+  ln -s /bin/bash "$home/fakebin/claude"
+  printf '#!/usr/bin/env bash\nexit 1\n' > "$home/fakebin/tmux"
+  chmod +x "$home/fakebin/tmux"
+  printf 'project=demo\nwindow=fm-task\nharness=claude\n' > "$home/state/task.meta"
+  : > "$home/config/supervision-host"
+  begin=$(date +%s)
+  printf '%s\n' "$begin" > "$home/startup-clock"
+  export FM_HOME="$home" FM_ROOT_OVERRIDE="$home" FM_TEST_STARTUP_CLOCK="$home/startup-clock"
+  export FM_SUPERVISION_HOST_PRIMARY=claude FM_SUPERVISION_HOST_READY_TIMEOUT=100
+  export FM_POLL=1 FM_SIGNAL_GRACE=0 FM_CHECK_INTERVAL=999999 FM_HEARTBEAT=999999
+  export PATH="$home/fakebin:$PATH"
+  host_pid= owner_pid= existing_arm=
+  trap '
+    [ -z "$host_pid" ] || kill -CONT "$host_pid" 2>/dev/null || true
+    [ -z "$host_pid" ] || kill -TERM "$host_pid" 2>/dev/null || true
+    bash "$ROOT/bin/fm-watch-arm.sh" --stop >/dev/null 2>&1 || true
+    [ -z "$existing_arm" ] || kill -TERM "$existing_arm" 2>/dev/null || true
+    [ -z "$owner_pid" ] || wait "$owner_pid" 2>/dev/null || true
+    [ -z "$existing_arm" ] || wait "$existing_arm" 2>/dev/null || true
+  ' EXIT
+  if [ "$kind" = attached ]; then
+    bash "$ROOT/bin/fm-watch-arm.sh" > "$home/existing.out" 2>&1 &
+    existing_arm=$!
+    i=0
+    while ! grep -q '^watcher: started pid=' "$home/existing.out" && [ "$i" -lt 300 ]; do
+      sleep 0.1
+      i=$((i + 1))
+    done
+    assert_grep 'watcher: started pid=' "$home/existing.out" "existing watcher did not start"
+  fi
+  cat > "$home/config/watch.env" <<'SH'
+case "$0" in */fm-watch-arm.sh)
+  if [ -e "$FM_HOME/pause-host" ]; then
+    rm -f "$FM_HOME/pause-host"
+    printf '%s\n' "$PPID" > "$FM_HOME/host-pid"
+    kill -STOP "$PPID"
+    : > "$FM_HOME/host-paused"
+  fi
+  ;;
+esac
+SH
+  : > "$home/pause-host"
+  "$home/fakebin/claude" -c '
+    printf "%s\n" "$$" > "$FM_HOME/state/.lock"
+    bash "$1/bin/fm-supervision-host.sh" park > "$FM_HOME/host.out" 2>&1
+    printf "%s\n" "$?" > "$FM_HOME/host.rc"
+  ' _ "$ROOT" &
+  owner_pid=$!
+  i=0
+  while [ ! -e "$home/host-paused" ] && [ "$i" -lt 300 ]; do
+    sleep 0.1
+    i=$((i + 1))
+  done
+  [ -e "$home/host-paused" ] || fail "host did not reach its startup barrier"
+  IFS= read -r host_pid < "$home/host-pid"
+  i=0
+  while ! grep -q "^watcher: $kind pid=" "$home/state"/.supervision-host-arm.* && [ "$i" -lt 300 ]; do
+    sleep 0.1
+    i=$((i + 1))
+  done
+  grep -h "^watcher: $kind pid=" "$home/state"/.supervision-host-arm.* \
+    || fail "arm did not publish genuine $kind readiness while the host was paused"
+  if [ "$close" = wake ]; then
+    printf 'done [at=%s]: ready for captain\n' "$(date +%s)" >> "$home/state/task.status"
+    i=0
+    while ! grep -q '^signal:' "$home/state"/.supervision-host-arm.* && [ "$i" -lt 300 ]; do
+      sleep 0.1
+      i=$((i + 1))
+    done
+    grep -q '^signal:' "$home/state"/.supervision-host-arm.* || fail "watcher did not deliver its actionable close"
+  fi
+  printf '%s\n' "$((begin + 100))" > "$home/startup-clock"
+  kill -CONT "$host_pid"
+  i=0
+  while [ ! -s "$home/host.rc" ] && [ "$i" -lt 300 ]; do
+    sleep 0.1
+    i=$((i + 1))
+  done
+  [ -s "$home/host.rc" ] || fail "rejected startup did not return to main"
+  cat "$home/host.out"
+  if [ "$close" = wake ]; then
+    assert_grep "signal: $home/state/task.status" "$home/host.out" "rejected startup lost its actionable wake"
+  else
+    assert_grep 'watcher: FAILED - no live watcher with a fresh beacon' "$home/host.out" "rejected startup lost its failure detail"
+  fi
+  if grep -Eq '^watcher: (started|attached)( |$)' "$home/host.out"; then
+    fail "rejected $kind readiness reached the host output"
+  fi
+  pass "host suppresses rejected $kind readiness and preserves its $close close"
+)
+
+rejected_status=0
+for kind in started attached; do
+  for close in failure wake; do test_rejected_host_readiness "$kind" "$close" || rejected_status=1; done
+done
+expect_code 0 "$rejected_status" 'rejected host readiness must never reach OpenCode'
