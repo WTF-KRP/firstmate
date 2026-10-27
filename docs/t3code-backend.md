@@ -234,7 +234,7 @@ Confirmed busy activity, a missing thread, or an idle verdict after the unknown 
 Declared external-wait rechecks also survive native uncertainty; the worker's declaration still controls their cadence.
 `stale_window_is_busy` and `housekeeping` in `bin/fm-supervise-daemon.sh` own stale tracking; `fm_afk_clear_stale_artifacts` in `bin/fm-afk-start.sh` and the launcher in `bin/fm-afk-launch.sh` own queue discard and startup rollback.
 `tests/fm-backend-t3code.test.sh` covers retention, deduplication, and re-arming across native restart.
-The launcher supports both a harness-tracked native job and an operator-owned foreground job in a separate terminal; `start` still refuses because T3 hosts no terminal to create.
+The launcher supports a harness-tracked native job and, for a Codex primary, an operator-owned foreground job in a separate terminal; `start` still refuses because T3 hosts no terminal to create.
 For a Codex primary, prepare the external entry during its active turn, then run the command it prints in the operator terminal and keep that terminal open.
 Preparation records the primary's T3 thread id and harness in the no-terminal lifecycle record, so external startup and restart use that exact target after the primary becomes idle, regardless of the operator terminal's pane variables.
 `bin/fm-afk-launch.sh --help` owns both entry commands, their supervisor overrides, and the ordinary stop/return lifecycle.

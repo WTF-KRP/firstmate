@@ -574,7 +574,7 @@ test_status_table() {
 t3_afk() {
   env -u TMUX_PANE -u HERDR_ENV -u HERDR_PANE_ID -u REX_SESSION -u REX_BLOCK \
     FM_HOME="$REPO" FM_CONFIG_OVERRIDE="$CONFIG" FM_STATE_OVERRIDE="$CASE_DIR/state" \
-    FM_BACKEND=t3code FM_TEST_SEAM=1 FM_TEST_HARNESS=codex \
+    FM_BACKEND=t3code FM_TEST_SEAM=1 FM_TEST_HARNESS="${FM_TEST_HARNESS:-codex}" \
     "$ROOT/bin/fm-afk-launch.sh" "$@"
 }
 
@@ -636,9 +636,10 @@ test_external_away_launch_refuses_unprepared_and_unsupported_cases() {
     fail "external away: accepted a non-T3 supervisor backend"
   fi
   assert_contains "$got" 'requires a t3code supervisor' "external away: unsupported backend refusal is unclear"
-  for candidate in $'none\t-\tnative' $'none\tthread-live\tt3code:pi' $'none\tbad target\tt3code:codex'; do
+  fm_fake_exit0 "$CASE_DIR" external-entry
+  for candidate in $'none\t-\tnative' $'none\tthread-live\tt3code:claude' $'none\tthread-live\tt3code:pi' $'none\tbad target\tt3code:codex'; do
     printf '%s\n' "$candidate" > "$CASE_DIR/state/.afk-daemon-terminal"
-    if t3_afk run-external >/dev/null 2>&1; then
+    if FM_AFK_LAUNCH_ENTRY="$CASE_DIR/external-entry" t3_afk run-external >/dev/null 2>&1; then
       fail "external away: accepted an unrelated or malformed lifecycle record"
     fi
   done
@@ -649,6 +650,20 @@ test_external_away_launch_refuses_unprepared_and_unsupported_cases() {
   fi
   [ ! -e "$CASE_DIR/state/.afk" ] || fail "external away: refused cases wrote the away flag"
   [ -z "$(t3_dispatch_types)" ] || fail "external away: refusals mutated a T3 thread"
+  : > "$CONFIG/supervision-host-off"
+  if got=$(FM_TEST_HARNESS=claude FM_SUPERVISOR_TARGET=thread-live FM_SUPERVISOR_BACKEND=t3code t3_afk prepare-external 2>&1); then
+    fail "external away: accepted a Claude primary"
+  fi
+  assert_contains "$got" 'supports only a codex T3 primary' "external away: unsupported harness refusal is unclear"
+  [ ! -e "$CASE_DIR/state/.afk-daemon-terminal" ] && [ ! -e "$CASE_DIR/state/.afk" ] \
+    || fail "external away: rejected preparation wrote lifecycle state"
+  FM_TEST_HARNESS=claude t3_afk start-native >/dev/null || fail "external away: Claude native preparation failed"
+  [ "$(cat "$CASE_DIR/state/.afk-daemon-terminal")" = $'none\t-\tnative' ] \
+    || fail "external away: Claude native preparation changed its lifecycle record"
+  FM_TEST_HARNESS=claude t3_afk stop >/dev/null || fail "external away: Claude native stop failed"
+  [ ! -e "$CASE_DIR/state/.afk-daemon-terminal" ] && [ ! -e "$CASE_DIR/state/.afk" ] \
+    || fail "external away: Claude native stop retained lifecycle state"
+  [ -z "$(t3_dispatch_types)" ] || fail "external away: Claude native lifecycle mutated a T3 thread"
   pass "external away: missing preparation, idle or ambiguous discovery, unrelated records, unsupported backends and the supervision host still fail closed"
 }
 

@@ -47,7 +47,7 @@
 # daemon runs ends quiet mode as `stop` does, so no quiet record outlives its
 # daemon to park a present captain's main.
 # On backend=t3code there is no terminal for `start` to create. A harness with
-# a tracked native background job can use `start-native`; otherwise the primary
+# a tracked native background job can use `start-native`; a Codex primary
 # runs `prepare-external` during its turn and the operator runs `run-external`
 # in a separate terminal, whose foreground process owns the daemon.
 # `stop` (the return, driven by bin/fm-afk-return.sh) shuts the daemon down,
@@ -87,7 +87,7 @@
 #                              Prepare lifecycle state for a harness-native
 #                              background job and record that no terminal exists.
 #   fm-afk-launch.sh prepare-external
-#                              For a T3 primary, capture its thread and harness
+#                              For a Codex T3 primary, capture its thread and harness
 #                              while its turn is active, prepare the no-terminal
 #                              lifecycle, and print the operator's run command.
 #                              Explicit supervisor overrides resolve ambiguity.
@@ -114,7 +114,8 @@
 #                              line naming a live away record on that home.
 #
 # Supported backends: herdr, tmux, and rex for `start`; t3code through
-# `start-native` or the operator-owned `prepare-external`/`run-external` path.
+# `start-native` or, for Codex, the operator-owned
+# `prepare-external`/`run-external` path.
 # Others (zellij, orca, cmux, paseo, tern) have no verified
 # non-visible-launch primitive here yet and refuse loudly. On rex the daemon
 # runs in a dedicated Rex session of its own, so the captain's session gains no
@@ -456,7 +457,7 @@ fm_afk_launch_record_read() {
     none)
       case "$extra" in
         native) [ "$FM_AFK_REC_TARGET" = - ] ;;
-        t3code:claude|t3code:codex) fm_afk_launch_external_target_valid "$FM_AFK_REC_TARGET" ;;
+        t3code:codex) fm_afk_launch_external_target_valid "$FM_AFK_REC_TARGET" ;;
         *) return 2 ;;
       esac ;;
     *) return 2 ;;
@@ -795,7 +796,7 @@ fm_afk_launch_start() {
     fm_afk_launch_log "could not resolve the captain supervisor backend (set FM_SUPERVISOR_BACKEND)"
     return 1; }
   if [ "$captain_backend" = t3code ]; then
-    fm_afk_launch_log "backend t3code hosts no terminal to launch the daemon in; use start-native with a tracked background tool, or prepare-external then run-external in an operator terminal"
+    fm_afk_launch_log "backend t3code hosts no terminal to launch the daemon in; use start-native with a tracked background tool, or for Codex use prepare-external then run-external in an operator terminal"
     return 1
   fi
 
@@ -909,8 +910,8 @@ fm_afk_launch_prepare_external() {
   local target backend harness
   harness=$(fm_afk_launch_primary_harness)
   case "$harness" in
-    claude|codex) ;;
-    *) fm_afk_launch_log "external launch supports only a claude or codex T3 primary"; return 1 ;;
+    codex) ;;
+    *) fm_afk_launch_log "external launch supports only a codex T3 primary"; return 1 ;;
   esac
   backend=$(discover_supervisor_backend) || backend=
   if [ "$backend" != t3code ]; then

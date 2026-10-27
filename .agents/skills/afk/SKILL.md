@@ -42,7 +42,7 @@ Hold-for-return is the default and the only reach profile this release records: 
      Do not wrap it in `nohup ... &` (Codex/herdr can reap fire-and-forget shell children after a tool call returns).
    - **Every other harness** (codex, opencode, omp, and cursor on a home that does not run the supervision host, and kimi): run `bin/fm-afk-launch.sh start`.
      It is the single owner of the daemon terminal: on pane backends it creates a NON-VISIBLE tracked terminal and passes the captain endpoint as `FM_SUPERVISOR_TARGET` so the daemon injects into the captain, not its own new pane (docs/herdr-backend.md "Away-mode supervisor support").
-     On the t3code backend there is no terminal to create, so `start` refuses; use the operator-owned external entry in `bin/fm-afk-launch.sh --help` instead, preparing during the primary's active turn and relaying the printed command for a separate operator terminal.
+     On the t3code backend there is no terminal to create, so `start` refuses; a Codex primary uses the operator-owned external entry in `bin/fm-afk-launch.sh --help` instead, preparing during its active turn and relaying the printed command for a separate operator terminal.
      Keep the ordinary supervision protocol running until the external daemon is live; [T3 supervisor support](../../../docs/t3code-backend.md#away-mode-supervisor-support) owns the supported limits.
    All daemon paths require the record `enter` wrote and share `bin/fm-afk-start.sh` as the daemon entry.
    The daemon is **presence-gated**: it injects escalations only while `state/.afk` exists, and stays quiet otherwise.
