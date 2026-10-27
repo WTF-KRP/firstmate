@@ -1,0 +1,73 @@
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/bin/fm-task-job.sh start --timeout 2 -- true
+fm-task-job: FM_TASK_INBOX is not set; run this from a Firstmate task worker, whose launch exports it
+exit=1
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/bin/fm-task-job.sh start --timeout 0 -- true
+fm-task-job: --timeout must be from 1 to 604800 seconds
+usage: fm-task-job.sh start --timeout <seconds> -- <command> [args...] | stop-all <state-dir> <task-id>
+exit=2
+S1 PASS: invalid identity and timeout refused without a job
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/bin/fm-task-job.sh start --timeout 20 -- sh -c sleep 3; printf "generation-command-output\n"; exit 7
+job: 20261027T160850Z-78919
+output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/.test-phase/home/state/generation.inbox/jobs/20261027T160850Z-78919/output
+until: 2026-10-27T16:10Z
+exit=0
+Persisted completion:
+schema=fm-task-inbox.v1
+at=2026-10-27T16:08:54Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261027T160850Z-78919 finished: the command exited with status 7.
+Task: generation; started by worker generation live-gen-A.
+Started: 2026-10-27T16:08Z; ended: 2026-10-27T16:08Z.
+Output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/.test-phase/home/state/generation.inbox/jobs/20261027T160850Z-78919/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+Command output:
+generation-command-output
+
+S3 PASS: detached completion retains original generation after metadata replacement
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/bin/fm-task-job.sh start --timeout 2 -- sh -c sleep 30 & echo $! > "$1"; wait _ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/.test-phase/grandchild.pid
+job: 20261027T160854Z-84232
+output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/.test-phase/home/state/timeout.inbox/jobs/20261027T160854Z-84232/output
+until: 2026-10-27T16:09Z
+exit=0
+Persisted completion:
+schema=fm-task-inbox.v1
+at=2026-10-27T16:08:57Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261027T160854Z-84232 finished: the command passed its 2-second timeout and was stopped (status 143).
+Task: timeout; started by worker generation live-gen-A.
+Started: 2026-10-27T16:08Z; ended: 2026-10-27T16:08Z.
+Output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/.test-phase/home/state/timeout.inbox/jobs/20261027T160854Z-84232/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+Timeout exit record:
+outcome=timed-out
+status=143
+ended=1793117336
+grandchild 84348 active=False
+S7 PASS: timeout stops command group and records timeout result
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/bin/fm-task-job.sh start --timeout 5 -- sleep 30
+job: 20261027T160857Z-85524
+output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/.test-phase/home/state/retirement.inbox/jobs/20261027T160857Z-85524/output
+until: 2026-10-27T16:10Z
+exit=0
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/bin/fm-task-job.sh stop-all /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/.test-phase/home/state retirement
+exit=0
+S9 PASS: stop-all stopped [85567, 85596]; inbox absent after original deadline
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/bin/fm-task-job.sh start --timeout 10 -- sleep 2
+job: 20261027T160903Z-87675
+output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/.test-phase/home/state/removed.inbox/jobs/20261027T160903Z-87675/output
+until: 2026-10-27T16:10Z
+exit=0
+S10 PASS: completion after inbox removal does not recreate inbox
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/bin/fm-task-job.sh start --timeout 90 -- sleep 60
+job: 20261027T160906Z-87834
+output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/.test-phase/home/state/recover.inbox/jobs/20261027T160906Z-87834/output
+until: 2026-10-27T16:11Z
+exit=0
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/bin/fm-task-job.sh stop-all /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/.test-phase/home/state recover
+exit=0

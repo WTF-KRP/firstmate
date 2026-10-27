@@ -1,0 +1,40 @@
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/bin/fm-task-job.sh start --timeout 120 -- sleep 90
+job: 20261027T161021Z-17232
+output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/.test-phase/home/state/recover.inbox/jobs/20261027T161021Z-17232/output
+until: 2026-10-27T16:13Z
+exit=0
+Persisted completion:
+schema=fm-task-inbox.v1
+at=2026-10-27T16:10:22Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261027T161021Z-17232 finished: its runner stopped before recording an exit, so the command's result is unknown; any command still running was stopped.
+Task: recover; started by worker generation live-gen-A.
+Started: 2026-10-27T16:10Z; ended: 2026-10-27T16:10Z.
+Output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/.test-phase/home/state/recover.inbox/jobs/20261027T161021Z-17232/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+$ /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/bin/fm-task-job.sh stop-all /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/.test-phase/home/state recover
+exit=0
+
+Recovery observations after the watcher returned its real agent-blocked notification:
+/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/.test-phase/home/state/recover.inbox/jobs/20261027T161021Z-17232/exit
+outcome=lost
+status=
+ended=1793117422
+$ ps -p 17258 -o pid=,stat=,comm=
+exit=1
+$ ps -p 17292 -o pid=,stat=,comm=
+exit=1
+One acknowledged completion remains in handled/. No unhandled completion exists. The attempted second-poll assertion was not valid because the watcher exited on the real consent-screen notification. Retry-to-real-worker behavior remains untested.
+schema=fm-task-inbox.v1
+at=2026-10-27T16:10:22Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261027T161021Z-17232 finished: its runner stopped before recording an exit, so the command's result is unknown; any command still running was stopped.
+Task: recover; started by worker generation live-gen-A.
+Started: 2026-10-27T16:10Z; ended: 2026-10-27T16:10Z.
+Output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5Z1F8G71N131RF7P55AE4CV/.test-phase/home/state/recover.inbox/jobs/20261027T161021Z-17232/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
