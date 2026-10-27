@@ -1,0 +1,14 @@
+1..12
+ok - task job: a finished command becomes one keyed inbox record and rings the worker
+ok - task job: a completion names the spawn generation that started it
+ok - task job: a command past its timeout is stopped with its whole process group
+ok - task job: a hold receives the result unrung, and the ladder rings it once the decision closes
+ok - task job: captain holds suppress immediate and watcher completion rings
+ok - task job: immediate ringing ignores the record's writer and respects acknowledgement
+ok - task job: reconcile defers to a live runner and teardown stops it after exit publication
+ok - task job: an unlanded doorbell is re-rung until the worker acknowledges the record
+ok - watcher: a job whose runner died is delivered once as lost, with its command stopped
+ok - task job: teardown's stop-all stops live jobs without delivering them
+ok - task job: a job whose task inbox is gone delivers nothing and recreates nothing
+ok - task job: start refuses without a task identity, a spawn generation, or a valid timeout
+FM_TEST_COMPLETE

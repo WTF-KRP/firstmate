@@ -1,0 +1,20 @@
+Candidate: 4b15eccaa79d082356fb2ae49fe3f6de04a47428
+
+$ env -u FM_TASK_INBOX bin/fm-task-job.sh start --timeout 5 -- true
+fm-task-job: FM_TASK_INBOX is not set; run this from a Firstmate task worker, whose launch exports it
+Exit status: 1
+
+$ bin/fm-task-job.sh start --timeout 0 -- true
+fm-task-job: --timeout must be from 1 to 604800 seconds
+usage: fm-task-job.sh start --timeout <seconds> -- <command> [args...] | stop-all <state-dir> <task-id>
+Exit status: 2
+
+$ bin/fm-task-job.sh start --timeout 604801 -- true
+fm-task-job: --timeout must be from 1 to 604800 seconds
+usage: fm-task-job.sh start --timeout <seconds> -- <command> [args...] | stop-all <state-dir> <task-id>
+Exit status: 2
+
+$ bin/fm-task-job.sh start --timeout 5 --label example -- true
+fm-task-job: unknown start argument: --label
+usage: fm-task-job.sh start --timeout <seconds> -- <command> [args...] | stop-all <state-dir> <task-id>
+Exit status: 2

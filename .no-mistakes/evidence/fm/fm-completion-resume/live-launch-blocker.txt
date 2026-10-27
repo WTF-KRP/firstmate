@@ -1,0 +1,24 @@
+Candidate: 4b15eccaa79d082356fb2ae49fe3f6de04a47428
+
+Attempted disposable primary launch through functions.exec / exec_command:
+/bin/bash -c 'set -eu
+EVIDENCE=/Users/daddy/.no-mistakes/evidence/01M5YK8NQZGAF8QXVBGTNDQWFC
+LAB=$(mktemp -d /tmp/fm-lab.XXXXXX)
+cleanup() { TMUX_TMPDIR="$LAB/tmux" tmux -L fm-lab kill-server 2>/dev/null || true; rm -rf "$LAB"; }
+trap cleanup EXIT
+bin/fm-lab-home.sh create "$LAB"
+mkdir -p "$LAB/tmux"
+touch "$LAB/config/supervision-host-off"
+env -u NO_MISTAKES_GATE -u FM_GATE_REFUSE_BYPASS -u FM_ROOT_OVERRIDE -u FM_STATE_OVERRIDE -u FM_DATA_OVERRIDE -u FM_CONFIG_OVERRIDE -u FM_PROJECTS_OVERRIDE TMUX_TMPDIR="$LAB/tmux" tmux -L fm-lab new-session -d -s primary -x 120 -y 40 -c "$PWD" -e FM_HOME="$LAB" claude
+sleep 12
+TMUX_TMPDIR="$LAB/tmux" tmux -L fm-lab capture-pane -p -t primary > "$EVIDENCE/claude-launch.txt"
+cat "$EVIDENCE/claude-launch.txt"
+'
+
+Tool result:
+Command blocked by PreToolUse hook: BLOCKED: Indirect command execution not allowed.
+
+The command was refused before execution. No lab or primary was created by this attempt.
+Standing guard instructions prohibit retrying a denied operation through another tool, command, or runtime. Live primary testing stopped. No login failure was observed or inferred. tmux, claude, codex, herdr, jq, perl, and python3 were all available on PATH.
+
+Required to re-run: operator resolution of the PreToolUse command authorization for the documented disposable lab procedure, followed by a new test-phase attempt. No guard was disabled or bypassed during this phase.
