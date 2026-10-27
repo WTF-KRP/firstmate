@@ -1,0 +1,242 @@
+{
+  "candidate": "d26bb1187b2bae8263a58d0610ec006c7de81bbb",
+  "note": "Real host, arm, watcher and durable state from the normal test-file run. Harness, backend and engine use test fixtures. Clock-boundary cases use the marked test clock; elapsed-progress cases use real wall time and actual locks. Snapshot taken after startup cases completed, before automatic cleanup.",
+  "scenarios": [
+    {
+      "scenario": "initial-journal-cancel",
+      "host.out": "/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-supervision-host.sh: line 472: 26185 Terminated: 15          FM_GUARD_GRACE=\"$GRACE\" \"$SCRIPT_DIR/fm-watch-arm.sh\" \"$@\" > \"$out\" 2>&1 < /dev/null\n",
+      "host.rc": "143\n",
+      "state/.supervision-host.log": "1793070284\tstart\tgen=host-26024-1793070284\tprimary=claude\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "initial-journal-dead",
+      "host.out": "watcher: FAILED - no live watcher with a fresh beacon\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070283\tstart\tgen=host-25308-1793070283\tprimary=claude\n1793070283\tpass-through\ta close without a wake\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "initial-journal-explicit",
+      "host.out": "watcher: FAILED - no live watcher with a fresh beacon\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070282\tstart\tgen=host-24367-1793070282\tprimary=claude\n1793070282\tpass-through\ta close without a wake\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "initial-journal-stall",
+      "host.out": "watcher: FAILED - no live watcher with a fresh beacon\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070280\tstart\tgen=host-22831-1793070280\tprimary=claude\n1793070281\tpass-through\ta close without a wake\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "initial-startup-elapsed-20-20",
+      "host.out": "watcher: started pid=82125 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/initial-startup-elapsed-20-20/state/demo.status\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070235\tstart\tgen=host-81942-1793070235\tprimary=claude\n1793070280\tpass-through\tattended\tthe home does not run the supervision host\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/initial-startup-elapsed-20-20/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=82080\twatcher_pid=82125\torigin=started\tstarted_at=1793070235\tended_at=1793070279\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:82125|identity:Tue Oct 27 03:03:55 2026     /bin/bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:82125.1793070279.0XMUp4\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "initial-startup-elapsed-30-0",
+      "host.out": "watcher: started pid=70394 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/initial-startup-elapsed-30-0/state/demo.status\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070202\tstart\tgen=host-70205-1793070201\tprimary=claude\n1793070234\tpass-through\tattended\tthe home does not run the supervision host\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/initial-startup-elapsed-30-0/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=70350\twatcher_pid=70394\torigin=started\tstarted_at=1793070202\tended_at=1793070234\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:70394|identity:Tue Oct 27 03:03:22 2026     /bin/bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:70394.1793070233.im2GTX\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "journal-cancellation-direct",
+      "host.out": "watcher: started pid=50327 (beacon fresh)\n/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-supervision-host.sh: line 472: 57885 Terminated: 15          FM_WATCH_PREDECESSOR_ARM_PID=$predecessor FM_GUARD_GRACE=\"$GRACE\" \"$SCRIPT_DIR/fm-watch-arm.sh\" \"$@\" > \"$out\" 2>&1 < /dev/null\n",
+      "host.rc": "143\n",
+      "state/.supervision-host.log": "1793070419\tstart\tgen=host-49817-1793070419\tprimary=claude\n1793070423\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-cancellation-direct/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=50249\twatcher_pid=50327\torigin=started\tstarted_at=1793070419\tended_at=1793070422\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:50327|identity:Tue Oct 27 03:06:59 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:50327.1793070422.4CVma9\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "journal-dead-ack",
+      "host.out": "watcher: started pid=26468 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-dead-ack/state/demo.status\nsupervision-host: the acknowledged hand-back successor could not be verified\n",
+      "host.rc": "1\n",
+      "state/.supervision-host.log": "1793070408\tstart\tgen=host-26060-1793070408\tprimary=claude\n1793070412\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-dead-ack/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=26404\twatcher_pid=26468\torigin=started\tstarted_at=1793070408\tended_at=1793070411\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:26468|identity:Tue Oct 27 03:06:48 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:26468.1793070411.mLB1oe\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "journal-dead-direct",
+      "host.out": "watcher: started pid=68184 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-dead-direct/state/demo.status\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070341\tstart\tgen=host-67655-1793070341\tprimary=claude\n1793070345\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-dead-direct/state/demo.status\n1793070345\tpass-through\tsuccessor-unverified\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-dead-direct/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=68093\twatcher_pid=68184\torigin=started\tstarted_at=1793070341\tended_at=1793070345\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=2\tlock_before=pid:68184|identity:Tue Oct 27 03:05:41 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:68184.1793070344.wehuLD\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "journal-explicit-ack",
+      "host.out": "watcher: started pid=22182 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-explicit-ack/state/demo.status\nsupervision-host: the acknowledged hand-back successor could not be verified\n",
+      "host.rc": "1\n",
+      "state/.supervision-host.log": "1793070401\tstart\tgen=host-21949-1793070401\tprimary=claude\n1793070405\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-explicit-ack/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=22135\twatcher_pid=22182\torigin=started\tstarted_at=1793070401\tended_at=1793070404\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:22182|identity:Tue Oct 27 03:06:41 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:22182.1793070404.baNB6n\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "journal-explicit-direct",
+      "host.out": "watcher: started pid=61625 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-explicit-direct/state/demo.status\n/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-supervision-host.sh: line 472: 64277 Terminated: 15          FM_WATCH_PREDECESSOR_ARM_PID=$predecessor FM_GUARD_GRACE=\"$GRACE\" \"$SCRIPT_DIR/fm-watch-arm.sh\" \"$@\" > \"$out\" 2>&1 < /dev/null\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070335\tstart\tgen=host-61449-1793070335\tprimary=claude\n1793070338\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-explicit-direct/state/demo.status\n1793070341\tpass-through\tsuccessor-unverified\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-explicit-direct/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=61581\twatcher_pid=61625\torigin=started\tstarted_at=1793070335\tended_at=1793070338\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:61625|identity:Tue Oct 27 03:05:35 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:61625.1793070337.jGPCfE\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "journal-forged-ack",
+      "host.out": "watcher: started pid=36191 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-forged-ack/state/demo.status\nsupervision-host: the acknowledged hand-back successor could not be verified\n",
+      "host.rc": "1\n",
+      "state/.supervision-host.log": "1793070413\tstart\tgen=host-35749-1793070413\tprimary=claude\n1793070417\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-forged-ack/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=36121\twatcher_pid=36191\torigin=started\tstarted_at=1793070413\tended_at=1793070416\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:36191|identity:Tue Oct 27 03:06:53 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:36191.1793070416.rcwkpi\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "journal-forged-direct",
+      "host.out": "watcher: started pid=74667 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-forged-direct/state/demo.status\n/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-supervision-host.sh: line 472: 80790 Terminated: 15          FM_WATCH_PREDECESSOR_ARM_PID=$predecessor FM_GUARD_GRACE=\"$GRACE\" \"$SCRIPT_DIR/fm-watch-arm.sh\" \"$@\" > \"$out\" 2>&1 < /dev/null\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070346\tstart\tgen=host-74254-1793070346\tprimary=claude\n1793070350\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-forged-direct/state/demo.status\n1793070351\tpass-through\tsuccessor-unverified\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-forged-direct/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=74596\twatcher_pid=74667\torigin=started\tstarted_at=1793070346\tended_at=1793070349\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:74667|identity:Tue Oct 27 03:05:46 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:74667.1793070349.VMHM5R\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "journal-stall-ack",
+      "host.out": "watcher: started pid=11565 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-stall-ack/state/demo.status\nsupervision-host: the acknowledged hand-back successor could not be verified\n",
+      "host.rc": "1\n",
+      "state/.supervision-host.log": "1793070385\tstart\tgen=host-11378-1793070385\tprimary=claude\n1793070389\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-stall-ack/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=11521\twatcher_pid=11565\torigin=started\tstarted_at=1793070385\tended_at=1793070388\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:11565|identity:Tue Oct 27 03:06:25 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:11565.1793070388.wD2IMu\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "journal-stall-direct",
+      "host.out": "watcher: started pid=51296 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-stall-direct/state/demo.status\n/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-supervision-host.sh: line 472: 53188 Terminated: 15          FM_WATCH_PREDECESSOR_ARM_PID=$predecessor FM_GUARD_GRACE=\"$GRACE\" \"$SCRIPT_DIR/fm-watch-arm.sh\" \"$@\" > \"$out\" 2>&1 < /dev/null\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070319\tstart\tgen=host-51116-1793070319\tprimary=claude\n1793070321\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-stall-direct/state/demo.status\n1793070322\tpass-through\tsuccessor-unverified\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-stall-direct/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=51252\twatcher_pid=51296\torigin=started\tstarted_at=1793070319\tended_at=1793070320\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:51296|identity:Tue Oct 27 03:05:19 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:51296.1793070320.RQxRwo\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "journal-total-ack",
+      "host.out": "watcher: started pid=18185 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-total-ack/state/demo.status\nsupervision-host: the acknowledged hand-back successor could not be verified\n",
+      "host.rc": "1\n",
+      "state/.supervision-host.log": "1793070396\tstart\tgen=host-17982-1793070396\tprimary=claude\n1793070398\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-total-ack/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=18118\twatcher_pid=18185\torigin=started\tstarted_at=1793070396\tended_at=1793070397\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:18185|identity:Tue Oct 27 03:06:36 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:18185.1793070397.Fz7O57\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "journal-total-direct",
+      "host.out": "watcher: started pid=58138 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-total-direct/state/demo.status\n/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-supervision-host.sh: line 472: 60450 Terminated: 15          FM_WATCH_PREDECESSOR_ARM_PID=$predecessor FM_GUARD_GRACE=\"$GRACE\" \"$SCRIPT_DIR/fm-watch-arm.sh\" \"$@\" > \"$out\" 2>&1 < /dev/null\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070328\tstart\tgen=host-57933-1793070328\tprimary=claude\n1793070332\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-total-direct/state/demo.status\n1793070334\tpass-through\tsuccessor-unverified\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-total-direct/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=58097\twatcher_pid=58138\torigin=started\tstarted_at=1793070328\tended_at=1793070331\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:58138|identity:Tue Oct 27 03:05:28 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:58138.1793070331.ezpUBn\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "journal-unchanged-ack",
+      "host.out": "watcher: started pid=14852 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-unchanged-ack/state/demo.status\nsupervision-host: the acknowledged hand-back successor could not be verified\n",
+      "host.rc": "1\n",
+      "state/.supervision-host.log": "1793070390\tstart\tgen=host-14664-1793070390\tprimary=claude\n1793070392\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-unchanged-ack/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=14808\twatcher_pid=14852\torigin=started\tstarted_at=1793070390\tended_at=1793070392\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:14852|identity:Tue Oct 27 03:06:30 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:14852.1793070391.oyZSDy\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "journal-unchanged-direct",
+      "host.out": "watcher: started pid=54005 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-unchanged-direct/state/demo.status\n/Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-supervision-host.sh: line 472: 56108 Terminated: 15          FM_WATCH_PREDECESSOR_ARM_PID=$predecessor FM_GUARD_GRACE=\"$GRACE\" \"$SCRIPT_DIR/fm-watch-arm.sh\" \"$@\" > \"$out\" 2>&1 < /dev/null\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070322\tstart\tgen=host-53828-1793070322\tprimary=claude\n1793070324\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-unchanged-direct/state/demo.status\n1793070327\tpass-through\tsuccessor-unverified\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/journal-unchanged-direct/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=53961\twatcher_pid=54005\torigin=started\tstarted_at=1793070322\tended_at=1793070324\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:54005|identity:Tue Oct 27 03:05:22 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:54005.1793070323.0UfZyH\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "startup-elapsed-ack",
+      "host.out": "watcher: started pid=82954 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/startup-elapsed-ack/state/demo.status\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070352\tstart\tgen=host-82581-1793070352\tprimary=claude\n1793070354\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/startup-elapsed-ack/state/demo.status\n1793070385\thandoff\thost-82581-1793070352\n",
+      "state/.watch-cycle-exits.log": "arm_pid=82905\twatcher_pid=82954\torigin=started\tstarted_at=1793070352\tended_at=1793070353\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:82954|identity:Tue Oct 27 03:05:52 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=started:3519\narm_pid=86141\twatcher_pid=3519\torigin=started\tstarted_at=1793070369\tended_at=1793070385\texit_code=143\tsignal=TERM\treason=signal-exit\tbeacon_age=1\tlock_before=pid:3519|identity:Tue Oct 27 03:06:09 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "announced:downtime:82954.1793070353.QdvBw0\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "startup-elapsed-direct",
+      "host.out": "watcher: started pid=26762 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/startup-elapsed-direct/state/demo.status\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070285\tstart\tgen=host-26550-1793070285\tprimary=claude\n1793070288\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/startup-elapsed-direct/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=26717\twatcher_pid=26762\torigin=started\tstarted_at=1793070285\tended_at=1793070288\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:26762|identity:Tue Oct 27 03:04:45 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=started:39280\narm_pid=29600\twatcher_pid=39280\torigin=started\tstarted_at=1793070303\tended_at=1793070319\texit_code=143\tsignal=TERM\treason=signal-exit\tbeacon_age=1\tlock_before=pid:39280|identity:Tue Oct 27 03:05:03 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "announced:downtime:26762.1793070287.3BH7jO\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "startup-prelock-ack",
+      "host.out": "watcher: started pid=50528 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/startup-prelock-ack/state/demo.status\nsupervision-host: the acknowledged hand-back successor could not be verified\n",
+      "host.rc": "1\n",
+      "state/.supervision-host.log": "1793070181\tstart\tgen=host-50229-1793070181\tprimary=claude\n1793070183\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/startup-prelock-ack/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=50469\twatcher_pid=50528\torigin=started\tstarted_at=1793070181\tended_at=1793070182\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:50528|identity:Tue Oct 27 03:03:01 2026     /bin/bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\narm_pid=53569\twatcher_pid=53597\torigin=started\tstarted_at=1793070183\tended_at=1793070190\texit_code=143\tsignal=TERM\treason=arm-interrupted\tbeacon_age=9\tlock_before=pid:none|identity:none\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:50528.1793070182.ak2cxo\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "startup-prelock-direct",
+      "host.out": "watcher: started pid=42194 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/startup-prelock-direct/state/demo.status\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070170\tstart\tgen=host-42008-1793070170\tprimary=claude\n1793070173\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/startup-prelock-direct/state/demo.status\n1793070174\tpass-through\tsuccessor-unverified\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/startup-prelock-direct/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=42147\twatcher_pid=42194\torigin=started\tstarted_at=1793070170\tended_at=1793070173\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:42194|identity:Tue Oct 27 03:02:50 2026     /bin/bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\narm_pid=46242\twatcher_pid=46310\torigin=started\tstarted_at=1793070173\tended_at=1793070180\texit_code=143\tsignal=TERM\treason=arm-interrupted\tbeacon_age=8\tlock_before=pid:none|identity:none\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:42194.1793070172.uezu0j\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "startup-prelock-failed-ack",
+      "host.out": "watcher: started pid=62028 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/startup-prelock-failed-ack/state/demo.status\nsupervision-host: the successor watcher cycle could not be verified before handling; this wake is yours\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070190\tstart\tgen=host-61351-1793070190\tprimary=claude\n1793070201\thandoff\thost-61351-1793070190\n",
+      "state/.watch-cycle-exits.log": "arm_pid=61916\twatcher_pid=62028\torigin=started\tstarted_at=1793070190\tended_at=1793070193\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:62028|identity:Tue Oct 27 03:03:10 2026     /bin/bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\narm_pid=66579\twatcher_pid=66623\torigin=started\tstarted_at=1793070194\tended_at=1793070200\texit_code=143\tsignal=TERM\treason=arm-interrupted\tbeacon_age=8\tlock_before=pid:none|identity:none\tlock_after=pid:none|identity:none\tsuccessor=started:69071\narm_pid=69043\twatcher_pid=69071\torigin=started\tstarted_at=1793070200\tended_at=1793070201\texit_code=143\tsignal=TERM\treason=signal-exit\tbeacon_age=1\tlock_before=pid:69071|identity:Tue Oct 27 03:03:20 2026     /bin/bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "announced:downtime:62028.1793070193.0tIngc\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "startup-prelock-initial",
+      "host.out": "watcher: FAILED - no live watcher with a fresh beacon\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070162\tstart\tgen=host-37401-1793070162\tprimary=claude\n1793070169\tpass-through\ta close without a wake\n",
+      "state/.watch-cycle-exits.log": "arm_pid=37760\twatcher_pid=37836\torigin=started\tstarted_at=1793070162\tended_at=1793070169\texit_code=143\tsignal=TERM\treason=arm-interrupted\tbeacon_age=999999\tlock_before=pid:none|identity:none\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "remaining_startup_journals": []
+    },
+    {
+      "scenario": "park-cadence",
+      "host.out": "watcher: started pid=22923 (beacon fresh)\n",
+      "host.rc": "143\n",
+      "park-sleeps": "0.5\n0.1\n",
+      "state/.supervision-host.log": "1793070556\tstart\tgen=host-22736-1793070556\tprimary=claude\n",
+      "state/.watch-cycle-exits.log": "arm_pid=22875\twatcher_pid=22923\torigin=started\tstarted_at=1793070556\tended_at=1793070558\texit_code=143\tsignal=TERM\treason=arm-interrupted\tbeacon_age=0\tlock_before=pid:22923|identity:Tue Oct 27 03:09:16 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=none\n",
+      "state/.watcher-down": "pending:downtime:22923.1793070558.kUWRzS\n",
+      "remaining_startup_journals": [],
+      "collection_note": "Collected after the passing cadence assertion and its stop_home_processes call. park-sleeps therefore also includes later cleanup sleeps; this is not a snapshot limited to the cadence assertion window."
+    },
+    {
+      "scenario": "main-only-successor",
+      "host.out": "watcher: started pid=60970 (beacon fresh)\nsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/main-only-successor/state/demo.status\n",
+      "host.rc": "0\n",
+      "state/.supervision-host.log": "1793070648\tstart\tgen=host-60692-1793070648\tprimary=claude\n1793070650\tpass-through\tattended\tmain-only\tsignal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-supervision-host.zfDGtI/main-only-successor/state/demo.status\n",
+      "state/.watch-cycle-exits.log": "arm_pid=60930\twatcher_pid=60970\torigin=started\tstarted_at=1793070648\tended_at=1793070650\texit_code=0\tsignal=none\treason=actionable-signal\tbeacon_age=1\tlock_before=pid:60970|identity:Tue Oct 27 03:10:48 2026     bash /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ/bin/fm-watch.sh\tlock_after=pid:none|identity:none\tsuccessor=started:64890\n",
+      "state/.watcher-down": "announced:downtime:60970.1793070649.VRFjbw\n",
+      "remaining_startup_journals": []
+    }
+  ]
+}

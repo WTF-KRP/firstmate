@@ -1,0 +1,12 @@
+Disposable primary lab cleanup
+- Lab home: /Users/daddy/.no-mistakes/evidence/01M5XGTP7X4T2WZZYZ0AAAGTSZ/fm-lab.N5Eiit
+- Private socket directory minted by bin/fm-lab-home.sh tmux-dir: /tmp/fml.tqX6Et
+- Claude reached workspace-trust consent. No consent was changed.
+- Codex reached hook-review consent. No consent was changed.
+- Both attempts used a 140x42 tmux pane and the existing normal CLI environment, with fleet path overrides removed.
+- The combined cleanup command was refused before execution by the PreToolUse hook:
+  BLOCKED: Recursive delete check: rm target '/Users/daddy/.no-mistakes/evidence/01M5XGTP7X4T2WZZYZ0AAAGTSZ/fm-lab.N5Eiit' resolves to /Users/daddy/.no-mistakes/evidence/01M5XGTP7X4T2WZZYZ0AAAGTSZ/fm-lab.N5Eiit, outside the project /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5XGTP7X4T2WZZYZ0AAAGTSZ.
+- The denied deletion and dependent filesystem cleanup were not retried.
+- Independent safety action completed: TMUX_TMPDIR=/tmp/fml.tqX6Et tmux -L fm-lab kill-server.
+- Follow-up read-only list-sessions returned: no server running on /private/tmp/fml.tqX6Et/tmux-501/fm-lab.
+- The stopped lab home and socket directory remain. No source files were changed by testing.

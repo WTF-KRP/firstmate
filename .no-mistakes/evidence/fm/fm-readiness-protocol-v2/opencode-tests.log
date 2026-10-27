@@ -1,0 +1,4 @@
+ok - OpenCode host-ready preserves the enclosing startup bound
+ok - OpenCode host-expiry preserves the enclosing startup bound
+ok - OpenCode host-explicit preserves the enclosing startup bound
+ok - OpenCode arm preserves the enclosing startup bound
