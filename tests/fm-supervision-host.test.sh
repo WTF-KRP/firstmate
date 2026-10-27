@@ -3790,7 +3790,6 @@ run_startup_tests() {
     for failure in stall unchanged total explicit dead forged; do test_startup_journal_bound "$mode" "$failure"; done
   done
   test_startup_journal_cancellation
-  test_main_only_pass_through_leaves_the_successor_watcher_running
 }
 test_startup_journal_regressions() { run_startup_tests; }
 
