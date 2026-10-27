@@ -4103,7 +4103,14 @@ rm -f "$STATE/$ID.turn-ended" "$STATE/$ID.progress" \
   "$STATE/.secondmate-relaunch-$ID" "$STATE/.secondmate-relaunch-bound-$ID"
 # The steering inbox (bin/fm-task-inbox-lib.sh) is runtime state for the
 # retired endpoint; teardown only runs after landing is confirmed, so any
-# leftover unhandled steer here is moot rather than unlanded work.
+# leftover unhandled steer here is moot rather than unlanded work. Its jobs/
+# directory records task jobs that run detached from the closed endpoint, so
+# any still running are stopped first rather than left orphaned
+# (bin/fm-task-job-lib.sh).
+if [ -d "$STATE/$ID.inbox/jobs" ]; then
+  "$SCRIPT_DIR/fm-task-job.sh" stop-all "$STATE" "$ID" \
+    || echo "warning: could not stop every task job of $ID; a job command may still be running" >&2
+fi
 # state/<id>.git-hooks is the spawn-owned commit-msg strip directory, left
 # read-only by its installer, and state/<id>.push-guard is a forge=external
 # task's read-only push guard record (bin/fm-git-push-guard.sh).

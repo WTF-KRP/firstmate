@@ -270,6 +270,10 @@ WATCH_HOME_EXISTED=0
 # (inbox_steer_check below).
 # shellcheck source=bin/fm-task-inbox-lib.sh
 . "$SCRIPT_DIR/fm-task-inbox-lib.sh"
+# Task-job recovery (fm_task_job_reconcile in the pane loop below):
+# bin/fm-task-job-lib.sh owns delivering a worker's finished or lost job.
+# shellcheck source=bin/fm-task-job-lib.sh
+. "$SCRIPT_DIR/fm-task-job-lib.sh"
 # The away-posture record (state/.afk-contract) is the posture in both the
 # attended and the afk session; bin/fm-afk-contract.sh owns its schema and its
 # away-or-quiet reading, which is all this watcher reads (away_record_present
@@ -588,8 +592,14 @@ inbox_steer_busy() {  # <window> <backend> <task> <tail40>
 # Runs for secondmates too: their pane-staleness exemption is about quiet panes
 # being healthy, while an unacknowledged instruction can still be a stuck steer.
 inbox_steer_check() {  # <window> <task>
-  local w=$1 task=$2 action verb rec count tail40 reason='' ring_rc backend agent_state
-  action=$(fm_task_inbox_due_action "$STATE" "$task") || return 0
+  local w=$1 task=$2 action verb rec count tail40 reason='' ring_rc backend agent_state held=
+  # A hold-aware record waits out the worker's own open decision; the
+  # decisions are read only when such a record is actually pending.
+  if fm_task_inbox_has_hold_aware "$STATE" "$task" \
+    && [ -n "$(status_own_open_decisions "$STATE/$task.status")" ]; then
+    held=1
+  fi
+  action=$(fm_task_inbox_due_action "$STATE" "$task" "$held") || return 0
   verb=${action%% *}
   [ "$verb" != quiet ] || return 0
   if [ "$verb" = retry ] && [ -n "$(status_own_open_decisions "$STATE/$task.status")" ]; then
@@ -4026,8 +4036,12 @@ EOF
     kind=$(window_kind "$w")
     task=$(window_to_task "$w" "$STATE")
     # Steering-inbox loss detection runs before the secondmate stale
-    # exemption below, because a mate's steers land in an inbox too.
-    [ -z "$task" ] || inbox_steer_check "$w" "$task"
+    # exemption below, because a mate's steers land in an inbox too. Task-job
+    # recovery runs first so a recovered completion joins this same ladder.
+    if [ -n "$task" ]; then
+      fm_task_job_reconcile "$STATE" "$task" || true
+      inbox_steer_check "$w" "$task"
+    fi
     key=$(window_key "$w")
     last=$(status_declared_wait_line "$STATE/$task.status")
     if ! status_is_paused_or_captain_held "$last" && [ -e "$STATE/.paused-$key" ]; then
