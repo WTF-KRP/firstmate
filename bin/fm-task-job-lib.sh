@@ -12,7 +12,7 @@
 # is a kernel fact it observes directly, and delivery reuses the steering inbox
 # (bin/fm-task-inbox-lib.sh), whose acknowledgement move and re-ring ladder
 # redeliver the result until the worker collects it. Harness-native background
-# commands are not covered.
+# commands and guardian outcomes are not covered.
 #
 # Layout under <state-dir>/<task>.inbox/jobs/<job-id>/ (teardown removes the
 # inbox, and with it every job record):
@@ -35,11 +35,11 @@
 # after the worker acknowledged it. A job whose task metadata or job directory
 # is gone (teardown) is never delivered and never recreates the inbox.
 #
-# Delivery (fm_task_job_deliver) writes a hold-aware record
+# Watcher-owned delivery (fm_task_job_deliver) writes a hold-aware record
 # (bin/fm-task-inbox-lib.sh). It is rung at once unless the task holds an open
 # decision of its own or a declared captain hold (fm_task_job_task_held);
 # while held the watcher's ladder leaves the record unrung, and once the
-# hold clears the ordinary ladder rings it until the worker acknowledges it,
+# hold clears the watcher rings it, then the ordinary ladder retries until acknowledgement,
 # escalating like any unacknowledged steer. A deliberate hold therefore never
 # auto-resumes, while a worker's own `paused:` wait is woken.
 #
@@ -258,11 +258,10 @@ fm_task_job_task_held() {
 }
 
 # Deliver one finished job into its task's steering inbox, at most once per
-# completion. With `ring`, an unhandled record is rung at once unless the
-# task is held; the watcher's ladder owns every later
-# delivery attempt. Fails without writing when the task or job is gone.
+# completion. The watcher owns delivery and its hold-aware ringing ladder.
+# Fails without writing when the task or job is gone.
 fm_task_job_deliver() (
-  local state=$1 task=$2 dir=$3 ring=${4:-} meta inbox msg rec backend target lock
+  local state=$1 task=$2 dir=$3 meta inbox msg rec lock
   meta="$state/$task.meta"
   lock=$(fm_meta_lock_path "$meta") || return 1
   fm_lock_acquire_wait "$lock" || return 1
@@ -274,13 +273,6 @@ fm_task_job_deliver() (
   msg=$(fm_task_job_message "$dir") || return 1
   rec=$(fm_task_inbox_write_idempotent "$state" "$task" "$msg" hold-aware) || return 1
   fm_task_job_write_record "$dir/delivered" "record=${rec##*/}" || true
-  [ "$ring" = ring ] && [ "${rec%/*}" = "$inbox" ] && [ -f "$rec" ] || return 0
-  [ -z "$(fm_meta_get "$meta" remote_host)" ] || return 0
-  ! fm_task_job_task_held "$state" "$task" || return 0
-  backend=$(fm_backend_of_meta "$meta")
-  target=$(fm_backend_target_of_meta "$meta")
-  [ -n "$target" ] || return 0
-  fm_task_inbox_ring "$backend" "$target" "$rec" "fm-$task" >/dev/null 2>&1 || true
   return 0
 )
 

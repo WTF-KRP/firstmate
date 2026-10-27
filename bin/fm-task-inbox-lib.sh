@@ -92,7 +92,8 @@
 # passes that as `held` to fm_task_inbox_due_action; while held, hold-aware
 # records are left out of the ladder exactly like fire-and-forget records, so
 # they neither ring nor escalate and never resume a deliberate hold, while the
-# task's ordinary steers keep their ladder. Unheld, they are ordinary records.
+# task's ordinary steers keep their ladder. Unheld, their first attempt is due
+# immediately, then they follow the ordinary retry spacing.
 #
 # Inbox names containing bytes outside printable ASCII are unsupported. The
 # doorbell refuses them rather than sending terminal control bytes to a pane.
@@ -529,10 +530,6 @@ fm_task_inbox_due_action() {  # <state-dir> <task-id> [held]
   fi
   base=${oldest##*/}
   grace=$(fm_task_inbox_grace_secs)
-  if [ "$(fm_path_age "$oldest")" -lt "$grace" ]; then
-    printf 'quiet'
-    return 0
-  fi
   count=0
   last=0
   ladder=$(cat "$dir/.ring-state" 2>/dev/null || true)
@@ -545,6 +542,11 @@ EOF
   fi
   case "$count" in ''|*[!0-9]*) count=0 ;; esac
   case "$last" in ''|*[!0-9]*) last=0 ;; esac
+  if { [ "$count" -gt 0 ] || [ "$(fm_task_inbox_delivery_mode "$oldest")" != hold-aware ]; } \
+    && [ "$(fm_path_age "$oldest")" -lt "$grace" ]; then
+    printf 'quiet'
+    return 0
+  fi
   if [ "$(cat "$dir/.escalated" 2>/dev/null || true)" = "$base" ]; then
     printf 'quiet'
     return 0

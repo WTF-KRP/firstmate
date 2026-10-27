@@ -15,8 +15,8 @@
 #       job id, the output path, and `until: <YYYY-MM-DDTHH:MMZ>` (start plus
 #       timeout, rounded up to the minute) for the worker's `paused:`
 #       declaration, then returns. When the command exits, or passes its
-#       timeout and is stopped, the runner delivers a completion record into
-#       the steering inbox and rings the doorbell unless the task is held.
+#       timeout and is stopped, the runner publishes its exit record. The
+#       watcher delivers the completion and rings unless the task is held.
 #   fm-task-job.sh stop-all <state-dir> <task-id>
 #       Stop every live job of the task without delivering anything.
 #       bin/fm-teardown.sh runs it before it removes the task's inbox.
@@ -60,7 +60,7 @@ valid_task() {  # <task-id>
 STOP_REQUESTED=0
 
 cmd_run() {  # <state-dir> <task-id> <job-dir>
-  local state=$1 task=$2 dir=$3 a deadline limit status=0 outcome=exited RUN_CHILD owner rc
+  local dir=$3 a deadline limit status=0 outcome=exited RUN_CHILD owner rc
   local argv=()
   trap 'STOP_REQUESTED=1' TERM INT
   [ -f "$dir/job" ] && [ -f "$dir/argv" ] || exit 1
@@ -100,7 +100,6 @@ cmd_run() {  # <state-dir> <task-id> <job-dir>
     exit 143
   fi
   fm_task_job_publish_exit "$dir" "$outcome" "$status" || true
-  fm_task_job_deliver "$state" "$task" "$dir" ring || true
 }
 
 cmd_start() (
