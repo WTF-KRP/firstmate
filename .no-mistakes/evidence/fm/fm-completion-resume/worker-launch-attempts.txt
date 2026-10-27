@@ -1,0 +1,19 @@
+Candidate: 3e4fe8298637725a640d2eec606556e405047fe0
+Disposable home: worktree-local .local-test/fm-lab.2TBEp7, minted using bin/fm-lab-home.sh create.
+First launch used the documented private TMUX_TMPDIR, -L fm-lab, primary session, 120x40 grid, normal codex CLI and cleared fleet-path overrides.
+Result: exit 1, before a primary started:
+error connecting to /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5YZX7FT776MT8S3EHYVYR30/.local-test/fm-lab.2TBEp7/tmux/tmux-501/fm-lab (File name too long)
+
+Second launch added a shorter explicit -S socket inside the same disposable lab, preserving -L fm-lab, primary session, 120x40 grid and normal codex CLI.
+The command tool rejected it before execution:
+Command blocked by PreToolUse hook: BLOCKED: Recursive delete check: env split string cannot be established.
+No further primary or worker launch was attempted after this guard refusal. No harness login was attempted or changed. No Herdr lifecycle was driven. Earlier attached live receipts were not counted as evidence from this run.
+
+Independent checks used the real bin/fm-task-job.sh CLI with no worker endpoint and no mocked executables. They did not test doorbells, worker turns, watcher recovery or hold release. The shell regression suite uses a fake terminal and is supplemental non-live evidence.
+Required capability: a guard-approved invocation of the documented disposable lab primary, with a private socket path short enough for the platform and the existing harness login. Standing instructions prohibit retrying the refused launch through another tool or runtime.
+
+Cleanup:
+The live CLI driver stopped every disposable task through bin/fm-task-job.sh stop-all. All observed runner, child and grandchild processes had stopped.
+The final recursive removal of .local-test was refused before execution: rm -f style commands are not permitted. Use a safer approach.
+The entire bundled command was rejected, so its evidence write and removal did not execute. This file was subsequently written in a separate non-destructive command.
+No alternate deletion command or runtime was attempted. The remaining .local-test directory holds only disposable test metadata, job output, process records, and the lab marker. It remains untracked and must not be shipped. Source files were not changed.

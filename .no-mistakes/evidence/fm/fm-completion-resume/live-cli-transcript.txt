@@ -1,0 +1,85 @@
+Candidate: 3e4fe8298637725a640d2eec606556e405047fe0
+Real CLI and detached command processes. No worker endpoint, terminal stub, or fake executable.
+
+$ bin/fm-task-job.sh start --timeout 30 -- sh -c sleep 1; echo actual-monitor-result; exit 3
+job: 20261027T154007Z-80724
+output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5YZX7FT776MT8S3EHYVYR30/.local-test/fm-lab.2TBEp7/state/cli-complete.inbox/jobs/20261027T154007Z-80724/output
+until: 2026-10-27T15:41Z
+Persisted completion:
+schema=fm-task-inbox.v1
+at=2026-10-27T15:40:09Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261027T154007Z-80724 finished: the command exited with status 3.
+Task: cli-complete; started by worker generation live-A.
+Started: 2026-10-27T15:40Z; ended: 2026-10-27T15:40Z.
+Output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5YZX7FT776MT8S3EHYVYR30/.local-test/fm-lab.2TBEp7/state/cli-complete.inbox/jobs/20261027T154007Z-80724/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+Command output:
+actual-monitor-result
+
+PASS: one durable completion with exit status, task, generation and output.
+
+$ bin/fm-task-job.sh start --timeout 30 -- sh -c sleep 2; echo generation-result
+job: 20261027T154010Z-81034
+output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5YZX7FT776MT8S3EHYVYR30/.local-test/fm-lab.2TBEp7/state/cli-generation.inbox/jobs/20261027T154010Z-81034/output
+until: 2026-10-27T15:41Z
+Persisted completion:
+schema=fm-task-inbox.v1
+at=2026-10-27T15:40:12Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261027T154010Z-81034 finished: the command exited with status 0.
+Task: cli-generation; started by worker generation live-A.
+Started: 2026-10-27T15:40Z; ended: 2026-10-27T15:40Z.
+Output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5YZX7FT776MT8S3EHYVYR30/.local-test/fm-lab.2TBEp7/state/cli-generation.inbox/jobs/20261027T154010Z-81034/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+Command output:
+generation-result
+
+PASS: completion preserves live-A while current metadata is live-B.
+
+$ bin/fm-task-job.sh start --timeout 1 -- sh -c sleep 60 & echo $! > "$1"; wait job-command /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5YZX7FT776MT8S3EHYVYR30/.local-test/fm-lab.2TBEp7/timeout-child.pid
+job: 20261027T154012Z-81551
+output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5YZX7FT776MT8S3EHYVYR30/.local-test/fm-lab.2TBEp7/state/cli-timeout.inbox/jobs/20261027T154012Z-81551/output
+until: 2026-10-27T15:41Z
+Persisted completion:
+schema=fm-task-inbox.v1
+at=2026-10-27T15:40:13Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261027T154012Z-81551 finished: the command passed its 1-second timeout and was stopped (status 143).
+Task: cli-timeout; started by worker generation live-A.
+Started: 2026-10-27T15:40Z; ended: 2026-10-27T15:40Z.
+Output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5YZX7FT776MT8S3EHYVYR30/.local-test/fm-lab.2TBEp7/state/cli-timeout.inbox/jobs/20261027T154012Z-81551/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+Command output:
+
+PASS: timeout stops command and grandchild and delivers timed-out result.
+
+$ bin/fm-task-job.sh start --timeout 8 -- sh -c sleep 60 & echo $! > "$1"; wait job-command /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5YZX7FT776MT8S3EHYVYR30/.local-test/fm-lab.2TBEp7/stop-child.pid
+job: 20261027T154013Z-81831
+output: /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5YZX7FT776MT8S3EHYVYR30/.local-test/fm-lab.2TBEp7/state/cli-stop.inbox/jobs/20261027T154013Z-81831/output
+until: 2026-10-27T15:41Z
+$ bin/fm-task-job.sh stop-all /Users/daddy/.no-mistakes/worktrees/9e8480867796/01M5YZX7FT776MT8S3EHYVYR30/.local-test/fm-lab.2TBEp7/state cli-stop
+PASS: stop-all stops runner, command and grandchild without delivery. Removed inbox stays absent beyond deadline.
+
+$ bin/fm-task-job.sh start --timeout 5 -- true
+fm-task-job: FM_TASK_INBOX is not set; run this from a Firstmate task worker, whose launch exports it
+$ bin/fm-task-job.sh start -- true
+fm-task-job: --timeout needs a whole number of seconds
+usage: fm-task-job.sh start --timeout <seconds> -- <command> [args...] | stop-all <state-dir> <task-id>
+$ bin/fm-task-job.sh start --timeout 9999999 -- true
+fm-task-job: --timeout must be from 1 to 604800 seconds
+usage: fm-task-job.sh start --timeout <seconds> -- <command> [args...] | stop-all <state-dir> <task-id>
+$ bin/fm-task-job.sh start --timeout 5 -- true
+fm-task-job: the metadata for cli-refuse records no spawn_gen, so its completion cannot be keyed
+PASS: missing identity, timeout and generation are refused without creating jobs.
+
+Cleanup: stop-all completed for each disposable task.
