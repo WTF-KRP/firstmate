@@ -117,7 +117,7 @@ test_rejected_host_readiness() (
   export FM_SUPERVISION_HOST_PRIMARY=claude FM_SUPERVISION_HOST_READY_TIMEOUT=100
   export FM_POLL=1 FM_SIGNAL_GRACE=0 FM_CHECK_INTERVAL=999999 FM_HEARTBEAT=999999
   export PATH="$home/fakebin:$PATH"
-  host_pid= owner_pid= existing_arm=
+  host_pid='' owner_pid='' existing_arm=''
   trap '
     [ -z "$host_pid" ] || kill -CONT "$host_pid" 2>/dev/null || true
     [ -z "$host_pid" ] || kill -TERM "$host_pid" 2>/dev/null || true
@@ -148,6 +148,8 @@ case "$0" in */fm-watch-arm.sh)
 esac
 SH
   : > "$home/pause-host"
+  # Expand FM_HOME, status, and positional parameters in the child shell.
+  # shellcheck disable=SC2016
   "$home/fakebin/claude" -c '
     printf "%s\n" "$$" > "$FM_HOME/state/.lock"
     bash "$1/bin/fm-supervision-host.sh" park > "$FM_HOME/host.out" 2>&1
