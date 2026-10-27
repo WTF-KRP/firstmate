@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # fm-afk-launch.sh - the single owner of away-mode ENTRY and EXIT: the
 # same-turn entry that writes the away-posture record through
-# bin/fm-afk-contract.sh, and the away-mode daemon TERMINAL lifecycle where a
-# daemon still runs: launch it in a NON-VISIBLE tracked terminal per backend,
-# record its exact id, tear it down by that exact id, and reconcile a leaked one
-# after a crash.
+# bin/fm-afk-contract.sh, and the daemon lifecycle where a daemon still runs.
+# Terminal-backed launches create a NON-VISIBLE tracked terminal, record its
+# exact id, tear it down by that id, and reconcile a leaked one after a crash.
+# Native and external launches record that no managed terminal exists.
 #
 # ENTRY (the posture record). `/afk [words]` is itself the captain's go, because
 # the captain who typed it may not look at the screen again: `enter` records the
@@ -23,8 +23,8 @@
 # Claude, by config/supervision-host elsewhere), where the host runs the away
 # session; `enter` there adds one line when the host has no
 # engine, because every away wake then reaches main. Every other harness still
-# runs the daemon for now, so `start` and `start-native` require the record
-# `enter` wrote before they launch the daemon.
+# runs the daemon for now; every daemon launch path requires the record
+# `enter` wrote.
 # QUIET MODE on a home that runs the supervision host needs nothing
 # where the attended host runs (docs/supervision-host.md "Quiet mode"): its
 # primary is attended-ready (fm_supervision_host_attended_ready: engine, tools,
@@ -41,11 +41,11 @@
 # (bin/fm-afk-return.sh and its catch-up gate) comes first. Where the attended
 # host lacks one of those parts, `quiet-check` names it and quiet mode enters
 # through the daemon as it does without the host. A quiet `enter` records its
-# mode, so `start` and `start-native` launch the quiet daemon without
+# mode, so all daemon launch paths use quiet mode without
 # FM_AFK_MODE; a running quiet daemon is refreshed by a later `/quiet` and runs
-# until `/quiet off`. A quiet `start` or `start-native` that fails while no
-# daemon runs ends quiet mode as `stop` does, so no quiet record outlives its
-# daemon to park a present captain's main.
+# until `/quiet off`. Any failed quiet daemon preparation or launch while no
+# daemon runs ends quiet mode as `stop` does, so no quiet record remains after
+# that failure to park a present captain's main.
 # On backend=t3code there is no terminal for `start` to create. A harness with
 # a tracked native background job can use `start-native`; a Codex primary
 # runs `prepare-external` during its turn and the operator runs `run-external`
@@ -56,8 +56,8 @@
 # Why the terminal lifecycle exists (docs/herdr-backend.md "Away-mode daemon terminal launch"):
 # bin/fm-afk-start.sh execs the supervise daemon in the FOREGROUND of whatever
 # terminal it is already in. Harnesses with a native in-pane tracked-background
-# tool (claude, grok) run it there directly and it is fine. A harness with NO
-# native background mechanism (pi) has to manufacture a terminal, and doing that
+# tool (claude, grok) run it there directly and it is fine. On pane backends a
+# harness with NO native background mechanism (codex) needs a terminal, and doing that
 # by SPLITTING the captain's active pane visibly shrinks it - the regression this
 # script fixes. Instead this creates a non-visible tracked terminal (a herdr tab/
 # workspace with --no-focus, or a detached tmux session) that never touches the
@@ -90,7 +90,9 @@
 #                              For a Codex T3 primary, capture its thread and harness
 #                              while its turn is active, prepare the no-terminal
 #                              lifecycle, and print the operator's run command.
-#                              Explicit supervisor overrides resolve ambiguity.
+#                              Requires the record written by enter.
+#                              Set FM_SUPERVISOR_BACKEND=t3code and
+#                              FM_SUPERVISOR_TARGET=<thread-id> to override discovery.
 #   fm-afk-launch.sh run-external
 #                              Run the prepared T3 daemon in the foreground of
 #                              an operator terminal. Uses the recorded thread,
