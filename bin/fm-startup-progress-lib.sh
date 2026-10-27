@@ -31,6 +31,7 @@ fm_startup_progress_now() {
 }
 
 fm_startup_progress_create() {
+  fm_startup_progress_clear
   FM_STARTUP_PROGRESS_CAP=100
   FM_STARTUP_PROGRESS_EXPLICIT=0
   if [ -n "${FM_SUPERVISION_HOST_READY_TIMEOUT:-}" ]; then

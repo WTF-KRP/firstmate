@@ -2637,7 +2637,7 @@ exec /bin/sleep "$@"
 SH
   chmod +x "$home/fakebin/sleep"
   start_host "$home"
-  wait_until 150 watcher_live "$home" || fail "park-cadence: no watcher started"
+  wait_until 150 grep -q '^watcher: started' "$home/host.out" || fail "park-cadence: no watcher started"
   host_pid=$(awk -F '\t' '$1 == "host" { print $2; exit }' "$home/state/.supervision-host")
   [ -n "$host_pid" ] || fail "park-cadence: no recorded host"
   printf '%s\n' "$host_pid" > "$home/probe-host"
@@ -3712,8 +3712,75 @@ ENV
   pass "startup: initial $mode preserves its bounded failure and cleanup"
 }
 
+test_startup_prelock_retirement() {
+  local mode=$1 home real_bash begin watcher owner journal posture=attended
+  [ "$mode" != failed-ack ] || posture=away
+  home=$(make_home "startup-prelock-$mode" "$posture")
+  case "$mode" in ack|failed-ack) : > "$home/config/supervision-handoff-ack" ;; esac
+  real_bash=$(command -v bash)
+  cat > "$home/fakebin/bash" <<SH
+#!/bin/bash
+case "\$1" in */fm-watch.sh)
+  if [ -e "\$FM_HOME/prelock-hold" ] && [ ! -e "\$FM_HOME/prelock-entered" ]; then
+    printf '%s\\n' "\$\$" > "\$FM_HOME/prelock-watcher"
+    printf '%s\\n' "\$\$" >> "\$FM_HOME/orphan-pid"
+    printf '%s\\n' "\$FM_STARTUP_PROGRESS_JOURNAL" > "\$FM_HOME/prelock-journal"
+    : > "\$FM_HOME/prelock-entered"
+    while [ -e "\$FM_HOME/prelock-hold" ]; do sleep 0.1; done
+  fi ;;
+esac
+exec "$real_bash" "\$@"
+SH
+  chmod +x "$home/fakebin/bash"
+  begin=$(date +%s)
+  printf '%s\n' "$begin" > "$home/startup-clock"
+  [ "$mode" != initial ] || : > "$home/prelock-hold"
+  FM_TEST_STARTUP_CLOCK="$home/startup-clock" start_host "$home"
+  if [ "$mode" != initial ]; then
+    wait_until 300 grep -q '^watcher: started' "$home/host.out" || fail "$mode prelock: no initial readiness"
+    : > "$home/prelock-hold"
+    append_status "$home" 'choose an export format' needs-decision
+  fi
+  wait_until 300 test -e "$home/prelock-entered" || fail "$mode prelock: watcher did not enter exec barrier"
+  IFS= read -r watcher < "$home/prelock-watcher"
+  IFS= read -r journal < "$home/prelock-journal"
+  kill -0 "$watcher" 2>/dev/null || fail "$mode prelock: initializing watcher is absent"
+  [ ! -e "$home/state/.watch.lock/pid" ] || fail "$mode prelock: barrier already owns the watcher lock"
+  sleep 1
+  printf '%s\n' "$((begin + 25))" > "$home/startup-clock"
+  wait_until 300 host_exited "$home" || fail "$mode prelock: host did not return to main"
+  if [ "$mode" = ack ]; then
+    owner=$(cut -f1 "$home/state/.supervision-handoff-owner" 2>/dev/null || true)
+    if [ -n "$owner" ]; then
+      wait_until 100 bash -c '! kill -0 "$1" 2>/dev/null' _ "$owner" || fail "ack prelock: handoff cleanup exceeded retirement grace"
+    fi
+  fi
+  ! kill -0 "$watcher" 2>/dev/null || fail "$mode prelock: retired arm left its initializing watcher alive"
+  [ ! -e "$journal" ] || fail "$mode prelock: superseded startup journal survived"
+  if [ "$mode" = failed-ack ]; then
+    assert_grep 'successor watcher cycle could not be verified' "$home/host.out" "failed-ack: direct successor did not fail"
+    assert_no_re 'acknowledged hand-back successor could not be verified' "$home/host.out" "failed-ack: replacement hand-back failed"
+    watcher_live "$home" || fail "failed-ack: no acknowledged replacement watcher"
+  else
+    case "$mode" in
+      initial) assert_grep 'watcher: FAILED' "$home/host.out" "initial prelock: unverified startup was accepted" ;;
+      direct) assert_grep 'successor-unverified' "$home/state/.supervision-host.log" "direct prelock: unverified successor was accepted" ;;
+      ack) assert_grep 'acknowledged hand-back successor could not be verified' "$home/host.out" "ack prelock: unverified hand-back was accepted" ;;
+    esac
+    [ ! -e "$home/state/.watch.lock/pid" ] || fail "$mode prelock: retired watcher acquired the lock"
+  fi
+  [ "$mode" = initial ] || assert_grep 'signal:' "$home/host.out" "$mode prelock: hand-back lost the wake"
+  for journal in "$home/state"/.watch-startup.*; do
+    [ ! -e "$journal" ] || fail "$mode prelock: stale startup journal $journal"
+  done
+  rm -f "$home/prelock-hold"
+  stop_home_processes "$home"
+  pass "startup: $mode retires the initializing owned watcher and its journal"
+}
+
 run_startup_tests() {
   local mode failure
+  for mode in initial direct ack failed-ack; do test_startup_prelock_retirement "$mode"; done
   test_initial_explicit_long_stage
   test_nonstartup_invocation_preserves_journal
   test_initial_real_elapsed_progress
@@ -3726,16 +3793,6 @@ run_startup_tests() {
   test_main_only_pass_through_leaves_the_successor_watcher_running
 }
 test_startup_journal_regressions() { run_startup_tests; }
-
-if [ "${FM_TEST_STARTUP_ONLY:-}" = 1 ]; then
-  if [ -n "${FM_TEST_STARTUP_CASE:-}" ]; then
-    # shellcheck disable=SC2086 # Select one real behavior with its arguments.
-    ${FM_TEST_STARTUP_CASE}
-  else
-    run_startup_tests
-  fi
-  exit 0
-fi
 
 test_startup_journal_regressions
 test_main_only_close_after_handled_turn_restores_inherited_handling
