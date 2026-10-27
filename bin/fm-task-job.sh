@@ -6,7 +6,7 @@
 # hold, and recovery contract; this is the command surface.
 #
 # Usage:
-#   fm-task-job.sh start --timeout <seconds> [--label <text>] -- <command> [args...]
+#   fm-task-job.sh start --timeout <seconds> -- <command> [args...]
 #       Worker-facing. Resolves the task from $FM_TASK_INBOX, which
 #       bin/fm-spawn.sh exports into every task launch, and the spawn
 #       generation from that task's metadata. Records the job and starts a
@@ -24,7 +24,6 @@
 #       Internal: the detached runner that start launches.
 #
 # The timeout is required, from 1 to 604800 seconds, so every job is bounded.
-# The label is one printable line of at most 200 bytes.
 # Exit codes: 0 ok, 1 refused or failed, 2 usage.
 set -u
 
@@ -37,7 +36,7 @@ die() {
 
 usage() {
   [ -z "${1:-}" ] || printf 'fm-task-job: %s\n' "$1" >&2
-  echo "usage: fm-task-job.sh start --timeout <seconds> [--label <text>] -- <command> [args...] | stop-all <state-dir> <task-id>" >&2
+  echo "usage: fm-task-job.sh start --timeout <seconds> -- <command> [args...] | stop-all <state-dir> <task-id>" >&2
   exit 2
 }
 
@@ -118,13 +117,11 @@ cmd_run() {  # <state-dir> <task-id> <job-dir>
 }
 
 cmd_start() {
-  local timeout='' label='' inbox state task meta gen root id dir n=0 started deadline runner rc i
+  local timeout='' inbox state task meta gen root id dir n=0 started deadline runner rc i
   while [ "$#" -gt 0 ]; do
     case "$1" in
       --timeout) [ "$#" -ge 2 ] || usage "--timeout needs a value"; timeout=$2; shift 2 ;;
       --timeout=*) timeout=${1#*=}; shift ;;
-      --label) [ "$#" -ge 2 ] || usage "--label needs a value"; label=$2; shift 2 ;;
-      --label=*) label=${1#*=}; shift ;;
       --) shift; break ;;
       *) usage "unknown start argument: $1" ;;
     esac
@@ -134,8 +131,6 @@ cmd_start() {
   if [ "${#timeout}" -gt 6 ] || [ "$timeout" -lt 1 ] || [ "$timeout" -gt 604800 ]; then
     usage "--timeout must be from 1 to 604800 seconds"
   fi
-  [ "${#label}" -le 200 ] || usage "--label must be at most 200 bytes"
-  case "$label" in *[![:print:]]*) usage "--label must be one printable line" ;; esac
 
   inbox=${FM_TASK_INBOX:-}
   [ -n "$inbox" ] || die "FM_TASK_INBOX is not set; run this from a Firstmate task worker, whose launch exports it"
@@ -161,7 +156,7 @@ cmd_start() {
   done
   started=$(date +%s)
   deadline=$((started + timeout))
-  fm_task_job_write_record "$dir/job" "task=$task" "gen=$gen" "label=$label" \
+  fm_task_job_write_record "$dir/job" "task=$task" "gen=$gen" \
     "timeout=$timeout" "started=$started" "deadline=$deadline" \
     || { rm -rf "$dir"; die "cannot record the job under $dir"; }
   printf '%s\0' "$@" > "$dir/argv" || { rm -rf "$dir"; die "cannot record the command under $dir"; }

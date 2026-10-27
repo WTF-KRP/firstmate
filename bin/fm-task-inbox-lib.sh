@@ -43,7 +43,7 @@
 #   delivery=fire-and-forget   present only when the re-ring ladder must ignore it
 #                              (it still gets one retry ring; see below)
 #   delivery=hold-aware        an ordinary ladder record that leaves the ladder
-#                              while its task holds an open decision of its own
+#                              while its task is held
 #                              (see "Hold-aware records" below)
 #   --
 #   <exact message text; newlines are legal; a marked secondmate request keeps
@@ -88,7 +88,7 @@
 # ladder and owes no retry.
 #
 # Hold-aware records: a result the worker itself asked for, not an instruction.
-# The caller decides whether the task holds an open decision of its own and
+# The caller uses fm_task_job_task_held (bin/fm-task-job-lib.sh) and
 # passes that as `held` to fm_task_inbox_due_action; while held, hold-aware
 # records are left out of the ladder exactly like fire-and-forget records, so
 # they neither ring nor escalate and never resume a deliberate hold, while the

@@ -92,6 +92,13 @@ job_start() {  # <dir> <start args...>
     "$JOB" start "$@"
 }
 
+start_waiting_job() {
+  cat > "$1/wait.sh" <<'SH'
+while [ ! -f "$1" ]; do sleep 0.1; done
+SH
+  job_start "$1" --timeout 60 -- sh "$1/wait.sh" "$1/release"
+}
+
 job_lib() {  # <dir> <function> [args...]
   local dir=$1
   shift
@@ -159,7 +166,7 @@ body_of() {  # <record>
 test_completion_reaches_inbox_and_rings() {
   local dir out jobdir rec body until_line
   dir=$(setup_case finished)
-  out=$(job_start "$dir" --timeout 60 --label 'guest outcome monitor' -- \
+  out=$(job_start "$dir" --timeout 60 -- \
     sh -c 'echo monitored-outcome; exit 3') || fail "start failed: $out"
   jobdir=$(job_dir_of "$dir" "$out")
   [ -d "$jobdir" ] || fail "start did not report its job directory:"$'\n'"$out"
@@ -178,7 +185,6 @@ test_completion_reaches_inbox_and_rings() {
     "the record should name the job and its exit status"
   assert_contains "$body" "Task: t1; started by worker generation gen-A." \
     "the record should key the completion by task and spawn generation"
-  assert_contains "$body" "Label: guest outcome monitor" "the record should carry the label"
   assert_contains "$body" "Output: $jobdir/output" "the record should point at the output"
   assert_contains "$body" "not a new instruction" "the record should read as a result, not an order"
   assert_grep 'delivery=hold-aware' "$rec" "a completion record should be hold-aware"
@@ -237,6 +243,67 @@ test_hold_defers_the_ring_until_the_decision_closes() {
   rings=$(grep -cF "$DOORBELL" "$dir/send.log" || true)
   [ "$rings" = 1 ] || fail "expected one ring once the decision closed, got $rings:"$'\n'"$(cat "$dir/send.log")"
   pass "task job: a hold receives the result unrung, and the ladder rings it once the decision closes"
+}
+
+test_captain_hold_defers_completion() {
+  local dir out rec
+  dir=$(setup_case captain-held)
+  out=$(start_waiting_job "$dir") || fail "start failed: $out"
+  printf 'needs-decision [key=pick]: ship alpha or beta?\n' >> "$dir/state/t1.status"
+  printf 'captain-held [key=pick]: waiting for captain\n' >> "$dir/state/t1.status"
+  touch "$dir/release"
+  wait_for_record "$dir" || fail "a captain-held task's completion was not recorded"
+  wait_gone "$(sed -n 's/^pid=//p' "$(job_dir_of "$dir" "$out")/runner")" || fail "the runner outlived delivery"
+  [ ! -s "$dir/send.log" ] || fail "a captain-held completion rang immediately"
+  rec=$(records "$dir")
+  age_path "$rec"
+  steer_check "$dir"
+  steer_check "$dir"
+  [ ! -s "$dir/send.log" ] || fail "the watcher rang a captain-held completion"
+  [ -f "$rec" ] || fail "the captain-held completion disappeared"
+  printf 'resolved [key=pick]: alpha\n' >> "$dir/state/t1.status"
+  steer_check "$dir"
+  assert_grep "$DOORBELL" "$dir/send.log" "the watcher should ring after the captain hold clears"
+  pass "task job: captain holds suppress immediate and watcher completion rings"
+}
+
+test_runner_rings_a_preexisting_completion() {
+  local dir out jobdir rec
+  dir=$(setup_case preexisting)
+  out=$(start_waiting_job "$dir") || fail "start failed: $out"
+  jobdir=$(job_dir_of "$dir" "$out")
+  job_lib "$dir" fm_task_job_publish_exit "$jobdir" exited 0 || fail "could not publish exit"
+  job_lib "$dir" fm_task_job_deliver "$dir/state" t1 "$jobdir" || fail "watcher delivery failed"
+  [ ! -s "$dir/send.log" ] || fail "delivery without ring rang immediately"
+  rec=$(records "$dir")
+  touch "$dir/release"
+  wait_gone "$(sed -n 's/^pid=//p' "$jobdir/runner")" || fail "the runner outlived delivery"
+  [ "$(record_count "$dir")" = 1 ] || fail "the runner duplicated the completion"
+  assert_grep "$DOORBELL" "$dir/send.log" "the runner should ring an existing unhandled completion"
+  mv "$rec" "$dir/state/t1.inbox/handled/"
+  : > "$dir/send.log"
+  job_lib "$dir" fm_task_job_deliver "$dir/state" t1 "$jobdir" ring || fail "acknowledged redelivery failed"
+  [ ! -s "$dir/send.log" ] || fail "an acknowledged completion rang again"
+  pass "task job: immediate ringing ignores the record's writer and respects acknowledgement"
+}
+
+test_finished_live_runner_is_owned_until_stopped() {
+  local dir out jobdir runner child
+  dir=$(setup_case exit-before-delivery)
+  out=$(start_waiting_job "$dir") || fail "start failed: $out"
+  jobdir=$(job_dir_of "$dir" "$out")
+  runner=$(sed -n 's/^pid=//p' "$jobdir/runner")
+  child=$(sed -n 's/^pid=//p' "$jobdir/child")
+  job_lib "$dir" fm_task_job_publish_exit "$jobdir" exited 0 || fail "could not publish exit"
+  job_lib "$dir" fm_task_job_reconcile "$dir/state" t1 || fail "reconcile failed"
+  [ "$(record_count "$dir")" = 0 ] || fail "reconcile delivered while the runner was alive"
+  FM_TASK_JOB_KILL_GRACE_SECS=1 "$JOB" stop-all "$dir/state" t1 || fail "stop-all failed"
+  wait_gone "$runner" || fail "stop-all left a runner with an exit record running"
+  wait_gone "$child" || fail "stop-all left the command running"
+  [ "$(record_count "$dir")" = 0 ] || fail "stop-all delivered the completion"
+  rm -rf "$dir/state/t1.inbox"
+  [ ! -e "$dir/state/t1.inbox" ] || fail "the stopped runner recreated its inbox"
+  pass "task job: reconcile defers to a live runner and teardown stops it after exit publication"
 }
 
 test_watcher_rerings_until_acknowledged() {
@@ -358,6 +425,9 @@ fm_test_run \
   test_completion_names_the_starting_generation \
   test_timeout_stops_the_command_group \
   test_hold_defers_the_ring_until_the_decision_closes \
+  test_captain_hold_defers_completion \
+  test_runner_rings_a_preexisting_completion \
+  test_finished_live_runner_is_owned_until_stopped \
   test_watcher_rerings_until_acknowledged \
   test_watcher_delivers_a_lost_runner_once \
   test_stop_all_stops_without_delivering \

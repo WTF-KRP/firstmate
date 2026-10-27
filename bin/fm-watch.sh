@@ -593,10 +593,10 @@ inbox_steer_busy() {  # <window> <backend> <task> <tail40>
 # being healthy, while an unacknowledged instruction can still be a stuck steer.
 inbox_steer_check() {  # <window> <task>
   local w=$1 task=$2 action verb rec count tail40 reason='' ring_rc backend agent_state held=
-  # A hold-aware record waits out the worker's own open decision; the
-  # decisions are read only when such a record is actually pending.
+  # A hold-aware record waits out the holds owned by fm_task_job_task_held;
+  # status is read only when such a record is actually pending.
   if fm_task_inbox_has_hold_aware "$STATE" "$task" \
-    && [ -n "$(status_own_open_decisions "$STATE/$task.status")" ]; then
+    && fm_task_job_task_held "$STATE/$task.status"; then
     held=1
   fi
   action=$(fm_task_inbox_due_action "$STATE" "$task" "$held") || return 0

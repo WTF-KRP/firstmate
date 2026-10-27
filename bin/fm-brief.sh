@@ -455,7 +455,7 @@ INBOX_DIR=$(shell_quote "$STATE/$ID.inbox")
 TASK_JOB=$(shell_quote "$FM_ROOT/bin/fm-task-job.sh")
 IFS= read -r -d '' CREWMATE_PAUSE_INSTRUCTIONS <<EOF || true
    Use \`$PAUSED_VERB: {why}\` - distinct from \`blocked:\` - when deliberately waiting for work or an external condition expected to clear on its own, including your own validation round.
-   Run every command you will leave running past the end of your turn as a task job, never as a harness background terminal: \`$TASK_JOB start --timeout <seconds> [--label <text>] -- <command> [args...]\` returns at once, and when the command exits or passes its timeout, its result arrives in your steering inbox as a record that resumes you.
+   Run every command you will leave running past the end of your turn as a task job, never as a harness background terminal: \`$TASK_JOB start --timeout <seconds> -- <command> [args...]\` returns at once, and when the command exits or passes its timeout, its result arrives in your steering inbox as a record that resumes you.
    Before ending your turn with your own background shell or monitor still running, or before waiting on your own pipeline run or a long foreground command, append \`$PAUSED_VERB [at=<epoch>]: {job and completion condition}\` to the status file.
    Name what you are waiting for and what will let you resume; do not repeat the declaration on every poll.
    Do not declare active implementation or reasoning as a wait.

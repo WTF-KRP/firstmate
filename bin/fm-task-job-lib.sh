@@ -7,16 +7,17 @@
 # and nothing then starts one. Codex records such an exit against the turn that
 # already ended and waits for input, and a declared `paused:` wait is only
 # rechecked at its `until` backstop through a supervisor's judgement, which
-# cannot see that the command finished. A task job closes that class
-# structurally: bin/fm-task-job.sh's runner is the command's parent, so the exit
+# cannot see that the command finished. For commands launched as task jobs,
+# bin/fm-task-job.sh's runner is the command's parent, so the exit
 # is a kernel fact it observes directly, and delivery reuses the steering inbox
 # (bin/fm-task-inbox-lib.sh), whose acknowledgement move and re-ring ladder
-# redeliver the result until the worker collects it.
+# redeliver the result until the worker collects it. Harness-native background
+# commands are not covered.
 #
 # Layout under <state-dir>/<task>.inbox/jobs/<job-id>/ (teardown removes the
 # inbox, and with it every job record):
 #   job        key=value, written once before the runner starts: task, gen (the
-#              task's spawn_gen at start), label, timeout, started, deadline
+#              task's spawn_gen at start), timeout, started, deadline
 #   argv       the command, NUL-delimited
 #   runner     key=value: pid and start (ps lstart) of the detached runner,
 #              written by bin/fm-task-job.sh start right after the launch
@@ -36,9 +37,9 @@
 #
 # Delivery (fm_task_job_deliver) writes a hold-aware record
 # (bin/fm-task-inbox-lib.sh). It is rung at once unless the task holds an open
-# decision of its own (status_own_open_decisions in bin/fm-classify-lib.sh);
-# while one is open the watcher's ladder leaves the record unrung, and once the
-# decision closes the ordinary ladder rings it until the worker acknowledges it,
+# decision of its own or a declared captain hold (fm_task_job_task_held);
+# while held the watcher's ladder leaves the record unrung, and once the
+# hold clears the ordinary ladder rings it until the worker acknowledges it,
 # escalating like any unacknowledged steer. A deliberate hold therefore never
 # auto-resumes, while a worker's own `paused:` wait is woken.
 #
@@ -168,12 +169,11 @@ fm_task_job_stop_child() {  # <job-dir>
 # The completion notice. Every value comes from the job's own records, so the
 # same completion always yields the same body and dedups onto one record.
 fm_task_job_message() {  # <job-dir>
-  local dir=$1 id task gen label started outcome status ended result
+  local dir=$1 id task gen started outcome status ended result
   [ -f "$dir/job" ] && [ -f "$dir/exit" ] || return 1
   id=${dir##*/}
   task=$(fm_meta_get "$dir/job" task)
   gen=$(fm_meta_get "$dir/job" gen)
-  label=$(fm_meta_get "$dir/job" label)
   started=$(fm_meta_get "$dir/job" started)
   outcome=$(fm_meta_get "$dir/exit" outcome)
   status=$(fm_meta_get "$dir/exit" status)
@@ -186,34 +186,32 @@ fm_task_job_message() {  # <job-dir>
   esac
   printf 'Task job %s finished: %s.\n' "$id" "$result"
   printf 'Task: %s; started by worker generation %s.\n' "$task" "$gen"
-  [ -z "$label" ] || printf 'Label: %s\n' "$label"
   printf 'Started: %s; ended: %s.\n' "$(fm_task_job_utc_minute "$started")" "$(fm_task_job_utc_minute "$ended")"
   printf 'Output: %s/output\n' "$dir"
   printf '%s\n' "This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies."
 }
 
+fm_task_job_task_held() {
+  [ -n "$(status_own_open_decisions "$1")" ] \
+    || status_is_captain_held "$(status_declared_wait_line "$1")"
+}
+
 # Deliver one finished job into its task's steering inbox, at most once per
-# completion. With `ring`, a record this call created is rung at once unless the
-# task holds an open decision of its own; the watcher's ladder owns every later
+# completion. With `ring`, an unhandled record is rung at once unless the
+# task is held; the watcher's ladder owns every later
 # delivery attempt. Fails without writing when the task or job is gone.
 fm_task_job_deliver() {  # <state-dir> <task-id> <job-dir> [ring]
-  local state=$1 task=$2 dir=$3 ring=${4:-} meta inbox msg pre rec existing new=1 backend target
+  local state=$1 task=$2 dir=$3 ring=${4:-} meta inbox msg rec backend target
   meta="$state/$task.meta"
   inbox=$(fm_task_inbox_dir "$state" "$task")
   [ -d "$dir" ] && [ -f "$dir/exit" ] || return 1
   [ -f "$meta" ] && [ ! -L "$meta" ] && [ -d "$inbox" ] || return 1
   msg=$(fm_task_job_message "$dir") || return 1
-  pre=$(printf '%s\n' "$inbox"/*.msg "$inbox/handled"/*.msg 2>/dev/null)
   rec=$(fm_task_inbox_write_idempotent "$state" "$task" "$msg" hold-aware) || return 1
-  while IFS= read -r existing; do
-    [ "$existing" != "$rec" ] || { new=0; break; }
-  done <<EOF
-$pre
-EOF
   fm_task_job_write_record "$dir/delivered" "record=${rec##*/}" || true
-  [ "$ring" = ring ] && [ "$new" -eq 1 ] || return 0
+  [ "$ring" = ring ] && [ "${rec%/*}" = "$inbox" ] && [ -f "$rec" ] || return 0
   [ -z "$(fm_meta_get "$meta" remote_host)" ] || return 0
-  [ -z "$(status_own_open_decisions "$state/$task.status")" ] || return 0
+  ! fm_task_job_task_held "$state/$task.status" || return 0
   backend=$(fm_backend_of_meta "$meta")
   target=$(fm_backend_target_of_meta "$meta")
   [ -n "$target" ] || return 0
@@ -231,13 +229,13 @@ fm_task_job_reconcile() {  # <state-dir> <task-id>
   for dir in "$root"/*; do
     [ -d "$dir" ] && [ ! -L "$dir" ] || continue
     [ ! -f "$dir/delivered" ] || continue
+    rc=0
+    fm_task_job_runner_state "$dir" || rc=$?
+    [ "$rc" -ne 0 ] || continue
     if [ ! -f "$dir/exit" ]; then
-      rc=0
-      fm_task_job_runner_state "$dir" || rc=$?
-      case "$rc" in
-        0) continue ;;
-        2) [ -f "$dir/job" ] && [ "$(fm_path_age "$dir/job")" -ge "$grace" ] || continue ;;
-      esac
+      if [ "$rc" -eq 2 ]; then
+        [ -f "$dir/job" ] && [ "$(fm_path_age "$dir/job")" -ge "$grace" ] || continue
+      fi
       fm_task_job_stop_child "$dir"
       fm_task_job_publish_exit "$dir" lost '' || [ -f "$dir/exit" ] || continue
     fi
@@ -256,7 +254,6 @@ fm_task_job_stop_all() {  # <state-dir> <task-id>
   grace=$(fm_task_job_secs "${FM_TASK_JOB_KILL_GRACE_SECS:-}" "$FM_TASK_JOB_KILL_GRACE_DEFAULT")
   for dir in "$root"/*; do
     [ -d "$dir" ] && [ ! -L "$dir" ] || continue
-    [ ! -f "$dir/exit" ] || continue
     if [ -f "$dir/runner" ]; then
       pid=$(fm_meta_get "$dir/runner" pid)
       start=$(fm_meta_get "$dir/runner" start)
