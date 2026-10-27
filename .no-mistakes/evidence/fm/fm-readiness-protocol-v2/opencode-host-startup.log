@@ -1,0 +1,18 @@
+ok - OpenCode host-ready preserves the enclosing startup bound
+ok - OpenCode host-expiry preserves the enclosing startup bound
+ok - OpenCode host-explicit preserves the enclosing startup bound
+ok - OpenCode arm preserves the enclosing startup bound
+watcher: started pid=80605 (beacon fresh)
+watcher: FAILED - no live watcher with a fresh beacon
+ok - host suppresses rejected started readiness and preserves its failure close
+watcher: started pid=81965 (beacon fresh)
+signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-opencode-host-startup.05HVZn/rejected-started-wake/state/task.status
+supervision-host: the supervision session could not take this wake: the dialog mirror could not be read; this wake is yours
+ok - host suppresses rejected started readiness and preserves its wake close
+watcher: attached pid=85737 (beacon 0s)
+watcher: FAILED - no live watcher with a fresh beacon
+ok - host suppresses rejected attached readiness and preserves its failure close
+watcher: attached pid=91480 (beacon 0s)
+signal: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-opencode-host-startup.05HVZn/rejected-attached-wake/state/task.status
+supervision-host: the supervision session could not take this wake: the dialog mirror could not be read; this wake is yours
+ok - host suppresses rejected attached readiness and preserves its wake close
