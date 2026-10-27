@@ -12,11 +12,11 @@
 #       generation from that task's metadata. Records the job and starts a
 #       detached runner in a new session, so neither the turn ending nor the
 #       harness stopping its own process group stops the command. Prints the
-#       job id, the output path, and `until <YYYY-MM-DDTHH:MMZ>` (start plus
+#       job id, the output path, and `until: <YYYY-MM-DDTHH:MMZ>` (start plus
 #       timeout, rounded up to the minute) for the worker's `paused:`
 #       declaration, then returns. When the command exits, or passes its
 #       timeout and is stopped, the runner delivers a completion record into
-#       the steering inbox and rings the doorbell.
+#       the steering inbox and rings the doorbell unless the task is held.
 #   fm-task-job.sh stop-all <state-dir> <task-id>
 #       Stop every live job of the task without delivering anything.
 #       bin/fm-teardown.sh runs it before it removes the task's inbox.

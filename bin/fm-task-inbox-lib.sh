@@ -449,7 +449,7 @@ fm_task_inbox_is_fire_and_forget() {  # <record-path>
 }
 
 # Whether any unhandled record of the task is hold-aware: the watcher's cheap
-# test before it reads the task's open decisions.
+# test before it evaluates the task's hold.
 fm_task_inbox_has_hold_aware() {  # <state-dir> <task-id>
   local f
   for f in "$(fm_task_inbox_dir "$1" "$2")"/*.msg; do
@@ -506,8 +506,8 @@ fm_task_inbox_clear_retry() {  # <state-dir> <task-id> <record-path>
 #   escalate <record-path> <count>   attempt budget spent; surface as stale
 #   retry <record-path>       a fire-and-forget record's one retry ring is due
 # An empty inbox also resets the ladder bookkeeping so the next message starts
-# a fresh ladder. <held> is the caller's verdict that the task holds an open
-# decision of its own (see "Hold-aware records" in the header).
+# a fresh ladder. <held> is the caller's hold verdict from
+# fm_task_job_task_held (see "Hold-aware records" in the header).
 fm_task_inbox_due_action() {  # <state-dir> <task-id> [held]
   local dir oldest base now grace max ladder rec_base count last
   dir=$(fm_task_inbox_dir "$1" "$2")
