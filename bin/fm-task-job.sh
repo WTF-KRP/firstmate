@@ -57,24 +57,10 @@ valid_task() {  # <task-id>
   case "$1" in ''|*[!A-Za-z0-9._-]*) return 1 ;; esac
 }
 
-# The runner's own command is its child, so no identity check is needed here:
-# an unreaped child's pid cannot be reused.
 STOP_REQUESTED=0
-RUN_CHILD=
-stop_own_child() {
-  local grace i=0
-  [ -n "$RUN_CHILD" ] || return 0
-  kill -TERM -- "-$RUN_CHILD" 2>/dev/null || return 0
-  grace=$(fm_task_job_secs "${FM_TASK_JOB_KILL_GRACE_SECS:-}" "$FM_TASK_JOB_KILL_GRACE_DEFAULT")
-  while kill -0 "$RUN_CHILD" 2>/dev/null && [ "$i" -lt "$((grace * 10))" ]; do
-    sleep 0.1
-    i=$((i + 1))
-  done
-  kill -KILL -- "-$RUN_CHILD" 2>/dev/null || true
-}
 
 cmd_run() {  # <state-dir> <task-id> <job-dir>
-  local state=$1 task=$2 dir=$3 a deadline limit status=0 outcome=exited
+  local state=$1 task=$2 dir=$3 a deadline limit status=0 outcome=exited RUN_CHILD
   local argv=()
   trap 'STOP_REQUESTED=1' TERM INT
   [ -f "$dir/job" ] && [ -f "$dir/argv" ] || exit 1
@@ -97,27 +83,27 @@ cmd_run() {  # <state-dir> <task-id> <job-dir>
   limit=$((SECONDS + deadline - $(date +%s)))
   while kill -0 "$RUN_CHILD" 2>/dev/null; do
     if [ "$STOP_REQUESTED" = 1 ]; then
-      stop_own_child
+      fm_task_job_stop_child "$dir" || exit 1
       exit 143
     fi
     if [ "$SECONDS" -ge "$limit" ]; then
       outcome=timed-out
-      stop_own_child
+      fm_task_job_stop_child "$dir" || exit 1
       break
     fi
     sleep 1
   done
   wait "$RUN_CHILD" 2>/dev/null || status=$?
   if [ "$STOP_REQUESTED" = 1 ]; then
-    stop_own_child
+    fm_task_job_stop_child "$dir" || exit 1
     exit 143
   fi
   fm_task_job_publish_exit "$dir" "$outcome" "$status" || true
   fm_task_job_deliver "$state" "$task" "$dir" ring || true
 }
 
-cmd_start() {
-  local timeout='' inbox state task meta gen root id dir n=0 started deadline runner rc i
+cmd_start() (
+  local timeout='' inbox state task meta gen root id dir n=0 started deadline runner rc i lock
   while [ "$#" -gt 0 ]; do
     case "$1" in
       --timeout) [ "$#" -ge 2 ] || usage "--timeout needs a value"; timeout=$2; shift 2 ;;
@@ -141,6 +127,11 @@ cmd_start() {
   valid_task "$task" || die "unsupported task id in FM_TASK_INBOX: $task"
   use_state "$state"
   meta="$state/$task.meta"
+  lock=$(fm_meta_lock_path "$meta") || die "cannot resolve the task lock"
+  fm_lock_acquire_wait "$lock" || die "cannot lock the task"
+  trap 'fm_lock_release "$lock"' EXIT
+  trap 'exit 143' TERM INT
+  [ -d "$inbox" ] || die "the task inbox is missing; the task may have been retired"
   [ -f "$meta" ] && [ ! -L "$meta" ] || die "no task metadata for $task at $meta; the task may have been retired"
   gen=$(fm_meta_get "$meta" spawn_gen)
   [ -n "$gen" ] || die "the metadata for $task records no spawn_gen, so its completion cannot be keyed"
@@ -189,7 +180,7 @@ cmd_start() {
   printf 'job: %s\n' "${dir##*/}"
   printf 'output: %s/output\n' "$dir"
   printf 'until: %s\n' "$(fm_task_job_utc_minute "$(( (deadline + 59) / 60 * 60 ))")"
-}
+)
 
 cmd="${1:-}"
 [ "$#" -eq 0 ] || shift

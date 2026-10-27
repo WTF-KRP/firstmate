@@ -4109,7 +4109,7 @@ rm -f "$STATE/$ID.turn-ended" "$STATE/$ID.progress" \
 # (bin/fm-task-job-lib.sh).
 if [ -d "$STATE/$ID.inbox/jobs" ]; then
   "$SCRIPT_DIR/fm-task-job.sh" stop-all "$STATE" "$ID" \
-    || echo "warning: could not stop every task job of $ID; a job command may still be running" >&2
+    || { echo "error: could not stop every task job of $ID; retaining its inbox" >&2; exit 1; }
 fi
 # state/<id>.git-hooks is the spawn-owned commit-msg strip directory, left
 # read-only by its installer, and state/<id>.push-guard is a forge=external

@@ -143,27 +143,49 @@ fm_task_job_publish_exit() {  # <job-dir> <outcome> <status>
   return "$rc"
 }
 
-# Signal one recorded process group only while its leader is provably still
-# that process; an unreadable identity is never signalled.
-fm_task_job_signal_group() {  # <signal> <pid> <start>
-  fm_task_job_proc_state "$2" "$3" || return 1
-  kill "-$1" -- "-$2" 2>/dev/null
+fm_task_job_group_state() {
+  local snapshot
+  case "$1" in ''|*[!0-9]*|0|1) return 2 ;; esac
+  snapshot=$(LC_ALL=C ps -axo pgid=,stat= 2>/dev/null) || return 2
+  printf '%s\n' "$snapshot" | awk -v group="$1" '
+    $1 == group && $2 !~ /^Z/ { live = 1 }
+    END { exit !live }
+  '
 }
 
-# Stop a job's command group: TERM, then KILL after the grace.
-fm_task_job_stop_child() {  # <job-dir>
-  local pid start grace i=0
-  [ -f "$1/child" ] || return 0
-  pid=$(fm_meta_get "$1/child" pid)
-  start=$(fm_meta_get "$1/child" start)
-  fm_task_job_signal_group TERM "$pid" "$start" || return 0
+fm_task_job_stop_group() {
+  local pid=$1 start=$2 signal=${3:-TERM} grace i=0 rc=0
+  fm_task_job_group_state "$pid" || rc=$?
+  [ "$rc" -ne 1 ] || return 0
+  [ "$rc" -eq 0 ] || return 1
+  fm_task_job_proc_state "$pid" "$start" || return 1
+  kill "-$signal" -- "-$pid" 2>/dev/null || return 1
   grace=$(fm_task_job_secs "${FM_TASK_JOB_KILL_GRACE_SECS:-}" "$FM_TASK_JOB_KILL_GRACE_DEFAULT")
+  [ "$signal" != KILL ] || grace=0
   while [ "$i" -lt "$((grace * 10))" ]; do
-    fm_task_job_proc_state "$pid" "$start" || [ "$?" -eq 2 ] || return 0
+    rc=0
+    fm_task_job_group_state "$pid" || rc=$?
+    [ "$rc" -ne 1 ] || return 0
+    [ "$rc" -eq 0 ] || return 1
     sleep 0.1
     i=$((i + 1))
   done
-  fm_task_job_signal_group KILL "$pid" "$start" || true
+  kill -KILL -- "-$pid" 2>/dev/null || true
+  i=0
+  while [ "$i" -lt 100 ]; do
+    rc=0
+    fm_task_job_group_state "$pid" || rc=$?
+    [ "$rc" -ne 1 ] || return 0
+    [ "$rc" -eq 0 ] || return 1
+    sleep 0.1
+    i=$((i + 1))
+  done
+  return 1
+}
+
+fm_task_job_stop_child() {
+  [ -f "$1/child" ] || return 0
+  fm_task_job_stop_group "$(fm_meta_get "$1/child" pid)" "$(fm_meta_get "$1/child" start)"
 }
 
 # The completion notice. Every value comes from the job's own records, so the
@@ -192,17 +214,27 @@ fm_task_job_message() {  # <job-dir>
 }
 
 fm_task_job_task_held() {
-  [ -n "$(status_own_open_decisions "$1")" ] \
-    || status_is_captain_held "$(status_declared_wait_line "$1")"
+  local state=$1 task=$2 rc=0
+  if [ -n "$(status_own_open_decisions "$state/$task.status")" ] \
+    || status_is_captain_held "$(status_declared_wait_line "$state/$task.status")"; then
+    return 0
+  fi
+  FM_HOME="$FM_HOME" FM_STATE_OVERRIDE="$state" \
+    "$FM_WAKE_LIB_DIR/fm-captain-hold.sh" open "$task" >/dev/null 2>&1 || rc=$?
+  [ "$rc" -ne 1 ]
 }
 
 # Deliver one finished job into its task's steering inbox, at most once per
 # completion. With `ring`, an unhandled record is rung at once unless the
 # task is held; the watcher's ladder owns every later
 # delivery attempt. Fails without writing when the task or job is gone.
-fm_task_job_deliver() {  # <state-dir> <task-id> <job-dir> [ring]
-  local state=$1 task=$2 dir=$3 ring=${4:-} meta inbox msg rec backend target
+fm_task_job_deliver() (
+  local state=$1 task=$2 dir=$3 ring=${4:-} meta inbox msg rec backend target lock
   meta="$state/$task.meta"
+  lock=$(fm_meta_lock_path "$meta") || return 1
+  fm_lock_acquire_wait "$lock" || return 1
+  trap 'fm_lock_release "$lock"' EXIT
+  trap 'exit 143' TERM INT
   inbox=$(fm_task_inbox_dir "$state" "$task")
   [ -d "$dir" ] && [ -f "$dir/exit" ] || return 1
   [ -f "$meta" ] && [ ! -L "$meta" ] && [ -d "$inbox" ] || return 1
@@ -211,13 +243,13 @@ fm_task_job_deliver() {  # <state-dir> <task-id> <job-dir> [ring]
   fm_task_job_write_record "$dir/delivered" "record=${rec##*/}" || true
   [ "$ring" = ring ] && [ "${rec%/*}" = "$inbox" ] && [ -f "$rec" ] || return 0
   [ -z "$(fm_meta_get "$meta" remote_host)" ] || return 0
-  ! fm_task_job_task_held "$state/$task.status" || return 0
+  ! fm_task_job_task_held "$state" "$task" || return 0
   backend=$(fm_backend_of_meta "$meta")
   target=$(fm_backend_target_of_meta "$meta")
   [ -n "$target" ] || return 0
   fm_task_inbox_ring "$backend" "$target" "$rec" "fm-$task" >/dev/null 2>&1 || true
   return 0
-}
+)
 
 # The watcher's per-poll recovery for one task (see the header). Cheap when the
 # task has no job directory.
@@ -236,7 +268,7 @@ fm_task_job_reconcile() {  # <state-dir> <task-id>
       if [ "$rc" -eq 2 ]; then
         [ -f "$dir/job" ] && [ "$(fm_path_age "$dir/job")" -ge "$grace" ] || continue
       fi
-      fm_task_job_stop_child "$dir"
+      fm_task_job_stop_child "$dir" || continue
       fm_task_job_publish_exit "$dir" lost '' || [ -f "$dir/exit" ] || continue
     fi
     fm_task_job_deliver "$1" "$2" "$dir" || true
@@ -245,29 +277,19 @@ fm_task_job_reconcile() {  # <state-dir> <task-id>
 }
 
 # Stop every live job of a task without delivering anything: the runner first,
-# whose own stop handler takes its command down, then any command group left.
+# then its command group.
 # Teardown runs this before it removes the inbox.
 fm_task_job_stop_all() {  # <state-dir> <task-id>
-  local root dir pid start grace i
+  local root dir failed=0
   root=$(fm_task_job_root "$1" "$2")
   [ -d "$root" ] || return 0
-  grace=$(fm_task_job_secs "${FM_TASK_JOB_KILL_GRACE_SECS:-}" "$FM_TASK_JOB_KILL_GRACE_DEFAULT")
   for dir in "$root"/*; do
     [ -d "$dir" ] && [ ! -L "$dir" ] || continue
     if [ -f "$dir/runner" ]; then
-      pid=$(fm_meta_get "$dir/runner" pid)
-      start=$(fm_meta_get "$dir/runner" start)
-      if fm_task_job_signal_group TERM "$pid" "$start"; then
-        i=0
-        while [ "$i" -lt "$((grace * 10))" ]; do
-          fm_task_job_proc_state "$pid" "$start" || [ "$?" -eq 2 ] || break
-          sleep 0.1
-          i=$((i + 1))
-        done
-        fm_task_job_signal_group KILL "$pid" "$start" || true
-      fi
+      fm_task_job_stop_group "$(fm_meta_get "$dir/runner" pid)" \
+        "$(fm_meta_get "$dir/runner" start)" KILL || failed=1
     fi
-    fm_task_job_stop_child "$dir"
+    fm_task_job_stop_child "$dir" || failed=1
   done
-  return 0
+  return "$failed"
 }

@@ -596,7 +596,7 @@ inbox_steer_check() {  # <window> <task>
   # A hold-aware record waits out the holds owned by fm_task_job_task_held;
   # status is read only when such a record is actually pending.
   if fm_task_inbox_has_hold_aware "$STATE" "$task" \
-    && fm_task_job_task_held "$STATE/$task.status"; then
+    && fm_task_job_task_held "$STATE" "$task"; then
     held=1
   fi
   action=$(fm_task_inbox_due_action "$STATE" "$task" "$held") || return 0
