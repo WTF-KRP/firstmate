@@ -43,8 +43,7 @@
 #   body-terminator=1          present on records written with a synthetic final newline
 #   delivery=fire-and-forget   present only when the re-ring ladder must ignore it
 #                              (it still gets one retry ring; see below)
-#   delivery=hold-aware        an ordinary ladder record that leaves the ladder
-#                              while its task is held
+#   delivery=hold-aware        a task-job completion outside the steer ladder
 #                              (see "Hold-aware records" below)
 #   --
 #   <exact message text; newlines are legal; a marked secondmate request keeps
@@ -88,13 +87,8 @@
 # acknowledged record drops its mark. The remote steer leg has no watcher
 # ladder and owes no retry.
 #
-# Hold-aware records: a result the worker itself asked for, not an instruction.
-# The caller uses fm_task_job_task_held (bin/fm-task-job-lib.sh) and
-# passes that as `held` to fm_task_inbox_due_action; while held, hold-aware
-# records are left out of the ladder exactly like fire-and-forget records, so
-# they neither ring nor escalate and never resume a deliberate hold, while the
-# task's ordinary steers keep their ladder. Unheld, their first attempt is due
-# immediately, then they follow the ordinary retry spacing.
+# Hold-aware records follow the independent per-job delivery contract in
+# bin/fm-task-job-lib.sh and never enter the steer ladder.
 #
 # Inbox names containing bytes outside printable ASCII are unsupported. The
 # doorbell refuses them rather than sending terminal control bytes to a pane.
@@ -450,28 +444,15 @@ fm_task_inbox_is_fire_and_forget() {  # <record-path>
   [ "$(fm_task_inbox_delivery_mode "$1" 2>/dev/null)" = fire-and-forget ]
 }
 
-# Whether any unhandled record of the task is hold-aware: the watcher's cheap
-# test before it evaluates the task's hold.
-fm_task_inbox_has_hold_aware() {  # <state-dir> <task-id>
-  local f
-  for f in "$(fm_task_inbox_dir "$1" "$2")"/*.msg; do
-    [ -e "$f" ] || continue
-    [ "$(fm_task_inbox_delivery_mode "$f" 2>/dev/null)" != hold-aware ] || return 0
-  done
-  return 1
-}
-
-# Oldest escalation-tracked unhandled record, or fail when none is due. With
-# <held> set, hold-aware records are not tracked either.
-fm_task_inbox_oldest_unhandled() {  # <state-dir> <task-id> [held]
+# Oldest escalation-tracked unhandled steer, or fail when none exists.
+fm_task_inbox_oldest_unhandled() {  # <state-dir> <task-id>
   local dir best='' best_n=0 f n mode
   dir=$(fm_task_inbox_dir "$1" "$2")
   for f in "$dir"/*.msg; do
     [ -e "$f" ] || continue
     mode=$(fm_task_inbox_delivery_mode "$f" 2>/dev/null) || continue
     case "$mode" in
-      fire-and-forget) continue ;;
-      hold-aware) [ -z "${3:-}" ] || continue ;;
+      fire-and-forget|hold-aware) continue ;;
     esac
     n=$(fm_task_inbox_seq_of "${f##*/}") || continue
     if [ -z "$best" ] || [ "$n" -lt "$best_n" ]; then
@@ -508,24 +489,11 @@ fm_task_inbox_clear_retry() {  # <state-dir> <task-id> <record-path>
 #   escalate <record-path> <count>   attempt budget spent; surface as stale
 #   retry <record-path>       a fire-and-forget record's one retry ring is due
 # An empty inbox also resets the ladder bookkeeping so the next message starts
-# a fresh ladder. <held> is the caller's hold verdict from
-# fm_task_job_task_held (see "Hold-aware records" in the header).
-fm_task_inbox_due_action() {  # <state-dir> <task-id> [held]
-  local dir oldest base now grace max ladder _rec_base count last rec
+# a fresh ladder.
+fm_task_inbox_due_action() {  # <state-dir> <task-id>
+  local dir oldest base now grace max ladder _rec_base count last
   dir=$(fm_task_inbox_dir "$1" "$2")
-  if [ -z "${3:-}" ]; then
-    for rec in "$dir"/*.msg; do
-      [ -f "$rec" ] || continue
-      [ "$(fm_task_inbox_delivery_mode "$rec")" = hold-aware ] || continue
-      base=${rec##*/}
-      [ "$(cat "$dir/.escalated" 2>/dev/null || true)" != "$base" ] || continue
-      if ! awk -v base="$base" '$1 == base { found = 1 } END { exit !found }' "$dir/.ring-state" 2>/dev/null; then
-        printf 'ring %s' "$rec"
-        return 0
-      fi
-    done
-  fi
-  if ! oldest=$(fm_task_inbox_oldest_unhandled "$1" "$2" "${3:-}"); then
+  if ! oldest=$(fm_task_inbox_oldest_unhandled "$1" "$2"); then
     rm -f "$dir/.ring-state" "$dir/.escalated" "$dir/.busy-state" 2>/dev/null || true
     # The one retry ring exists only while config/wait-no-turns is present.
     # Absent, a mark is left untouched and the inbox stays quiet, as before.

@@ -10,8 +10,8 @@
 # cannot see that the command finished. For commands launched as task jobs,
 # bin/fm-task-job.sh's runner is the command's parent, so the exit
 # is a kernel fact it observes directly, and delivery reuses the steering inbox
-# (bin/fm-task-inbox-lib.sh), whose acknowledgement move and re-ring ladder
-# redeliver the result until the worker collects it. Harness-native background
+# (bin/fm-task-inbox-lib.sh), whose acknowledgement move ends each job's own
+# delivery ladder. Harness-native background
 # commands and guardian outcomes are not covered.
 #
 # Layout under <state-dir>/<task>.inbox/jobs/<job-id>/ (teardown removes the
@@ -28,6 +28,9 @@
 #              published once by an exclusive link, so its presence means the
 #              job is over and no later writer can replace it
 #   delivered  the inbox record name the completion was delivered as
+#   delivery   key=value: count and last delivery attempt epoch
+#   busy       key=value: count of consecutive busy deferrals
+#   escalated  key=value: record already surfaced as stale
 #
 # Identity: a completion is keyed by its task, the spawn generation that started
 # the job, and the job id, and all three are in the record body, so the inbox's
@@ -38,9 +41,11 @@
 # Watcher-owned delivery (fm_task_job_deliver) writes a hold-aware record
 # (bin/fm-task-inbox-lib.sh). It is rung at once unless the task holds an open
 # decision of its own or a declared captain hold (fm_task_job_task_held);
-# while held the watcher's ladder leaves the record unrung, and once the
-# hold clears the watcher rings it, then the ordinary ladder retries until acknowledgement,
-# escalating like any unacknowledged steer. A deliberate hold therefore never
+# while held the watcher leaves the record unrung, and once the
+# hold clears the watcher rings it. Each job owns its attempt count, spacing,
+# busy deferrals and escalation, independently of every steer and other job,
+# using the inbox grace and budget tunables until acknowledgement.
+# A deliberate hold therefore never
 # auto-resumes, while a worker's own `paused:` wait is woken.
 #
 # Recovery (fm_task_job_reconcile, run by bin/fm-watch.sh on every poll for each
@@ -198,16 +203,19 @@ fm_task_job_stop_runner() {
   [ -f "$dir/runner" ] || { [ ! -f "$dir/child" ]; return; }
   pid=$(fm_meta_get "$dir/runner" pid)
   start=$(fm_meta_get "$dir/runner" start)
-  fm_task_job_group_members "$pid" >/dev/null || rc=$?
-  [ "$rc" -ne 1 ] || return 0
-  [ "$rc" -eq 0 ] || return 1
-  rc=0
   fm_task_job_proc_state "$pid" "$start" || rc=$?
   [ "$rc" -ne 2 ] || return 1
+  if [ "$rc" -eq 1 ] && [ -f "$dir/exit" ]; then
+    return 0
+  fi
   if [ "$rc" -eq 1 ]; then
     kill -0 "$pid" 2>/dev/null && return 1
     signal=KILL
   fi
+  rc=0
+  fm_task_job_group_members "$pid" >/dev/null || rc=$?
+  [ "$rc" -ne 1 ] || return 0
+  [ "$rc" -eq 0 ] || return 1
   kill "-$signal" -- "-$pid" 2>/dev/null || true
   grace=$(fm_task_job_secs "${FM_TASK_JOB_KILL_GRACE_SECS:-}" "$FM_TASK_JOB_KILL_GRACE_DEFAULT")
   limit=$((SECONDS + grace + 15))
@@ -258,7 +266,7 @@ fm_task_job_task_held() {
 }
 
 # Deliver one finished job into its task's steering inbox, at most once per
-# completion. The watcher owns delivery and its hold-aware ringing ladder.
+# completion. The watcher owns delivery and each job's ringing ladder.
 # Fails without writing when the task or job is gone.
 fm_task_job_deliver() (
   local state=$1 task=$2 dir=$3 meta inbox msg rec lock
@@ -275,6 +283,25 @@ fm_task_job_deliver() (
   fm_task_job_write_record "$dir/delivered" "record=${rec##*/}" || true
   return 0
 )
+
+fm_task_job_due_action() {  # <job-dir>
+  local dir=$1 rec count last now
+  rec=$(fm_meta_get "$dir/delivered" record)
+  rec="${dir%/jobs/*}/$rec"
+  [ -f "$rec" ] && [ ! -f "$dir/escalated" ] || { printf quiet; return; }
+  count=$(fm_meta_get "$dir/delivery" count)
+  last=$(fm_meta_get "$dir/delivery" last)
+  case "$count" in ''|*[!0-9]*) count=0 ;; esac
+  case "$last" in ''|*[!0-9]*) last=0 ;; esac
+  now=$(date +%s)
+  if [ "$count" -gt 0 ] && [ "$((now - last))" -lt "$(fm_task_inbox_grace_secs)" ]; then
+    printf quiet
+  elif [ "$count" -ge "$(fm_task_inbox_ring_max)" ]; then
+    printf 'escalate %s %s' "$rec" "$count"
+  else
+    printf 'ring %s %s' "$rec" "$count"
+  fi
+}
 
 # The watcher's per-poll recovery for one task (see the header). Cheap when the
 # task has no job directory.

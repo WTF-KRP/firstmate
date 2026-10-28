@@ -13,7 +13,7 @@
 #      relaunch replaced it.
 #   3. A command past its timeout is stopped with its whole process group.
 #   4. A task holding an open decision of its own gets the record without a
-#      ring, and the watcher's ladder leaves it unrung until the decision
+#      ring, and the watcher's job delivery leaves it unrung until the decision
 #      closes, then rings it.
 #   5. A doorbell that did not land is re-rung by the watcher until the worker
 #      acknowledges the record.
@@ -153,7 +153,13 @@ steer_check() {  # <dir>
   PATH="$1/fakebin:$PATH" FM_HOME="$1" FM_DATA_OVERRIDE="$1/owning-data" FM_CONFIG_OVERRIDE="$1/config" \
     FM_STATE_OVERRIDE="$1/state" FM_SEND_LOG="$1/send.log" \
     FM_TASK_INBOX_GRACE_SECS="${2:-90}" \
-    bash -c '. "$1" && fm_task_job_reconcile "$STATE" t1 && inbox_steer_check sess:fm-t1 t1' _ "$WATCH" >/dev/null 2>&1
+    bash -c '
+      . "$1" || exit 1
+      fm_task_job_reconcile "$STATE" t1 || exit 1
+      task_job_check sess:fm-t1 t1 || exit 1
+      inbox_steer_check sess:fm-t1 t1
+      [ -z "$TASK_JOB_WAKE_REASON" ] || wake "$TASK_JOB_WAKE_REASON"
+    ' _ "$WATCH" >/dev/null 2>&1
 }
 
 age_path() {  # <path>  (set mtime well past any grace under test)
@@ -541,6 +547,145 @@ test_finished_live_runner_is_owned_until_stopped() {
   pass "task job: reconcile defers to a live runner and teardown stops it after exit publication"
 }
 
+test_failed_completion_has_its_own_retry_and_escalation() {
+  local dir older out jobdir rec failures
+  dir=$(setup_case independent-retries)
+  older=$(job_lib "$dir" fm_task_inbox_write "$dir/state" t1 "Older instruction") || fail "could not seed steer"
+  age_path "$older"
+  job_lib "$dir" fm_task_inbox_record_escalated "$dir/state" t1 "$older" || fail "could not escalate steer"
+  out=$(job_start "$dir" --timeout 60 -- true) || fail "start failed: $out"
+  jobdir=$(job_dir_of "$dir" "$out")
+  wait_for_file "$jobdir/exit" || fail "completion did not finish"
+  wait_gone "$(sed -n 's/^pid=//p' "$jobdir/runner")" || fail "runner did not exit"
+  FM_FAKE_TMUX_SEND_FAIL=1 FM_TASK_INBOX_RING_MAX=2 steer_check "$dir"
+  rec="$dir/state/t1.inbox/$(sed -n 's/^record=//p' "$jobdir/delivered")"
+  [ -f "$rec" ] || fail "completion was not recorded"
+  assert_grep 'count=1' "$jobdir/delivery" "the failed first ring must count for this job"
+  failures=$(grep -cF 'send failed' "$dir/send.log" || true)
+  [ "$failures" -gt 0 ] || fail "the first ring did not attempt delivery"
+  FM_FAKE_TMUX_SEND_FAIL=1 FM_TASK_INBOX_RING_MAX=2 steer_check "$dir"
+  assert_grep 'count=1' "$jobdir/delivery" "an immediate poll must preserve retry spacing"
+  [ "$(grep -cF 'send failed' "$dir/send.log" || true)" = "$failures" ] || fail "an immediate poll attempted another send"
+  sleep 1.1
+  FM_FAKE_TMUX_SEND_FAIL=1 FM_TASK_INBOX_RING_MAX=2 steer_check "$dir" 1
+  assert_grep 'count=2' "$jobdir/delivery" "an older escalated steer must not suppress a failed retry"
+  [ "$(grep -cF 'send failed' "$dir/send.log" || true)" -gt "$failures" ] || fail "the completion retry did not attempt delivery"
+  [ ! -e "$jobdir/escalated" ] || fail "completion escalated during its retry"
+  FM_TASK_INBOX_RING_MAX=2 steer_check "$dir"
+  [ ! -e "$jobdir/escalated" ] || fail "escalation bypassed spacing"
+  sleep 1.1
+  FM_TASK_INBOX_RING_MAX=2 steer_check "$dir" 1
+  assert_grep "$rec" "$dir/state/.wake-queue" "completion must have its own stale wake"
+  assert_grep 'after 2 doorbell delivery attempts' "$dir/state/.wake-queue" "completion must exhaust its own budget"
+  FM_TASK_INBOX_RING_MAX=2 steer_check "$dir" 1
+  [ "$(grep -cF "$rec" "$dir/state/.wake-queue")" = 1 ] || fail "completion escalation repeated"
+  [ "$(cat "$dir/state/t1.inbox/.escalated")" = "${older##*/}" ] || fail "completion overwrote the steer escalation"
+  mv "$rec" "$dir/state/t1.inbox/handled/"
+  : > "$dir/send.log"
+  steer_check "$dir" 0
+  [ ! -s "$dir/send.log" ] || fail "acknowledged completion rang again"
+  pass "task job: failed rings retry and escalate independently of an older escalated steer"
+}
+
+test_completion_never_delays_a_steer() {
+  local dir out jobdir rec steer action
+  dir=$(setup_case steer-after-completion)
+  printf 'needs-decision [key=pick]: choose a result\n' >> "$dir/state/t1.status"
+  out=$(job_start "$dir" --timeout 60 -- true) || fail "start failed: $out"
+  jobdir=$(job_dir_of "$dir" "$out")
+  wait_for_record "$dir" || fail "held completion was not recorded"
+  rec=$(records "$dir")
+  steer=$(job_lib "$dir" fm_task_inbox_write "$dir/state" t1 "New instruction") || fail "could not seed steer"
+  age_path "$steer"
+  steer_check "$dir"
+  [ "$(grep -cF "$DOORBELL" "$dir/send.log" || true)" = 1 ] || fail "held completion delayed a newer steer"
+  [ ! -e "$jobdir/delivery" ] || fail "held completion consumed a delivery attempt"
+  mv "$steer" "$dir/state/t1.inbox/handled/"
+  action=$(job_lib "$dir" fm_task_inbox_due_action "$dir/state" t1)
+  [ "$action" = quiet ] || fail "the steer ladder selected a completion: $action"
+  printf 'resolved [key=pick]: continue\n' >> "$dir/state/t1.status"
+  FM_TASK_INBOX_RING_MAX=1 steer_check "$dir"
+  sleep 1.1
+  steer=$(job_lib "$dir" fm_task_inbox_write "$dir/state" t1 "Another instruction") || fail "could not seed next steer"
+  age_path "$steer"
+  FM_TASK_INBOX_RING_MAX=1 steer_check "$dir" 1
+  [ "$(grep -cF "$DOORBELL" "$dir/send.log" || true)" = 3 ] || fail "completion escalation delayed a steer"
+  assert_grep "$rec" "$dir/state/.wake-queue" "the completion must escalate independently"
+  pass "task job: held and escalating completions never block a newer steer"
+}
+
+test_finished_job_cannot_stop_a_reused_runner_group() {
+  local mode dir other out jobdir otherjob runner descendant
+  for mode in live gone; do
+    dir=$(setup_case "reused-$mode")
+    out=$(job_start "$dir" --timeout 60 -- true) || fail "start failed: $out"
+    jobdir=$(job_dir_of "$dir" "$out")
+    wait_for_file "$jobdir/exit" || fail "old job did not finish"
+    wait_gone "$(sed -n 's/^pid=//p' "$jobdir/runner")" || fail "old runner did not exit"
+    other=$(setup_case "new-owner-$mode")
+    out=$(start_stubborn_job "$other" 120) || fail "new job failed: $out"
+    otherjob=$(job_dir_of "$other" "$out")
+    runner=$(sed -n 's/^pid=//p' "$otherjob/runner")
+    wait_for_file "$other/grandchild.pid" || fail "new descendant did not start"
+    descendant=$(cat "$other/grandchild.pid")
+    job_lib "$dir" fm_task_job_write_record "$jobdir/runner" "pid=$runner" "start=retired runner identity" \
+      || fail "could not model historical pid reuse in the runner record"
+    if [ "$mode" = gone ]; then
+      kill -KILL "$runner"
+      wait_gone "$runner" || fail "new runner did not stop"
+    fi
+    FM_TASK_JOB_KILL_GRACE_SECS=0 case_command "$dir" "$JOB" stop-all "$dir/state" t1 \
+      || fail "finished job cleanup refused a historical runner identity"
+    kill -0 "$descendant" 2>/dev/null || fail "finished job cleanup killed another job's descendant"
+    if [ "$mode" = live ]; then
+      kill -0 "$runner" 2>/dev/null || fail "finished job cleanup killed another runner"
+    fi
+    FM_TASK_JOB_KILL_GRACE_SECS=0 case_command "$other" "$JOB" stop-all "$other/state" t1 \
+      || fail "new owner's cleanup failed"
+    wait_gone "$descendant" || fail "new owner's cleanup left a descendant"
+  done
+  pass "task job: finished records never signal reused runner pids or surviving groups"
+}
+
+test_secondmate_teardown_stops_child_job_without_delivery() {
+  local dir home child_wt out jobdir runner child tool world
+  dir=$(setup_case secondmate-retirement)
+  world="$TMP_ROOT/secondmate-world"
+  home="$world/secondmate-home"
+  mkdir -p "$home/state" "$home/data" "$home/config" "$home/projects" "$dir/job-scratch"
+  printf 't1\n' > "$home/.fm-secondmate-home"
+  git init -q -b main "$world/project"
+  git -C "$world/project" -c user.email=t@t -c user.name=t commit -q --allow-empty -m baseline
+  git -C "$world/project" worktree add -q -b fm/t1 "$world/mate-wt" main
+  child_wt="$world/child-wt"
+  git -C "$world/project" worktree add -q -b fm/child "$child_wt" main
+  fm_write_meta "$dir/state/t1.meta" "window=sess:fm-t1" "kind=secondmate" "mode=local-only" \
+    "spawn_gen=mate-gen" "home=$home" "worktree=$world/mate-wt" "project=$world/project"
+  fm_write_meta "$home/state/child.meta" "window=sess:fm-child" "endpoint_task_id=child" \
+    "kind=scout" "mode=local-only" "spawn_gen=child-gen" "worktree=$child_wt" "project=$world/project"
+  printf '## In flight\n\n## Queued\n\n## Done\n' > "$home/data/backlog.md"
+  for tool in treehouse no-mistakes gh-axi gh; do
+    printf '#!/usr/bin/env bash\nexit 0\n' > "$dir/fakebin/$tool"
+    chmod +x "$dir/fakebin/$tool"
+  done
+  out=$(cd "$dir/job-scratch" && PATH="$dir/fakebin:$PATH" FM_HOME="$home" \
+    FM_TASK_INBOX="$home/state/child.inbox" "$JOB" start --timeout 120 -- sleep 60) \
+    || fail "child start failed: $out"
+  jobdir="$home/state/child.inbox/jobs/$(printf '%s\n' "$out" | sed -n 's/^job: //p')"
+  runner=$(sed -n 's/^pid=//p' "$jobdir/runner")
+  child=$(sed -n 's/^pid=//p' "$jobdir/child")
+  FM_TASK_JOB_KILL_GRACE_SECS=0 FM_SEND_LOG="$dir/send.log" FM_ROOT_OVERRIDE="$ROOT" \
+    case_command "$dir" "$ROOT/bin/fm-teardown.sh" t1 --force > "$dir/teardown.out" 2>&1 \
+    || fail "secondmate teardown failed: $(cat "$dir/teardown.out")"
+  wait_gone "$runner" || fail "secondmate teardown left the child runner"
+  wait_gone "$child" || fail "secondmate teardown left the child command"
+  [ ! -e "$home" ] || fail "secondmate home survived retirement"
+  job_lib "$dir" fm_task_job_reconcile "$home/state" child || fail "retired recovery failed"
+  [ ! -e "$home/state/child.inbox" ] || fail "retired child inbox was recreated"
+  [ ! -s "$dir/send.log" ] || fail "retiring the secondmate delivered a completion"
+  pass "task job: recursive secondmate teardown stops child jobs without ringing or recreating an inbox"
+}
+
 test_watcher_rerings_until_acknowledged() {
   local dir out rec
   dir=$(setup_case rering)
@@ -568,7 +713,7 @@ watch_bg() {  # <dir> <out>
     FM_FAKE_CREW_STATE='state: working · source: run-step · validating (running)' \
     FM_POLL=1 FM_SIGNAL_GRACE=1 FM_CHECK_INTERVAL=999999 FM_HEARTBEAT=999999 \
     FM_TASK_INBOX_GRACE_SECS=1 FM_TASK_JOB_KILL_GRACE_SECS=1 \
-    "$WATCH" > "$2" 2>/dev/null &
+    "$WATCH" > "$2" 2>&1 &
 }
 
 test_watcher_delivers_a_lost_runner_once() {
@@ -608,7 +753,7 @@ test_watcher_delivers_a_lost_runner_once() {
   wait "$wpid" 2>/dev/null
   [ "$(record_count "$dir")" = 0 ] || fail "an acknowledged completion was delivered again:"$'\n'"$(records "$dir")"
   assert_grep 'record=' "$dir/state/t1.inbox/jobs/${jobdir##*/}/delivered" \
-    "redelivery should land on the acknowledged record"
+    "redelivery should land on the acknowledged record: $(cat "$dir/watch.out")"
   pass "watcher: a job whose runner died is delivered once as lost, with its command stopped"
 }
 
@@ -728,6 +873,10 @@ fm_test_run \
   test_decimal_timeouts_and_graces \
   test_watcher_delivers_a_finished_job_once \
   test_completion_bypasses_older_steer \
+  test_failed_completion_has_its_own_retry_and_escalation \
+  test_completion_never_delays_a_steer \
+  test_finished_job_cannot_stop_a_reused_runner_group \
+  test_secondmate_teardown_stops_child_job_without_delivery \
   test_finished_live_runner_is_owned_until_stopped \
   test_watcher_rerings_until_acknowledged \
   test_watcher_delivers_a_lost_runner_once \
