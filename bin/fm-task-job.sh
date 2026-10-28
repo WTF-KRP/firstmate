@@ -14,7 +14,7 @@
 #       harness stopping its own process group stops the command. Prints the
 #       job id, the output path, and `until: <YYYY-MM-DDTHH:MMZ>` (start plus
 #       timeout, rounded up to the minute) for the worker's `paused:`
-#       declaration, then returns. When the command exits, or passes its
+#       declaration, then returns. When the job finishes, or passes its
 #       timeout and is stopped, the runner publishes its exit record. The
 #       watcher delivers the completion and rings unless the task is held.
 #   fm-task-job.sh stop-all <state-dir> <task-id>

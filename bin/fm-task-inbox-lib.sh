@@ -23,10 +23,9 @@
 # into stuck-crewmate-recovery.
 #
 # Layout under <state-dir>:
-#   <task>.inbox/NNN.msg       one durable steer, numeric sequence, atomic rename
+#   <task>.inbox/NNN.msg       one durable record, numeric sequence, atomic rename
 #   <task>.inbox/handled/      the worker's `mv` here IS the acknowledgement
 #   <task>.inbox/.seq.lock     serializes sequence allocation across writers
-#                              (the session and the away daemon)
 #   <task>.inbox/.ring-state   current oldest steer's "<msg>\t<count>\t<epoch>"
 #   <task>.inbox/.busy-state   consecutive busy deferrals: "<msg>\t<count>"
 #   <task>.inbox/.escalated    oldest-message name already surfaced as stale,
@@ -53,7 +52,7 @@
 # lifetime even if every doorbell is duplicated. Concurrent writers serialize
 # on .seq.lock; the worst racing outcome is ordering, never loss.
 #
-# Re-ring ladder (fm_task_inbox_due_action): an unhandled message older than
+# Steer re-ring ladder (fm_task_inbox_due_action): an unhandled steer older than
 # FM_TASK_INBOX_GRACE_SECS is due one delivery attempt per grace period; an
 # attempt may ring or be skipped to protect another draft in a proven pending
 # composer; an unsubmitted copy of this doorbell is retried. After

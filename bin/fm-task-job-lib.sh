@@ -11,8 +11,10 @@
 # bin/fm-task-job.sh's runner is the command's parent, so the exit
 # is a kernel fact it observes directly, and delivery reuses the steering inbox
 # (bin/fm-task-inbox-lib.sh), whose acknowledgement move ends each job's own
-# delivery ladder. Harness-native background
-# commands and guardian outcomes are not covered.
+# delivery ladder. The runner stays alive until its command's process group
+# has no live members other than itself, even after the command leader exits;
+# only then does it publish the exit record with the command's exit status.
+# Harness-native background commands and guardian outcomes are not covered.
 #
 # Layout under <state-dir>/<task>.inbox/jobs/<job-id>/ (teardown removes the
 # inbox, and with it every job record):
@@ -38,11 +40,15 @@
 # after the worker acknowledged it. A job whose task metadata or job directory
 # is gone (teardown) is never delivered and never recreates the inbox.
 #
-# Watcher-owned delivery (fm_task_job_deliver) writes a hold-aware record
-# (bin/fm-task-inbox-lib.sh). It is rung at once unless the task holds an open
-# decision of its own or a declared captain hold (fm_task_job_task_held);
-# while held the watcher leaves the record unrung, and once the
-# hold clears the watcher rings it. Each job owns its attempt count, spacing,
+# Watcher-owned delivery: fm_task_job_reconcile enqueues a hold-aware record
+# through fm_task_job_deliver (bin/fm-task-inbox-lib.sh owns its format), and
+# bin/fm-watch.sh's task_job_check owns its doorbell attempts and stale wakes.
+# fm_task_job_task_held reads the task's own open status decisions, its declared
+# captain-held wait, and its backlog captain hold through fm-captain-hold.sh,
+# in the watcher's own home and data context, never the runner's environment.
+# An unheld completion is due its first ring in the delivering poll, subject to
+# the endpoint and busy guards. While held it consumes no delivery attempts or
+# busy deferrals; after release its delivery resumes. Each job owns its count, spacing,
 # busy deferrals and escalation, independently of every steer and other job,
 # using the inbox grace and budget tunables until acknowledgement.
 # A deliberate hold therefore never
@@ -52,7 +58,12 @@
 # recorded task): a completion captured but not delivered is delivered, and a
 # job whose runner is provably gone without an exit record is published as
 # `lost` and delivered, after its still-running command group is stopped.
-# fm_task_job_stop_all is teardown's stop for a task's live jobs.
+# fm_task_job_stop_all is teardown's stop for a task's live jobs, including
+# secondmate children, before removing their worktrees, metadata or homes.
+# A failed stop retains those resources. A finished job whose recorded runner
+# identity has ended is skipped before inspecting or signaling its historical
+# process group; a matching live runner is still stopped. The lifecycle and
+# delivery regressions are in tests/fm-task-job.test.sh.
 #
 # Tunables (env):
 #   FM_TASK_JOB_START_GRACE_SECS  default 30; how long a job may lack its runner

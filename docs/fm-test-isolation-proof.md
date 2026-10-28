@@ -93,7 +93,7 @@ The backend suite spawns real tasks, and `fm-spawn.sh` creates each task's `/tmp
 ## 2026-10-27: task-job suite added
 
 `tests/fm-task-job.test.sh` joined the candidate set.
-It keeps every fixture under its own temporary root, rings a fake `tmux` on its own `PATH`, runs its one watcher against its own fixture state directory, and signals only the processes its own task jobs started.
+It keeps every fixture under its own temporary root, rings a fake `tmux` on its own `PATH`, runs each watcher against its fixture state directory, and signals only the processes its own task jobs started.
 
 - Command: `bin/fm-test-isolation-proof.sh --jobs 4 --json <path>` (run `fm-isolation-1793100804583-18291`, 2026-10-27T11:33:24Z to 11:49:33Z, macOS arm64, one-minute load average 4.36 at start)
 - Result: `FM_ISOLATION_SUMMARY total=27 failed=2 concurrency=4 duration_ms=968926`
