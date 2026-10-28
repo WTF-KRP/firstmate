@@ -266,13 +266,19 @@ fm_task_job_message() {  # <job-dir>
 }
 
 fm_task_job_task_held() {
-  local state=$1 task=$2 rc=0
+  local state=$1 task=$2 rc=0 error line
   if [ -n "$(status_own_open_decisions "$state/$task.status")" ] \
     || status_is_captain_held "$(status_declared_wait_line "$state/$task.status")"; then
     return 0
   fi
-  FM_HOME="$FM_HOME" FM_STATE_OVERRIDE="$state" \
-    "$FM_WAKE_LIB_DIR/fm-captain-hold.sh" open "$task" >/dev/null 2>&1 || rc=$?
+  error=$(FM_HOME="$FM_HOME" FM_STATE_OVERRIDE="$state" \
+    "$FM_WAKE_LIB_DIR/fm-captain-hold.sh" open "$task" 2>&1 >/dev/null) || rc=$?
+  if [ "$rc" -ne 0 ] && [ "$rc" -ne 1 ]; then
+    line="task-job: captain hold lookup failed (exit $rc): ${error//$'\n'/ }"
+    if ! status_event_recorded "$state/$task.status" "$line"; then
+      printf '%s\n' "$(status_stamp_line "$line")" >> "$state/$task.status"
+    fi
+  fi
   [ "$rc" -ne 1 ]
 }
 
