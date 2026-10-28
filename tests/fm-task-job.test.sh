@@ -856,6 +856,8 @@ esac
 exec "$FM_REAL_MV" "$@"
 SH
   chmod +x "$dir/fakebin/mv"
+  # Perl must receive its own PID and variables without shell expansion.
+  # shellcheck disable=SC2016
   out=$(FM_REAL_MV="$(command -v mv)" job_start "$dir" --timeout 60 -- \
     perl -e 'open(my $f, ">", $ARGV[0]) or die $!; print $f "$$\n"; close($f); sleep 60' \
     "$dir/launched.pid" 2>&1) || rc=$?
@@ -892,7 +894,9 @@ test_hold_lookup_error_is_reported_once() {
   jobdir=$(job_dir_of "$dir" "$out")
   out=$(job_start "$dir" --timeout 60 -- true) || fail "second start failed: $out"
   other=$(job_dir_of "$dir" "$out")
-  wait_for_file "$jobdir/exit" && wait_for_file "$other/exit" || fail "jobs did not finish"
+  if ! wait_for_file "$jobdir/exit" || ! wait_for_file "$other/exit"; then
+    fail "jobs did not finish"
+  fi
   wait_gone "$(sed -n 's/^pid=//p' "$jobdir/runner")" || fail "first runner did not finish"
   wait_gone "$(sed -n 's/^pid=//p' "$other/runner")" || fail "second runner did not finish"
   cat > "$dir/fakebin/tasks-axi" <<'SH'
