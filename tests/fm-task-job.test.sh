@@ -717,7 +717,7 @@ watch_bg() {  # <dir> <out>
 }
 
 test_watcher_delivers_a_lost_runner_once() {
-  local dir out jobdir runner child descendant wpid rec i
+  local dir out jobdir runner child descendant wpid rec i handled
   dir=$(setup_case lost)
   prime_status_seen "$dir/state" "$dir/state/t1.status"
   out=$(start_stubborn_job "$dir" 120) || fail "start failed: $out"
@@ -745,15 +745,22 @@ test_watcher_delivers_a_lost_runner_once() {
     "the record should report the lost runner"
   wait_gone "$child" || { kill "$wpid" 2>/dev/null; fail "the orphaned command was left running"; }
   ! kill -0 "$descendant" 2>/dev/null || { kill "$wpid" 2>/dev/null; fail "the lost notice preceded descendant cleanup"; }
+  wait_for_file "$jobdir/delivered" || { kill "$wpid" 2>/dev/null; fail "the watcher did not finish delivery: $(cat "$dir/watch.out")"; }
+  kill "$wpid" 2>/dev/null || true
+  wait "$wpid" 2>/dev/null || true
 
   mv "$rec" "$dir/state/t1.inbox/handled/"
   rm -f "$jobdir/delivered"
-  sleep 2.5
-  kill "$wpid" 2>/dev/null
-  wait "$wpid" 2>/dev/null
+  : > "$dir/send.log"
+  steer_check "$dir" 1 || fail "the recovery watcher pass failed"
+  steer_check "$dir" 1 || fail "the later watcher pass failed"
   [ "$(record_count "$dir")" = 0 ] || fail "an acknowledged completion was delivered again:"$'\n'"$(records "$dir")"
-  assert_grep 'record=' "$dir/state/t1.inbox/jobs/${jobdir##*/}/delivered" \
-    "redelivery should land on the acknowledged record: $(cat "$dir/watch.out")"
+  assert_grep "record=${rec##*/}" "$jobdir/delivered" "redelivery should land on the acknowledged record"
+  [ -f "$dir/state/t1.inbox/handled/${rec##*/}" ] || fail "recovery lost the acknowledged completion"
+  for handled in "$dir/state/t1.inbox/handled/"*.msg; do
+    [ "${handled##*/}" = "${rec##*/}" ] || fail "recovery duplicated the acknowledged completion"
+  done
+  [ ! -s "$dir/send.log" ] || fail "recovery rang an acknowledged completion"
   pass "watcher: a job whose runner died is delivered once as lost, with its command stopped"
 }
 

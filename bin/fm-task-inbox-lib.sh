@@ -27,8 +27,7 @@
 #   <task>.inbox/handled/      the worker's `mv` here IS the acknowledgement
 #   <task>.inbox/.seq.lock     serializes sequence allocation across writers
 #                              (the session and the away daemon)
-#   <task>.inbox/.ring-state   watcher re-ring ladder: one "<msg>\t<count>\t<epoch>"
-#                              row per attempted unhandled record
+#   <task>.inbox/.ring-state   current oldest steer's "<msg>\t<count>\t<epoch>"
 #   <task>.inbox/.busy-state   consecutive busy deferrals: "<msg>\t<count>"
 #   <task>.inbox/.escalated    oldest-message name already surfaced as stale,
 #                              so later polls suppress another escalation
@@ -491,7 +490,7 @@ fm_task_inbox_clear_retry() {  # <state-dir> <task-id> <record-path>
 # An empty inbox also resets the ladder bookkeeping so the next message starts
 # a fresh ladder.
 fm_task_inbox_due_action() {  # <state-dir> <task-id>
-  local dir oldest base now grace max ladder _rec_base count last
+  local dir oldest base now grace max ladder rec_base count last
   dir=$(fm_task_inbox_dir "$1" "$2")
   if ! oldest=$(fm_task_inbox_oldest_unhandled "$1" "$2"); then
     rm -f "$dir/.ring-state" "$dir/.escalated" "$dir/.busy-state" 2>/dev/null || true
@@ -513,10 +512,14 @@ fm_task_inbox_due_action() {  # <state-dir> <task-id>
   grace=$(fm_task_inbox_grace_secs)
   count=0
   last=0
-  ladder=$(awk -v base="$base" '$1 == base { print; exit }' "$dir/.ring-state" 2>/dev/null || true)
-  IFS=$(printf '\t') read -r _rec_base count last <<EOF
+  ladder=$(cat "$dir/.ring-state" 2>/dev/null || true)
+  IFS=$(printf '\t') read -r rec_base count last <<EOF
 $ladder
 EOF
+  if [ "$rec_base" != "$base" ]; then
+    count=0
+    last=0
+  fi
   case "$count" in ''|*[!0-9]*) count=0 ;; esac
   case "$last" in ''|*[!0-9]*) last=0 ;; esac
   if [ "$(fm_path_age "$oldest")" -lt "$grace" ]; then
@@ -548,22 +551,18 @@ EOF
 # the caller must surface the unwritable ladder while the record remains
 # unhandled.
 fm_task_inbox_record_ring() {  # <state-dir> <task-id> <record-path>
-  local dir base ladder rec_base count last rec_count remaining=''
+  local dir base ladder rec_base count last
   dir=$(fm_task_inbox_dir "$1" "$2")
   base=${3##*/}
   count=0
   ladder=$(cat "$dir/.ring-state" 2>/dev/null || true)
-  while IFS=$'\t' read -r rec_base rec_count last; do
-    [ -n "$rec_base" ] && [ -f "$dir/$rec_base" ] || continue
-    if [ "$rec_base" = "$base" ]; then
-      count=$rec_count
-    else
-      remaining+="$rec_base"$'\t'"$rec_count"$'\t'"$last"$'\n'
-    fi
-  done <<< "$ladder"
+  IFS=$(printf '\t') read -r rec_base count last <<EOF
+$ladder
+EOF
+  [ "$rec_base" = "$base" ] || count=0
   case "$count" in ''|*[!0-9]*) count=0 ;; esac
   [ -d "$dir" ] || return 0
-  if ! { printf '%s\t%s\t%s\n%s' "$base" "$((count + 1))" "$(date +%s)" "$remaining" > "$dir/.ring-state"; } 2>/dev/null; then
+  if ! { printf '%s\t%s\t%s\n' "$base" "$((count + 1))" "$(date +%s)" > "$dir/.ring-state"; } 2>/dev/null; then
     [ -d "$dir" ] || return 0
     return 1
   fi
