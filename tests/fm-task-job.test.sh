@@ -837,6 +837,93 @@ SH
   pass "task job: enqueue and retirement serialize and stale redelivery cannot recreate the inbox"
 }
 
+test_startup_failure_preserves_recovery_records() {
+  local dir out rc=0 jobdir='' candidate child rec
+  dir=$(setup_case startup-failure)
+  cat > "$dir/fakebin/mv" <<'SH'
+#!/usr/bin/env bash
+case "${!#}" in
+  */child)
+    i=0
+    while [ ! -s "$FM_HOME/launched.pid" ] && [ "$i" -lt 200 ]; do
+      sleep 0.1
+      i=$((i + 1))
+    done
+    [ -s "$FM_HOME/launched.pid" ] || exit 1
+    kill -KILL "$PPID"
+    exit 1 ;;
+esac
+exec "$FM_REAL_MV" "$@"
+SH
+  chmod +x "$dir/fakebin/mv"
+  out=$(FM_REAL_MV="$(command -v mv)" job_start "$dir" --timeout 60 -- \
+    perl -e 'open(my $f, ">", $ARGV[0]) or die $!; print $f "$$\n"; close($f); sleep 60' \
+    "$dir/launched.pid" 2>&1) || rc=$?
+  expect_code 1 "$rc" "start with a runner killed before child publication"
+  wait_for_file "$dir/launched.pid" || fail "the command did not launch before startup failed"
+  child=$(cat "$dir/launched.pid")
+  kill -0 "$child" 2>/dev/null || fail "the startup failure did not leave the command running"
+  for candidate in "$dir/state/t1.inbox/jobs/"*; do
+    [ ! -d "$candidate" ] || jobdir=$candidate
+  done
+  [ -n "$jobdir" ] || fail "startup failure erased the running command's recovery records"
+  [ -s "$jobdir/job" ] && [ -s "$jobdir/argv" ] && [ -s "$jobdir/runner" ] \
+    || fail "startup failure did not preserve the job, command and runner records"
+  [ ! -e "$jobdir/child" ] && [ ! -e "$jobdir/exit" ] \
+    || fail "the runner did not fail in the intended startup window"
+  assert_contains "$out" "$jobdir" "startup refusal should identify the retained recovery records"
+  assert_not_contains "$out" "nothing is running" "startup refusal must not claim the command stopped"
+  steer_check "$dir" || fail "startup-failure recovery failed"
+  wait_gone "$child" || fail "recovery left the launched command running"
+  assert_grep 'outcome=lost' "$jobdir/exit" "recovery must report the lost result"
+  [ "$(record_count "$dir")" = 1 ] || fail "recovery must deliver exactly one lost notice"
+  rec=$(records "$dir")
+  assert_contains "$(body_of "$rec")" "result is unknown" "the lost notice must not invent a result"
+  steer_check "$dir" || fail "later startup-failure recovery failed"
+  [ "$(record_count "$dir")" = 1 ] || fail "recovery duplicated the lost notice"
+  [ "$(grep -cF "$DOORBELL" "$dir/send.log" || true)" = 1 ] || fail "recovery must ring exactly once"
+  pass "task job: startup failure retains records so watcher recovery stops the command and reports its lost result once"
+}
+
+test_hold_lookup_error_is_reported_once() {
+  local dir out jobdir other
+  dir=$(setup_case hold-lookup-error)
+  out=$(job_start "$dir" --timeout 60 -- true) || fail "start failed: $out"
+  jobdir=$(job_dir_of "$dir" "$out")
+  out=$(job_start "$dir" --timeout 60 -- true) || fail "second start failed: $out"
+  other=$(job_dir_of "$dir" "$out")
+  wait_for_file "$jobdir/exit" && wait_for_file "$other/exit" || fail "jobs did not finish"
+  wait_gone "$(sed -n 's/^pid=//p' "$jobdir/runner")" || fail "first runner did not finish"
+  wait_gone "$(sed -n 's/^pid=//p' "$other/runner")" || fail "second runner did not finish"
+  cat > "$dir/fakebin/tasks-axi" <<'SH'
+#!/usr/bin/env bash
+if [ "$1" = show ] && [ -e "$FM_HOME/hold-lookup-fails" ]; then
+  echo 'backlog lookup unavailable' >&2
+  exit 1
+fi
+exec "$FM_REAL_TASKS_AXI" "$@"
+SH
+  chmod +x "$dir/fakebin/tasks-axi"
+  touch "$dir/hold-lookup-fails"
+  FM_REAL_TASKS_AXI="$(command -v tasks-axi)" steer_check "$dir" || fail "failed-lookup delivery pass failed"
+  [ "$(record_count "$dir")" = 2 ] || fail "lookup failure must not lose the completion records"
+  job_lib "$dir" fm_task_job_write_record "$other/delivery" count=999 last=1 || fail "could not seed spent attempts"
+  FM_REAL_TASKS_AXI="$(command -v tasks-axi)" steer_check "$dir" 1 || fail "failed-lookup retry pass failed"
+  [ ! -s "$dir/send.log" ] || fail "a failed hold lookup rang a completion"
+  [ ! -e "$jobdir/delivery" ] || fail "a failed lookup consumed a delivery attempt"
+  [ ! -e "$other/escalated" ] || fail "a failed hold lookup escalated a completion"
+  [ "$(grep -cF 'captain hold lookup failed' "$dir/state/t1.status" || true)" = 1 ] \
+    || fail "the failed lookup must be reported once across jobs and watcher passes"
+  assert_grep 'backlog lookup unavailable' "$dir/state/t1.status" "the status must name the lookup error"
+  rm -f "$dir/hold-lookup-fails"
+  FM_REAL_TASKS_AXI="$(command -v tasks-axi)" steer_check "$dir" || fail "recovered-lookup pass failed"
+  [ "$(grep -cF "$DOORBELL" "$dir/send.log" || true)" = 1 ] || fail "lookup recovery must allow the first ring"
+  [ -s "$other/escalated" ] || fail "lookup recovery must allow a spent completion to escalate"
+  [ "$(grep -cF 'captain hold lookup failed' "$dir/state/t1.status" || true)" = 1 ] \
+    || fail "lookup recovery duplicated the error status"
+  pass "task job: hold lookup errors suppress rings and escalation, report once, and allow delivery after recovery"
+}
+
 test_start_refuses_without_identity_or_timeout() {
   local dir rc out
   dir=$(setup_case refuse)
@@ -867,6 +954,8 @@ test_start_refuses_without_identity_or_timeout() {
 }
 
 fm_test_run \
+  test_startup_failure_preserves_recovery_records \
+  test_hold_lookup_error_is_reported_once \
   test_completion_reaches_inbox_and_rings \
   test_completion_names_the_starting_generation \
   test_timeout_stops_the_command_group \
