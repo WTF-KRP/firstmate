@@ -1,0 +1,15 @@
+Live scenario blocked before task metadata or worker prompt was submitted.
+The lab's real Codex CLI reached its idle composer. No completion scenario was driven live.
+
+First refusal:
+Command blocked by PreToolUse hook: BLOCKED: Indirect command execution not allowed.
+Exact command:
+python3 .local-test/live-check.py setup; python3 .local-test/live-check.py prompt 'You are the worker in an isolated Firstmate live validation lab. Do only this bounded check, with no delegation, no session-start or supervision and no source edits. Your FM_HOME and FM_TASK_INBOX point to disposable fixtures. Run bin/fm-task-job.sh start --timeout 120 -- sh -c '\''sleep 15; printf "LIVE_COMPLETION_OK\\n"'\''. Then end your turn with WAITING_FOR_COMPLETION. When you later receive a Firstmate instruction waiting doorbell, list and read the *.msg records in FM_TASK_INBOX, read the referenced output, move each collected completion record into handled/ and reply LIVE_RESUMED after confirming LIVE_COMPLETION_OK. Do not poll or wait for the command before ending this first turn.'
+
+Second refusal, while gathering existing test status:
+Command blocked by PreToolUse hook: BLOCKED: Piping into shell not allowed.
+Exact command:
+tail -35 /Users/daddy/.no-mistakes-upstream-codex/evidence/01M5ZWWWRRKX9F0YGJFT6JHPKR/targeted-tests.log; git status --short; ps -axo pid,etime,command | rg '(bash bin/fm-test-run.sh tests/fm-task|bash tests/fm-task-job.test|bash tests/fm-task-inbox.test|bash tests/fm-teardown.test)'
+
+Neither refused operation was retried or rerouted. Live work stopped.
+Cleanup succeeded through the driver's separate stop operation: the private tmux server was killed, bin/fm-lab-home.sh teardown removed its socket, and the marked lab home was removed.
