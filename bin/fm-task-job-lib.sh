@@ -21,7 +21,7 @@
 #   job        key=value, written once before the runner starts: task, gen (the
 #              task's spawn_gen at start), timeout, started, deadline
 #   argv       the command, NUL-delimited
-#   runner     key=value: pid and start (ps lstart) of the detached runner,
+#   runner     key=value: pid and start (fm_pid_start_time) of the detached runner,
 #              written by the runner before it starts the command
 #   child      key=value: pid and start of the command in the runner's process
 #              group; written by the runner once the command runs
@@ -56,8 +56,8 @@
 #
 # Recovery (fm_task_job_reconcile, run by bin/fm-watch.sh on every poll for each
 # recorded task): a completion captured but not delivered is delivered, and a
-# job whose runner is provably gone without an exit record is published as
-# `lost` and delivered, after its still-running command group is stopped.
+# job whose runner is gone without an exit record is reported as
+# unrecoverable without signaling a group whose ownership cannot be proven.
 # fm_task_job_stop_all is teardown's stop for a task's live jobs, including
 # secondmate children, before removing their worktrees, metadata or homes.
 # A failed stop retains those resources. A finished job whose recorded runner
@@ -67,7 +67,7 @@
 #
 # Tunables (env):
 #   FM_TASK_JOB_START_GRACE_SECS  default 30; how long a job may lack its runner
-#                                 record before reconcile reads it as lost
+#                                 record before reconcile reports it unrecoverable
 #   FM_TASK_JOB_KILL_GRACE_SECS   default 5; TERM-to-KILL grace when stopping
 
 _FM_TASK_JOB_LIB_DIR=${BASH_SOURCE[0]%/*}
@@ -110,17 +110,6 @@ fm_task_job_utc_minute() {  # <epoch>
     || date -u -d "@$1" +%Y-%m-%dT%H:%MZ 2>/dev/null
 }
 
-# Start time of a live process, the half of its identity that survives exec.
-fm_task_job_pid_start() {  # <pid>
-  local start
-  case "$1" in ''|*[!0-9]*) return 1 ;; esac
-  start=$(LC_ALL=C ps -p "$1" -o lstart= 2>/dev/null) || return 1
-  start=${start#"${start%%[![:space:]]*}"}
-  start=${start%"${start##*[![:space:]]}"}
-  [ -n "$start" ] || return 1
-  printf '%s' "$start"
-}
-
 # 0 when <pid> is still the process that started at <start>, 1 when it is
 # provably gone or reused, 2 when its identity cannot be read. Unknown is never
 # read as gone, so a transient ps failure cannot publish a live job as lost.
@@ -129,7 +118,7 @@ fm_task_job_proc_state() {  # <pid> <start>
   case "$1" in ''|*[!0-9]*) return 1 ;; esac
   kill -0 "$1" 2>/dev/null || return 1
   [ -n "$2" ] || return 2
-  have=$(fm_task_job_pid_start "$1") || return 2
+  have=$(fm_pid_start_time "$1") || return 2
   [ "$have" = "$2" ] || return 1
   return 0
 }
@@ -209,25 +198,42 @@ fm_task_job_stop_owned_group() {
   return 1
 }
 
+fm_task_job_unrecoverable() {
+  local dir=$1 inbox state task line
+  inbox=${dir%/jobs/*}
+  state=${inbox%/*}
+  task=${inbox##*/}
+  task=${task%.inbox}
+  line="task-job: unrecoverable job ${dir##*/}: runner ownership cannot be proven; refusing to signal its process group ($dir)"
+  printf '%s\n' "$line" >&2
+  if [ -f "$state/$task.status" ] && ! status_event_recorded "$state/$task.status" "$line"; then
+    printf '%s\n' "$(status_stamp_line "$line")" >> "$state/$task.status"
+  fi
+  return 1
+}
+
 fm_task_job_stop_runner() {
-  local dir=$1 pid start rc=0 signal=TERM grace limit
-  [ -f "$dir/runner" ] || { [ ! -f "$dir/child" ]; return; }
+  local dir=$1 pid start rc=0 grace limit
+  if [ ! -f "$dir/runner" ]; then
+    [ ! -f "$dir/exit" ] || return 0
+    fm_task_job_unrecoverable "$dir"
+    return 1
+  fi
   pid=$(fm_meta_get "$dir/runner" pid)
   start=$(fm_meta_get "$dir/runner" start)
   fm_task_job_proc_state "$pid" "$start" || rc=$?
-  [ "$rc" -ne 2 ] || return 1
   if [ "$rc" -eq 1 ] && [ -f "$dir/exit" ]; then
     return 0
   fi
-  if [ "$rc" -eq 1 ]; then
-    kill -0 "$pid" 2>/dev/null && return 1
-    signal=KILL
-  fi
+  [ "$rc" -eq 0 ] || { fm_task_job_unrecoverable "$dir"; return 1; }
   rc=0
   fm_task_job_group_members "$pid" >/dev/null || rc=$?
   [ "$rc" -ne 1 ] || return 0
   [ "$rc" -eq 0 ] || return 1
-  kill "-$signal" -- "-$pid" 2>/dev/null || true
+  rc=0
+  fm_task_job_proc_state "$pid" "$start" || rc=$?
+  [ "$rc" -eq 0 ] || { fm_task_job_unrecoverable "$dir"; return 1; }
+  kill -TERM -- "-$pid" 2>/dev/null || true
   grace=$(fm_task_job_secs "${FM_TASK_JOB_KILL_GRACE_SECS:-}" "$FM_TASK_JOB_KILL_GRACE_DEFAULT")
   limit=$((SECONDS + grace + 15))
   while [ "$SECONDS" -lt "$limit" ]; do
@@ -237,6 +243,9 @@ fm_task_job_stop_runner() {
     [ "$rc" -eq 0 ] || return 1
     sleep 0.1
   done
+  rc=0
+  fm_task_job_proc_state "$pid" "$start" || rc=$?
+  [ "$rc" -eq 0 ] || fm_task_job_unrecoverable "$dir"
   return 1
 }
 
@@ -337,8 +346,8 @@ fm_task_job_reconcile() {  # <state-dir> <task-id>
       if [ "$rc" -eq 2 ]; then
         [ -f "$dir/job" ] && [ "$(fm_path_age "$dir/job")" -ge "$grace" ] || continue
       fi
-      fm_task_job_stop_runner "$dir" || continue
-      fm_task_job_publish_exit "$dir" lost '' || [ -f "$dir/exit" ] || continue
+      fm_task_job_unrecoverable "$dir" || true
+      continue
     fi
     fm_task_job_deliver "$1" "$2" "$dir" || true
   done

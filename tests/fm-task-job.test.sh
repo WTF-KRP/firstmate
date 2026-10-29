@@ -17,9 +17,8 @@
 #      closes, then rings it.
 #   5. A doorbell that did not land is re-rung by the watcher until the worker
 #      acknowledges the record.
-#   6. A running watcher publishes a job whose runner died as lost, stops its
-#      orphaned command, delivers it once, and never redelivers an
-#      acknowledged completion.
+#   6. A running watcher reports an unrecoverable job after runner loss without
+#      signaling an unproven process group or publishing a completion.
 #   7. Teardown's stop-all stops live jobs without delivering anything.
 #   8. A job whose task inbox was removed never recreates it.
 #   9. Start refuses without a task identity or a valid timeout.
@@ -434,11 +433,32 @@ test_recovery_after_runner_dies_during_cleanup() {
   kill -0 "$runner" 2>/dev/null || fail "the leading-zero grace failed before recovery"
   kill -KILL "$runner"
   wait_gone "$runner" || fail "the runner did not stop"
-  job_lib "$dir" fm_task_job_reconcile "$dir/state" t1 || fail "recovery failed"
-  wait_gone "$descendant" || fail "recovery left a TERM-resistant descendant alive"
-  [ "$(record_count "$dir")" = 1 ] || fail "recovery did not publish exactly one completion"
-  assert_grep 'outcome=lost' "$jobdir/exit" "an interrupted runner's outcome must be lost"
-  pass "task job: lost-runner recovery stops descendants after the command leader has exited"
+  job_lib "$dir" fm_task_job_reconcile "$dir/state" t1 > "$dir/recovery.out" 2>&1 || fail "recovery failed"
+  kill -0 "$descendant" 2>/dev/null || fail "recovery signaled a group without its runner"
+  assert_grep "unrecoverable job ${jobdir##*/}" "$dir/recovery.out" "runner loss must be reported"
+  [ ! -e "$jobdir/exit" ] || fail "unproven cleanup published a terminal result"
+  [ "$(record_count "$dir")" = 0 ] || fail "unproven cleanup delivered a completion"
+  kill -KILL "$descendant"
+  wait_gone "$descendant" || fail "fixture cleanup left its descendant alive"
+  pass "task job: interrupted cleanup preserves unproven groups and reports the job as unrecoverable"
+}
+
+test_runner_identity_is_independent_of_timezone() {
+  local dir out jobdir runner child utc local_time
+  dir=$(setup_case timezone)
+  out=$(TZ=UTC start_waiting_job "$dir") || fail "UTC launch failed: $out"
+  jobdir=$(job_dir_of "$dir" "$out")
+  runner=$(sed -n 's/^pid=//p' "$jobdir/runner")
+  child=$(sed -n 's/^pid=//p' "$jobdir/child")
+  utc=$(LC_ALL=C TZ=UTC ps -p "$runner" -o lstart=)
+  local_time=$(LC_ALL=C TZ=EST5 ps -p "$runner" -o lstart=)
+  [ "$utc" != "$local_time" ] || fail "the fixture did not expose different timezone renderings"
+  TZ=EST5 FM_TASK_JOB_KILL_GRACE_SECS=0 case_command "$dir" "$JOB" stop-all "$dir/state" t1 \
+    || fail "the non-UTC supervisor rejected its UTC-launched runner"
+  wait_gone "$runner" || fail "timezone-independent cleanup left the runner"
+  wait_gone "$child" || fail "timezone-independent cleanup left the command"
+  [ ! -e "$jobdir/exit" ] || fail "stopping the owned runner published a completion"
+  pass "task job: a non-UTC supervisor stops its UTC-launched runner using the shared identity"
 }
 
 test_decimal_timeouts_and_graces() {
@@ -614,18 +634,22 @@ test_completion_never_delays_a_steer() {
   pass "task job: held and escalating completions never block a newer steer"
 }
 
-test_finished_job_cannot_stop_a_reused_runner_group() {
-  local mode dir other out jobdir otherjob runner descendant
-  for mode in live gone; do
-    dir=$(setup_case "reused-$mode")
+test_cleanup_preserves_reused_runner_groups() {
+  local scenario outcome mode dir other out jobdir otherjob runner descendant child rc
+  for scenario in finished-live finished-gone lost-live lost-gone; do
+    outcome=${scenario%-*}
+    mode=${scenario#*-}
+    dir=$(setup_case "reused-$outcome-$mode")
     out=$(job_start "$dir" --timeout 60 -- true) || fail "start failed: $out"
     jobdir=$(job_dir_of "$dir" "$out")
     wait_for_file "$jobdir/exit" || fail "old job did not finish"
     wait_gone "$(sed -n 's/^pid=//p' "$jobdir/runner")" || fail "old runner did not exit"
-    other=$(setup_case "new-owner-$mode")
+    if [ "$outcome" = lost ]; then rm -f "$jobdir/exit"; fi
+    other=$(setup_case "new-owner-$outcome-$mode")
     out=$(start_stubborn_job "$other" 120) || fail "new job failed: $out"
     otherjob=$(job_dir_of "$other" "$out")
     runner=$(sed -n 's/^pid=//p' "$otherjob/runner")
+    child=$(sed -n 's/^pid=//p' "$otherjob/child")
     wait_for_file "$other/grandchild.pid" || fail "new descendant did not start"
     descendant=$(cat "$other/grandchild.pid")
     job_lib "$dir" fm_task_job_write_record "$jobdir/runner" "pid=$runner" "start=retired runner identity" \
@@ -634,17 +658,34 @@ test_finished_job_cannot_stop_a_reused_runner_group() {
       kill -KILL "$runner"
       wait_gone "$runner" || fail "new runner did not stop"
     fi
+    rc=0
     FM_TASK_JOB_KILL_GRACE_SECS=0 case_command "$dir" "$JOB" stop-all "$dir/state" t1 \
-      || fail "finished job cleanup refused a historical runner identity"
-    kill -0 "$descendant" 2>/dev/null || fail "finished job cleanup killed another job's descendant"
+      > "$dir/stop.out" 2>&1 || rc=$?
+    if [ "$outcome" = finished ]; then
+      expect_code 0 "$rc" "finished job cleanup"
+    else
+      expect_code 1 "$rc" "lost job cleanup with reused group"
+      assert_grep "unrecoverable job ${jobdir##*/}" "$dir/stop.out" "cleanup must name the unproven job"
+      job_lib "$dir" fm_task_job_reconcile "$dir/state" t1 > "$dir/recovery.out" 2>&1 || fail "recovery failed"
+      job_lib "$dir" fm_task_job_reconcile "$dir/state" t1 >> "$dir/recovery.out" 2>&1 || fail "later recovery failed"
+      assert_grep "unrecoverable job ${jobdir##*/}" "$dir/recovery.out" "recovery must report the reused group"
+      [ "$(grep -cF "unrecoverable job ${jobdir##*/}" "$dir/state/t1.status")" = 1 ] || fail "recovery repeated its durable report"
+      [ ! -e "$jobdir/exit" ] || fail "recovery invented a terminal result"
+      [ "$(record_count "$dir")" = 0 ] || fail "recovery delivered an unproven completion"
+    fi
+    kill -0 "$descendant" 2>/dev/null || fail "historical job cleanup killed another job's descendant"
     if [ "$mode" = live ]; then
       kill -0 "$runner" 2>/dev/null || fail "finished job cleanup killed another runner"
     fi
-    FM_TASK_JOB_KILL_GRACE_SECS=0 case_command "$other" "$JOB" stop-all "$other/state" t1 \
-      || fail "new owner's cleanup failed"
+    if [ "$mode" = live ]; then
+      FM_TASK_JOB_KILL_GRACE_SECS=0 case_command "$other" "$JOB" stop-all "$other/state" t1 \
+        || fail "new owner's cleanup failed"
+    else
+      kill -KILL "$child" "$descendant" 2>/dev/null || true
+    fi
     wait_gone "$descendant" || fail "new owner's cleanup left a descendant"
   done
-  pass "task job: finished records never signal reused runner pids or surviving groups"
+  pass "task job: finished and lost records never signal reused runner pids or surviving groups"
 }
 
 test_secondmate_teardown_stops_child_job_without_delivery() {
@@ -716,8 +757,8 @@ watch_bg() {  # <dir> <out>
     "$WATCH" > "$2" 2>&1 &
 }
 
-test_watcher_delivers_a_lost_runner_once() {
-  local dir out jobdir runner child descendant wpid rec i handled
+test_watcher_reports_a_lost_runner_as_unrecoverable() {
+  local dir out jobdir runner child descendant wpid i
   dir=$(setup_case lost)
   prime_status_seen "$dir/state" "$dir/state/t1.status"
   out=$(start_stubborn_job "$dir" 120) || fail "start failed: $out"
@@ -734,34 +775,21 @@ test_watcher_delivers_a_lost_runner_once() {
   watch_bg "$dir" "$dir/watch.out"
   wpid=$!
   i=0
-  while [ "$i" -lt 200 ] && [ "$(record_count "$dir")" -lt 1 ]; do
+  while [ "$i" -lt 200 ] && ! grep -qF "unrecoverable job ${jobdir##*/}" "$dir/state/t1.status"; do
     sleep 0.1
     i=$((i + 1))
   done
-  [ "$(record_count "$dir")" = 1 ] || { kill "$wpid" 2>/dev/null; fail "the watcher did not deliver the lost job"; }
-  assert_grep 'outcome=lost' "$jobdir/exit" "the exit record should say lost"
-  rec=$(records "$dir")
-  assert_contains "$(body_of "$rec")" "its runner stopped before recording an exit" \
-    "the record should report the lost runner"
-  wait_gone "$child" || { kill "$wpid" 2>/dev/null; fail "the orphaned command was left running"; }
-  ! kill -0 "$descendant" 2>/dev/null || { kill "$wpid" 2>/dev/null; fail "the lost notice preceded descendant cleanup"; }
-  wait_for_file "$jobdir/delivered" || { kill "$wpid" 2>/dev/null; fail "the watcher did not finish delivery: $(cat "$dir/watch.out")"; }
   kill "$wpid" 2>/dev/null || true
   wait "$wpid" 2>/dev/null || true
-
-  mv "$rec" "$dir/state/t1.inbox/handled/"
-  rm -f "$jobdir/delivered"
-  : > "$dir/send.log"
-  steer_check "$dir" 1 || fail "the recovery watcher pass failed"
-  steer_check "$dir" 1 || fail "the later watcher pass failed"
-  [ "$(record_count "$dir")" = 0 ] || fail "an acknowledged completion was delivered again:"$'\n'"$(records "$dir")"
-  assert_grep "record=${rec##*/}" "$jobdir/delivered" "redelivery should land on the acknowledged record"
-  [ -f "$dir/state/t1.inbox/handled/${rec##*/}" ] || fail "recovery lost the acknowledged completion"
-  for handled in "$dir/state/t1.inbox/handled/"*.msg; do
-    [ "${handled##*/}" = "${rec##*/}" ] || fail "recovery duplicated the acknowledged completion"
-  done
-  [ ! -s "$dir/send.log" ] || fail "recovery rang an acknowledged completion"
-  pass "watcher: a job whose runner died is delivered once as lost, with its command stopped"
+  assert_grep "unrecoverable job ${jobdir##*/}" "$dir/state/t1.status" "the watcher must name the lost job"
+  assert_grep "unrecoverable job ${jobdir##*/}" "$dir/watch.out" "the watcher must report its refusal loudly"
+  kill -0 "$descendant" 2>/dev/null || fail "the watcher signaled an unproven process group"
+  [ ! -e "$jobdir/exit" ] || fail "the watcher invented an exit result"
+  [ "$(record_count "$dir")" = 0 ] || fail "the watcher delivered an unproven completion"
+  [ ! -s "$dir/send.log" ] || fail "the watcher rang an unproven completion"
+  kill -KILL "$descendant"
+  wait_gone "$descendant" || fail "fixture cleanup left its descendant alive"
+  pass "watcher: runner loss preserves unproven groups and names the unrecoverable job"
 }
 
 test_stop_all_stops_without_delivering() {
@@ -838,7 +866,7 @@ SH
 }
 
 test_startup_failure_preserves_recovery_records() {
-  local dir out rc=0 jobdir='' candidate child rec
+  local dir out rc=0 jobdir='' candidate child
   dir=$(setup_case startup-failure)
   cat > "$dir/fakebin/mv" <<'SH'
 #!/usr/bin/env bash
@@ -876,15 +904,16 @@ SH
   assert_contains "$out" "$jobdir" "startup refusal should identify the retained recovery records"
   assert_not_contains "$out" "nothing is running" "startup refusal must not claim the command stopped"
   FM_REAL_MV="$(command -v mv)" steer_check "$dir" || fail "startup-failure recovery failed"
-  wait_gone "$child" || fail "recovery left the launched command running"
-  assert_grep 'outcome=lost' "$jobdir/exit" "recovery must report the lost result"
-  [ "$(record_count "$dir")" = 1 ] || fail "recovery must deliver exactly one lost notice"
-  rec=$(records "$dir")
-  assert_contains "$(body_of "$rec")" "result is unknown" "the lost notice must not invent a result"
+  kill -0 "$child" 2>/dev/null || fail "recovery signaled a command without its runner"
+  assert_grep "unrecoverable job ${jobdir##*/}" "$dir/state/t1.status" "recovery must report the retained unproven job"
   FM_REAL_MV="$(command -v mv)" steer_check "$dir" || fail "later startup-failure recovery failed"
-  [ "$(record_count "$dir")" = 1 ] || fail "recovery duplicated the lost notice"
-  [ "$(grep -cF "$DOORBELL" "$dir/send.log" || true)" = 1 ] || fail "recovery must ring exactly once"
-  pass "task job: startup failure retains records so watcher recovery stops the command and reports its lost result once"
+  [ ! -e "$jobdir/exit" ] || fail "recovery invented a terminal result"
+  [ "$(record_count "$dir")" = 0 ] || fail "recovery delivered an unproven completion"
+  [ ! -s "$dir/send.log" ] || fail "recovery rang an unproven completion"
+  [ "$(grep -cF "unrecoverable job ${jobdir##*/}" "$dir/state/t1.status")" = 1 ] || fail "recovery repeated its durable report"
+  kill -KILL "$child"
+  wait_gone "$child" || fail "fixture cleanup left the launched command alive"
+  pass "task job: startup failure retains recovery records and reports unproven ownership without signaling"
 }
 
 test_hold_lookup_error_is_reported_once() {
@@ -971,15 +1000,16 @@ fm_test_run \
   test_teardown_during_timeout_cleanup \
   test_recovery_after_runner_dies_during_cleanup \
   test_decimal_timeouts_and_graces \
+  test_runner_identity_is_independent_of_timezone \
   test_watcher_delivers_a_finished_job_once \
   test_completion_bypasses_older_steer \
   test_failed_completion_has_its_own_retry_and_escalation \
   test_completion_never_delays_a_steer \
-  test_finished_job_cannot_stop_a_reused_runner_group \
+  test_cleanup_preserves_reused_runner_groups \
   test_secondmate_teardown_stops_child_job_without_delivery \
   test_finished_live_runner_is_owned_until_stopped \
   test_watcher_rerings_until_acknowledged \
-  test_watcher_delivers_a_lost_runner_once \
+  test_watcher_reports_a_lost_runner_as_unrecoverable \
   test_stop_all_stops_without_delivering \
   test_removed_inbox_is_never_recreated \
   test_delivery_serializes_with_retirement \

@@ -74,12 +74,12 @@ cmd_run() {  # <state-dir> <task-id> <job-dir>
   case "$deadline" in ''|*[!0-9]*) exit 1 ;; esac
   fm_current_pid owner || exit 1
   fm_task_job_write_record "$dir/runner" "pid=$owner" \
-    "start=$(fm_task_job_pid_start "$owner")" || exit 1
+    "start=$(fm_pid_start_time "$owner")" || exit 1
   [ "$STOP_REQUESTED" = 0 ] || exit 143
   "${argv[@]}" > "$dir/output" 2>&1 < /dev/null &
   RUN_CHILD=$!
   fm_task_job_write_record "$dir/child" "pid=$RUN_CHILD" \
-    "start=$(fm_task_job_pid_start "$RUN_CHILD" || true)" || true
+    "start=$(fm_pid_start_time "$RUN_CHILD" || true)" || true
   limit=$((SECONDS + deadline - $(date +%s)))
   while :; do
     rc=0
