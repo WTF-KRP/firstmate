@@ -1,0 +1,172 @@
+{
+  "summary": "Record partial live verification and consent blocker",
+  "tested_head_sha": "d2a5d87166b70167b204aca343edc750d2eadb5f",
+  "verdict": "inconclusive",
+  "coverage": {
+    "passed_live": 2,
+    "partial_live": 1,
+    "untested": 7
+  },
+  "source_changes": [],
+  "testing_summary": "The focused whole-file task-job suite passed all 29 cases. Actual product commands independently demonstrated timeout/group cleanup, cross-timezone runner cleanup, repeatable stop, and launch refusal. Codex stopped at hook review before receiving any worker instructions. No worker resumption, acknowledgement, ringing, retry, escalation, or secondmate lifecycle acceptance is claimed from the test-suite fakes.",
+  "tested": [
+    {
+      "command": "bash tests/fm-task-job.test.sh",
+      "exit_status": 0,
+      "result": "29 ok results followed by FM_TEST_COMPLETE; no full repository suite, linters, formatters, or static analysis ran."
+    }
+  ],
+  "live_lab": {
+    "path": "/Users/daddy/.no-mistakes-upstream-codex/worktrees/b215f934cec2/01M5ZWWWRRKX9F0YGJFT6JHPKR/data/fm-completion-resume-live-20261030",
+    "placement": "Inside the assigned worktree to honor the explicit workspace boundary, which overrides the attached plan's proposed temporary-directory placement.",
+    "preserved": "Marked disposable home, metadata, command fixtures, runner/child identities, output, exit and cancellation records. Retained intentionally as requested by the selected live-validation decision. git check-ignore confirms the lab is ignored.",
+    "isolation": "FM_HOME and FM_TASK_INBOX explicitly selected only disposable lab tasks; no real Firstmate home was operated. No shared tool configuration or trust store was edited.",
+    "cleanup": "All observed lab PIDs absent on final ps inspection: 58609,71934,71965,71969,89577,89661,89667,85272,85324,51015,51089. Codex was terminated after cwd verification with lsof. No private tmux server was created in this attempt. Lab directories were deliberately retained rather than deleted."
+  },
+  "consent_barrier": {
+    "command": "TERM=xterm-256color codex",
+    "working_directory": "data/fm-completion-resume-live-20261030",
+    "version": "0.165.0",
+    "observation": [
+      "Update available 0.165.0 -> 0.166.0. Escape skipped the update. No update was executed.",
+      "Hooks need review",
+      "4 hooks are new or changed.",
+      "Hooks can run outside the sandbox after you trust them.",
+      "1. Review hooks",
+      "2. Trust all and continue",
+      "3. Continue without trusting (hooks won't run)"
+    ],
+    "action": "Left hook review unanswered. No hooks disabled, no trust manufactured, no worker prompt submitted. Terminated only the lab CLI process after verifying its cwd.",
+    "limitation": "No authenticated worker turn ran. This is a concrete consent blocker for worker-dependent acceptance, not a product regression.",
+    "initial_terminal_attempt": "The first launch reported TERM=dumb and asked whether to continue. It was cancelled. The second launch supplied xterm-256color and reached hook review."
+  },
+  "scenarios": [
+    {
+      "name": "S1: Completion resumes the worker and acknowledgement stops redelivery",
+      "result": "untested",
+      "live": false,
+      "reason": "The actual Codex CLI reached the unanswered four-hook review dialog before any instructions. No worker turn, completion resume, or acknowledgement could be driven without operator consent."
+    },
+    {
+      "name": "S2: Independent completion retries/escalation and newer steer delivery",
+      "result": "untested",
+      "live": false,
+      "reason": "Requires a working real worker endpoint with safe submission. The only attempted worker remained at hook review, where sending a doorbell could interact with consent. No terminal fake was substituted."
+    },
+    {
+      "name": "S3: Status and backlog holds, including cleared launcher overrides",
+      "result": "untested",
+      "live": false,
+      "reason": "The complete scenario requires delivery across real worker turns and exactly-once resumption after release. Hook review prevented those turns. Whole-file regressions passed but are not counted as live acceptance."
+    },
+    {
+      "name": "S4: Hold lookup failure reports once and recovers delivery",
+      "result": "untested",
+      "live": false,
+      "reason": "Recovery must ultimately deliver to an actual worker. Consent prevented a usable worker endpoint. The controlled lookup-failure test passed only in the deterministic suite."
+    },
+    {
+      "name": "S5: Startup failure preserves recovery records",
+      "result": "untested",
+      "live": false,
+      "reason": "No live runner failure in the narrow interval between command launch and child-record publication was reproduced. The public CLI has no fault-injection control for this interval. The passing deterministic startup-crash regression does not establish live reproduction, and no production instrumentation was added."
+    },
+    {
+      "name": "S6: Decimal timeout and timezone-independent owned process cleanup",
+      "result": "pass",
+      "live": true,
+      "evidence": {
+        "command": "FM_HOME=\"$PWD/data/fm-completion-resume-live-20261030\" FM_TASK_INBOX=\"$PWD/data/fm-completion-resume-live-20261030/state/lab-timeout.inbox\" TZ=UTC FM_TASK_JOB_KILL_GRACE_SECS=001 bash bin/fm-task-job.sh start --timeout 008 -- bash \"$PWD/data/fm-completion-resume-live-20261030/monitor.sh\" \"$PWD/data/fm-completion-resume-live-20261030\"",
+        "job": "20261030T121000Z-71880",
+        "job_record": {
+          "timeout": 8,
+          "started": 1793362200,
+          "deadline": 1793362208
+        },
+        "exit_record": {
+          "outcome": "timed-out",
+          "status": 143,
+          "ended": 1793362209
+        },
+        "processes": {
+          "runner": 71934,
+          "leader": 71965,
+          "term_ignoring_descendant": 71969,
+          "group": 71934
+        },
+        "observed": "All three PIDs absent after completion. Host timezone EDT -0400. A separate UTC-launched 120-second job, 20261030T121024Z-89435, was stopped by the public stop-all command without TZ=UTC in the caller. Runner 89577, leader 89661, and TERM-ignoring descendant 89667 were absent. Existing job record gained stopped=1; no exit record was created. A repeated stop-all exited 0."
+      }
+    },
+    {
+      "name": "S7: Cleanup ownership, historical reuse, and lost-runner refusal",
+      "result": "partial",
+      "live": true,
+      "evidence": {
+        "observed": "Public stop-all stopped a matching live runner and was repeatable. Stop-all on finished lab-timeout exited 0 while independent lab-stop runner 85272 remained alive, as ps confirmed. That remaining job was then stopped through the public CLI.",
+        "lost_runner": "For job 20261030T121322Z-50802, runner 51015's UTC start time was checked against its record before killing that lab runner. Its TERM-ignoring command 51089 was alive immediately after runner death. Public stop-all exited 1 with a named unrecoverable-job ownership refusal and appended that diagnostic to lab-lost.status. No completion exit was published. The short command naturally ended at the end of its 20-second sleep, during final inspection; persistence after the refusal was not established.",
+        "expected_refusal_command": "FM_HOME=\"$PWD/data/fm-completion-resume-live-20261030\" bash bin/fm-task-job.sh stop-all \"$PWD/data/fm-completion-resume-live-20261030/state\" lab-lost",
+        "expected_refusal": "# task-job: unrecoverable job 20261030T121322Z-50802: runner ownership cannot be proven; refusing to signal its process group",
+        "limitation": "No actual PID or process-group-number reuse was reproduced. No claim that the full reused-identity scenario passed. The refusal was expected product behavior under the later F16 decision and was not bypassed."
+      }
+    },
+    {
+      "name": "S8: Secondmate cleanup stops child jobs and supports retry",
+      "result": "untested",
+      "live": false,
+      "reason": "No secondmate and child were launched past trust. Actual lifecycle acceptance requires runnable real endpoints; test-suite controlled endpoints are not equivalent."
+    },
+    {
+      "name": "S9: Concurrent completion retirement preserves supervision",
+      "result": "untested",
+      "live": false,
+      "reason": "A real submission/retirement race requires a usable actual worker endpoint. Hook review prevented safe submission. No fake terminal race or surviving-record write-error injection is counted as live evidence."
+    },
+    {
+      "name": "S10: Invalid and retired launches refuse without recreating inboxes",
+      "result": "pass",
+      "live": true,
+      "evidence": {
+        "checks": [
+          {
+            "input": "Retired task: lab-retired metadata removed, no inbox exists; start --timeout 1 -- true",
+            "exit_status": 1,
+            "output": "no task metadata for lab-retired; the task may have been retired",
+            "postcondition": "lab-retired.inbox absent"
+          },
+          {
+            "input": "Live task start --timeout 0 -- true",
+            "exit_status": 2,
+            "output": "--timeout must be from 1 to 604800 seconds"
+          },
+          {
+            "input": "FM_TASK_INBOX unset; start --timeout 1 -- true",
+            "exit_status": 1,
+            "output": "FM_TASK_INBOX is not set"
+          },
+          {
+            "input": "lab-no-generation metadata without spawn_gen; start --timeout 1 -- true",
+            "exit_status": 1,
+            "output": "metadata records no spawn_gen",
+            "postcondition": "lab-no-generation.inbox absent"
+          },
+          {
+            "input": "FM_TASK_INBOX=relative.inbox; start --timeout 1 -- true",
+            "exit_status": 1,
+            "output": "FM_TASK_INBOX must be an absolute path ending in .inbox"
+          }
+        ],
+        "observed": "Public product CLI executed directly with real subprocesses and no test helper or fake executable on PATH. Refused cases created no job records or task inboxes."
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "test-2",
+      "severity": "warning",
+      "action": "ask-user",
+      "description": "Live acceptance remains inconclusive: S6 and S10 passed, S7 was partial, and S1-S5/S8-S9 remain untested for the concrete reasons recorded above. Operator-reviewed Codex hook consent is still needed before actual worker submissions. No consent was answered on the operator's behalf. No product defect was demonstrated and no source fix was made."
+    }
+  ],
+  "cost": "No model prompt was submitted by the live CLI attempt, and no package, paid-plan, remote-host, publishing, PR, or CI operation was performed.",
+  "final_state": "HEAD unchanged at d2a5d87166b70167b204aca343edc750d2eadb5f; git status --short and git diff --stat empty. Preserved ignored lab is intentional evidence."
+}

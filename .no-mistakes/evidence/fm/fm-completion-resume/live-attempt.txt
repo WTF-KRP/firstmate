@@ -1,0 +1,56 @@
+Candidate: d2a5d87166b70167b204aca343edc750d2eadb5f
+
+Actual terminal attempt
+-----------------------
+Created a disposable home with bin/fm-lab-home.sh create and started the real
+Codex CLI on its own private tmux socket, with a 120-column, 40-row window.
+The CLI's update dialog was skipped with Escape. The next captured screen was:
+
+  Hooks need review
+  4 hooks are new or changed.
+  Hooks can run outside the sandbox after you trust them.
+
+  1. Review hooks
+  2. Trust all and continue
+  3. Continue without trusting (hooks won't run)
+
+  enter confirm · esc skip
+
+No trust was manufactured, no hooks disabled, no credentials changed, and no
+worker prompt was delivered. This proves only CLI startup to the trust gate.
+It does not prove task-job completion delivery or worker resumption.
+
+Refused command, verbatim
+------------------------
+mkdir -p /Users/daddy/.no-mistakes-upstream-codex/evidence/01M5ZWWWRRKX9F0YGJFT6JHPKR
+TMUX_TMPDIR=/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.ndXjXR/tmux tmux -L fm-lab capture-pane -p -t primary > /Users/daddy/.no-mistakes-upstream-codex/evidence/01M5ZWWWRRKX9F0YGJFT6JHPKR/codex-hook-trust.txt
+TMUX_TMPDIR=/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.ndXjXR/tmux tmux -L fm-lab kill-server
+rm -rf -- /var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.ndXjXR
+
+PreToolUse rejected the entire command before execution:
+BLOCKED: Recursive delete check: rm target '/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.ndXjXR' resolves to /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-lab.ndXjXR, outside the project /Users/daddy/.no-mistakes-upstream-codex/worktrees/b215f934cec2/01M5ZWWWRRKX9F0YGJFT6JHPKR.
+
+The denied recursive deletion was not retried through another tool or form.
+The independent private-server shutdown was subsequently executed alone:
+TMUX_TMPDIR=/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.ndXjXR/tmux tmux -L fm-lab kill-server
+Exit status: 0.
+
+Residual disposable directory requiring permitted cleanup:
+/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T//fm-lab.ndXjXR
+
+Live scenarios require owner-reviewed hook trust with the protections active,
+and a permitted lab cleanup route. The live attempt stopped at these boundaries.
+No product behavior scenario is claimed live based on the deterministic tests.
+
+Targeted regression checks
+--------------------------
+bash tests/fm-task-job.test.sh                         exit 0
+bash tests/fm-task-inbox.test.sh                       exit 0
+bash tests/fm-teardown-endpoint-safety.test.sh          exit 0
+bash tests/fm-teardown.test.sh                         exit 0
+
+These were whole-file commands, with no single test function sourced for
+verification. Their terminal/backend fixtures are not evidence of live worker
+resumption. No full repository suite, lint, formatter, or static analyzer ran.
+Final git status --short was empty. HEAD remained the candidate above.
+No source or permanent test files were edited in this phase.
