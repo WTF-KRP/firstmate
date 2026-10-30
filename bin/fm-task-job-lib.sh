@@ -18,8 +18,8 @@
 #
 # Layout under <state-dir>/<task>.inbox/jobs/<job-id>/ (teardown removes the
 # inbox, and with it every job record):
-#   job        key=value, written once before the runner starts: task, gen (the
-#              task's spawn_gen at start), timeout, started, deadline
+#   job        key=value: task, gen (the task's spawn_gen at start), timeout,
+#              started, deadline; stopped=1 appended after confirmed cleanup
 #   argv       the command, NUL-delimited
 #   runner     key=value: pid and start (fm_pid_start_time) of the detached runner,
 #              written by the runner before it starts the command
@@ -204,7 +204,7 @@ fm_task_job_unrecoverable() {
   state=${inbox%/*}
   task=${inbox##*/}
   task=${task%.inbox}
-  line="task-job: unrecoverable job ${dir##*/}: runner ownership cannot be proven; refusing to signal its process group ($dir)"
+  line="# task-job: unrecoverable job ${dir##*/}: runner ownership cannot be proven; refusing to signal its process group ($dir)"
   printf '%s\n' "$line" >&2
   if [ -f "$state/$task.status" ] && ! status_event_recorded "$state/$task.status" "$line"; then
     printf '%s\n' "$(status_stamp_line "$line")" >> "$state/$task.status"
@@ -214,6 +214,7 @@ fm_task_job_unrecoverable() {
 
 fm_task_job_stop_runner() {
   local dir=$1 pid start rc=0 grace limit
+  [ "$(fm_meta_get "$dir/job" stopped)" != 1 ] || return 0
   if [ ! -f "$dir/runner" ]; then
     [ ! -f "$dir/exit" ] || return 0
     fm_task_job_unrecoverable "$dir"
@@ -228,7 +229,10 @@ fm_task_job_stop_runner() {
   [ "$rc" -eq 0 ] || { fm_task_job_unrecoverable "$dir"; return 1; }
   rc=0
   fm_task_job_group_members "$pid" >/dev/null || rc=$?
-  [ "$rc" -ne 1 ] || return 0
+  if [ "$rc" -eq 1 ]; then
+    [ -f "$dir/job" ] && printf 'stopped=1\n' >> "$dir/job"
+    return
+  fi
   [ "$rc" -eq 0 ] || return 1
   rc=0
   fm_task_job_proc_state "$pid" "$start" || rc=$?
@@ -239,7 +243,10 @@ fm_task_job_stop_runner() {
   while [ "$SECONDS" -lt "$limit" ]; do
     rc=0
     fm_task_job_group_members "$pid" >/dev/null || rc=$?
-    [ "$rc" -ne 1 ] || return 0
+    if [ "$rc" -eq 1 ]; then
+      [ -f "$dir/job" ] && printf 'stopped=1\n' >> "$dir/job"
+      return
+    fi
     [ "$rc" -eq 0 ] || return 1
     sleep 0.1
   done
@@ -283,7 +290,7 @@ fm_task_job_task_held() {
   error=$(FM_HOME="$FM_HOME" FM_STATE_OVERRIDE="$state" \
     "$FM_WAKE_LIB_DIR/fm-captain-hold.sh" open "$task" 2>&1 >/dev/null) || rc=$?
   if [ "$rc" -ne 0 ] && [ "$rc" -ne 1 ]; then
-    line="task-job: captain hold lookup failed (exit $rc): ${error//$'\n'/ }"
+    line="# task-job: captain hold lookup failed (exit $rc): ${error//$'\n'/ }"
     if ! status_event_recorded "$state/$task.status" "$line"; then
       printf '%s\n' "$(status_stamp_line "$line")" >> "$state/$task.status"
     fi
@@ -303,6 +310,7 @@ fm_task_job_deliver() (
   trap 'exit 143' TERM INT
   inbox=$(fm_task_inbox_dir "$state" "$task")
   [ -d "$dir" ] && [ -f "$dir/exit" ] || return 1
+  [ "$(fm_meta_get "$dir/job" stopped)" != 1 ] || return 1
   [ -f "$meta" ] && [ ! -L "$meta" ] && [ -d "$inbox" ] || return 1
   msg=$(fm_task_job_message "$dir") || return 1
   rec=$(fm_task_inbox_write_idempotent "$state" "$task" "$msg" hold-aware) || return 1
@@ -312,6 +320,7 @@ fm_task_job_deliver() (
 
 fm_task_job_due_action() {  # <job-dir>
   local dir=$1 rec count last now
+  [ "$(fm_meta_get "$dir/job" stopped)" != 1 ] || { printf quiet; return; }
   rec=$(fm_meta_get "$dir/delivered" record)
   rec="${dir%/jobs/*}/$rec"
   [ -f "$rec" ] && [ ! -f "$dir/escalated" ] || { printf quiet; return; }
@@ -338,6 +347,7 @@ fm_task_job_reconcile() {  # <state-dir> <task-id>
   grace=$(fm_task_job_secs "${FM_TASK_JOB_START_GRACE_SECS:-}" "$FM_TASK_JOB_START_GRACE_DEFAULT")
   for dir in "$root"/*; do
     [ -d "$dir" ] && [ ! -L "$dir" ] || continue
+    [ "$(fm_meta_get "$dir/job" stopped)" != 1 ] || continue
     [ ! -f "$dir/delivered" ] || continue
     rc=0
     fm_task_job_runner_state "$dir" || rc=$?

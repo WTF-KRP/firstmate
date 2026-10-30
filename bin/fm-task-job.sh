@@ -66,6 +66,7 @@ cmd_run() {  # <state-dir> <task-id> <job-dir>
   [ -f "$dir/job" ] && [ -f "$dir/argv" ] || exit 1
   # Reconcile already concluded a runner that started too late; never run then.
   [ ! -e "$dir/exit" ] || exit 0
+  [ "$(fm_meta_get "$dir/job" stopped)" != 1 ] || exit 0
   while IFS= read -r -d '' a; do
     argv+=("$a")
   done < "$dir/argv"

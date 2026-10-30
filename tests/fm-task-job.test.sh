@@ -822,12 +822,11 @@ test_removed_inbox_is_never_recreated() {
 test_delivery_serializes_with_retirement() {
   local dir out jobdir runner delivery retirement rc=0
   dir=$(setup_case retiring-race)
-  out=$(start_waiting_job "$dir") || fail "start failed: $out"
+  out=$(job_start "$dir" --timeout 60 -- true) || fail "start failed: $out"
   jobdir=$(job_dir_of "$dir" "$out")
   runner=$(sed -n 's/^pid=//p' "$jobdir/runner")
-  FM_TASK_JOB_KILL_GRACE_SECS=0 case_command "$dir" "$JOB" stop-all "$dir/state" t1 || fail "stop-all failed"
-  wait_gone "$runner" || fail "the runner was not stopped"
-  job_lib "$dir" fm_task_job_publish_exit "$jobdir" exited 0 || fail "could not publish exit"
+  wait_for_file "$jobdir/exit" || fail "the command did not finish"
+  wait_gone "$runner" || fail "the runner did not exit"
   cat > "$dir/deliver.sh" <<'SH'
 . "$1/bin/fm-task-job-lib.sh"
 fm_task_job_message() {
@@ -957,6 +956,53 @@ SH
   pass "task job: hold lookup errors suppress rings and escalation, report once, and allow delivery after recovery"
 }
 
+test_diagnostics_preserve_declared_holds_and_decisions() {
+  local mode dir out jobdir lost runner child held open
+  held='captain-held [key=external]: waiting for the captain on another work item'
+  for mode in unrecoverable lookup; do
+    dir=$(setup_case "diagnostic-$mode")
+    printf 'needs-decision [key=pending-reply-keep]: pending-reply-keep: retain this decision\n' >> "$dir/state/t1.status"
+    open=$(job_lib "$dir" status_open_decisions "$dir/state/t1.status")
+    [ -n "$open" ] || fail "the fixture did not retain its reserved decision"
+    [ -z "$(job_lib "$dir" status_own_open_decisions "$dir/state/t1.status")" ] || fail "the fixture masked the declared hold with its own decision"
+    out=$(job_start "$dir" --timeout 60 -- true) || fail "completion start failed: $out"
+    jobdir=$(job_dir_of "$dir" "$out")
+    wait_for_file "$jobdir/exit" || fail "completion did not finish"
+    wait_gone "$(sed -n 's/^pid=//p' "$jobdir/runner")" || fail "completion runner did not finish"
+    if [ "$mode" = unrecoverable ]; then
+      out=$(job_start "$dir" --timeout 60 -- sleep 60) || fail "lost job start failed: $out"
+      lost=$(job_dir_of "$dir" "$out")
+      runner=$(sed -n 's/^pid=//p' "$lost/runner")
+      child=$(sed -n 's/^pid=//p' "$lost/child")
+      kill -KILL "$runner"
+      wait_gone "$runner" || fail "lost runner did not stop"
+      kill -KILL "$child"
+      wait_gone "$child" || fail "fixture command did not stop"
+      printf '%s\n' "$held" >> "$dir/state/t1.status"
+    else
+      cat > "$dir/fakebin/tasks-axi" <<'SH'
+#!/usr/bin/env bash
+if [ "$1" = show ]; then
+  printf 'captain-held [key=external]: waiting for the captain on another work item\n' >> "$FM_HOME/state/t1.status"
+  echo 'diagnostic hold lookup unavailable' >&2
+  exit 1
+fi
+exec "$FM_REAL_TASKS_AXI" "$@"
+SH
+      chmod +x "$dir/fakebin/tasks-axi"
+    fi
+    FM_REAL_TASKS_AXI="$(command -v tasks-axi)" steer_check "$dir" || fail "$mode diagnostic pass failed"
+    assert_grep "task-job" "$dir/state/t1.status" "the diagnostic must remain a status line"
+    [ "$(job_lib "$dir" status_declared_wait_line "$dir/state/t1.status")" = "$held" ] || fail "$mode diagnostic replaced the declared hold"
+    [ "$(job_lib "$dir" status_open_decisions "$dir/state/t1.status")" = "$open" ] || fail "$mode diagnostic changed open decisions"
+    FM_REAL_TASKS_AXI="$(command -v tasks-axi)" steer_check "$dir" 0 || fail "$mode later pass failed"
+    [ -s "$jobdir/delivered" ] || fail "$mode held completion was not recorded"
+    [ ! -e "$jobdir/delivery" ] || fail "$mode diagnostic allowed a held delivery attempt"
+    [ ! -s "$dir/send.log" ] || fail "$mode diagnostic rang a held completion"
+  done
+  pass "task job: both diagnostic writers preserve declared captain holds and open decisions"
+}
+
 test_start_refuses_without_identity_or_timeout() {
   local dir rc out
   dir=$(setup_case refuse)
@@ -989,6 +1035,7 @@ test_start_refuses_without_identity_or_timeout() {
 fm_test_run \
   test_startup_failure_preserves_recovery_records \
   test_hold_lookup_error_is_reported_once \
+  test_diagnostics_preserve_declared_holds_and_decisions \
   test_completion_reaches_inbox_and_rings \
   test_completion_names_the_starting_generation \
   test_timeout_stops_the_command_group \
