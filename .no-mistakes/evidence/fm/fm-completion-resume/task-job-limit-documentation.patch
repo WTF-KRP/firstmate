@@ -1,0 +1,43 @@
+diff --git a/bin/fm-task-job-lib.sh b/bin/fm-task-job-lib.sh
+index 0dee17ac..7c73ae2f 100644
+--- a/bin/fm-task-job-lib.sh
++++ b/bin/fm-task-job-lib.sh
+@@ -17,6 +17,11 @@
+ # record with the command's exit status. At the deadline it stops its group
+ # and the direct command's own group while that command's recorded identity
+ # still proves ownership; an unproven group is never signaled.
++# Limit: a command that moves itself into another process group, or exits
++# leaving a background descendant running, is not guaranteed to be stopped at
++# the deadline or on cleanup, and its job can be published as finished while
++# that descendant still runs. The refusal to signal a group whose ownership
++# cannot be proven is unchanged by this limit.
+ # Harness-native background commands and guardian outcomes are not covered.
+ #
+ # Layout under <state-dir>/<task>.inbox/jobs/<job-id>/ (teardown removes the
+diff --git a/bin/fm-task-job.sh b/bin/fm-task-job.sh
+index 2cdcda28..20caaf42 100755
+--- a/bin/fm-task-job.sh
++++ b/bin/fm-task-job.sh
+@@ -25,7 +25,8 @@
+ #   fm-task-job.sh _run <state-dir> <task-id> <job-dir>
+ #       Internal: the detached runner that start launches.
+ #
+-# The timeout is required, from 1 to 604800 seconds, so every job is bounded.
++# The timeout is required, from 1 to 604800 seconds, so every job is bounded,
++# within the process-group limit that bin/fm-task-job-lib.sh states.
+ # Leading zeros retain decimal meaning.
+ # Exit codes: 0 ok, 1 refused or failed, 2 usage.
+ set -u
+diff --git a/docs/architecture.md b/docs/architecture.md
+index a25e4f69..1b9d81f8 100644
+--- a/docs/architecture.md
++++ b/docs/architecture.md
+@@ -245,7 +245,7 @@ On an unmarked return, `bin/fm-afk-return.sh` owns ordered shutdown, the record
+ `fm-send.sh` delivers every remote text steer and ordinary local text steer as a durable steering-inbox record plus a best-effort constant doorbell line (`bin/fm-task-inbox-lib.sh`).
+ The doorbell line is a shell no-op for pane backends and is never delivered to an endpoint classified as dead or missing; that record surfaces once for recovery instead of walking the re-ring ladder (`bin/fm-task-inbox-lib.sh` header).
+ The [`fm-send.sh` header](../bin/fm-send.sh) owns the local-only direct-submit plane and its pane-specific timing; [T3 native delivery](t3code-backend.md#current-lifecycle-and-safety) owns its request-id retry policy.
+-Completions from commands launched as task jobs use this inbox under the contract in [`fm-task-job-lib.sh`](../bin/fm-task-job-lib.sh), with usage owned by [`fm-task-job.sh`](../bin/fm-task-job.sh).
++Completions from commands launched as task jobs use this inbox under the contract in [`fm-task-job-lib.sh`](../bin/fm-task-job-lib.sh), which also states the process-group limit on what a job's deadline and cleanup can stop, with usage owned by [`fm-task-job.sh`](../bin/fm-task-job.sh).
+ 
+ Text for a worker to read and commands that drive a worker's process are separate planes.
+ `fm-send.sh` is the data plane and always routing-marks a `kind=secondmate` target, which is right for a message and wrong for a lifecycle command, because a marked exit command arrives as chat the agent reasons about instead of executing.
