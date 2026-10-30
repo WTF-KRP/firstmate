@@ -11,9 +11,12 @@
 # bin/fm-task-job.sh's runner is the command's parent, so the exit
 # is a kernel fact it observes directly, and delivery reuses the steering inbox
 # (bin/fm-task-inbox-lib.sh), whose acknowledgement move ends each job's own
-# delivery ladder. The runner stays alive until its command's process group
-# has no live members other than itself, even after the command leader exits;
-# only then does it publish the exit record with the command's exit status.
+# delivery ladder. The runner waits until its own process group has no other
+# live members and the direct command's recorded identity has ended, even if
+# that command leaves the runner's group. Only then does it publish the exit
+# record with the command's exit status. At the deadline it stops its group
+# and the direct command's own group while that command's recorded identity
+# still proves ownership; an unproven group is never signaled.
 # Harness-native background commands and guardian outcomes are not covered.
 #
 # Layout under <state-dir>/<task>.inbox/jobs/<job-id>/ (teardown removes the
@@ -23,8 +26,8 @@
 #   argv       the command, NUL-delimited
 #   runner     key=value: pid and start (fm_pid_start_time) of the detached runner,
 #              written by the runner before it starts the command
-#   child      key=value: pid and start of the command in the runner's process
-#              group; written by the runner once the command runs
+#   child      key=value: pid and start of the direct command, which may leave
+#              the runner's group; written by the runner once the command runs
 #   output     the command's combined stdout and stderr
 #   exit       key=value: outcome (exited, timed-out, or lost), status, ended;
 #              published once by an exclusive link, so its presence means the
