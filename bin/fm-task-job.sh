@@ -63,7 +63,7 @@ valid_task() {  # <task-id>
 STOP_REQUESTED=0
 
 cmd_run() {  # <state-dir> <task-id> <job-dir>
-  local dir=$3 a deadline limit status=0 outcome=exited RUN_CHILD owner rc
+  local dir=$3 a deadline limit status=0 outcome=exited RUN_CHILD owner rc child_start child_rc
   local argv=()
   trap 'STOP_REQUESTED=1' TERM INT
   [ -f "$dir/job" ] && [ -f "$dir/argv" ] || exit 1
@@ -84,14 +84,25 @@ cmd_run() {  # <state-dir> <task-id> <job-dir>
   RUN_CHILD=$!
   fm_task_job_write_record "$dir/child" "pid=$RUN_CHILD" \
     "start=$(fm_pid_start_time "$RUN_CHILD" || true)" || true
+  child_start=$(fm_meta_get "$dir/child" start)
   limit=$((SECONDS + deadline - $(date +%s)))
   while :; do
     rc=0
     fm_task_job_group_members "$owner" "$owner" >/dev/null || rc=$?
-    [ "$rc" -ne 1 ] || break
+    child_rc=0
+    fm_task_job_proc_state "$RUN_CHILD" "$child_start" || child_rc=$?
+    [ "$rc" -ne 1 ] || [ "$child_rc" -ne 1 ] || break
     if [ "$STOP_REQUESTED" = 1 ] || [ "$SECONDS" -ge "$limit" ]; then
-      [ "$STOP_REQUESTED" = 1 ] || outcome=timed-out
-      if ! fm_task_job_stop_owned_group "$owner"; then
+      [ "$STOP_REQUESTED" = 1 ] || outcome='timed-out'
+      if ! fm_task_job_stop_owned_group "$owner" "$owner"; then
+        sleep 1
+        continue
+      fi
+      # The direct command may have made itself a group leader. Only its
+      # recorded identity proves ownership of that additional group.
+      child_rc=0
+      fm_task_job_proc_state "$RUN_CHILD" "$child_start" || child_rc=$?
+      if [ "$child_rc" -eq 2 ] || { [ "$child_rc" -eq 0 ] && ! fm_task_job_stop_owned_group "$RUN_CHILD"; }; then
         sleep 1
         continue
       fi

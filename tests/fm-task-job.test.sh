@@ -291,6 +291,36 @@ test_timeout_stops_the_command_group() {
   pass "task job: a command past its timeout is stopped with its whole process group"
 }
 
+test_timeout_stops_a_command_in_its_own_group() {
+  local dir out jobdir child owner group
+  dir=$(setup_case timeout-own-group)
+  # shellcheck disable=SC2016 # Perl creates the process group before exec preserves its identity.
+  out=$(job_start "$dir" --timeout 5 -- perl -MPOSIX -e '
+    POSIX::setpgid(0, 0) == 0 or die "setpgid: $!";
+    $| = 1;
+    print "own-group-ready\n";
+    exec "sleep", "60" or die "exec: $!";
+  ') || fail "start failed: $out"
+  jobdir=$(job_dir_of "$dir" "$out")
+  child=$(sed -n 's/^pid=//p' "$jobdir/child")
+  owner=$(sed -n 's/^pid=//p' "$jobdir/runner")
+  wait_for_file "$jobdir/output" || fail "the command did not report its new group"
+  group=$(ps -o pgid= -p "$child" | tr -d ' ')
+  [ "$group" = "$child" ] && [ "$group" != "$owner" ] \
+    || fail "the command did not move out of the runner's group"
+  if ! wait_for_file "$jobdir/exit"; then
+    kill -TERM "$child" 2>/dev/null || true
+    wait_gone "$owner" || fail "the runner did not exit after fixture cleanup"
+    fail "the command's own group bypassed the job deadline"
+  fi
+  assert_grep 'outcome=timed-out' "$jobdir/exit" "the escaped command must time out"
+  wait_gone "$child" || fail "the deadline left the command's own group running"
+  wait_for_record "$dir" || fail "the escaped command produced no timeout completion"
+  assert_contains "$(body_of "$(records "$dir")")" "passed its 5-second timeout and was stopped" \
+    "the completion should report the requested timeout"
+  pass "task job: a command in its own process group still honors its timeout"
+}
+
 test_hold_defers_the_ring_until_the_decision_closes() {
   local dir out jobdir rec rings
   dir=$(setup_case held)
@@ -1145,6 +1175,7 @@ test_start_refuses_without_identity_or_timeout() {
 }
 
 fm_test_run \
+  test_timeout_stops_a_command_in_its_own_group \
   test_startup_failure_preserves_recovery_records \
   test_hold_lookup_error_is_reported_once \
   test_diagnostics_preserve_declared_holds_and_decisions \

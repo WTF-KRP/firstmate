@@ -178,8 +178,8 @@ fm_task_job_group_members() {
 }
 
 fm_task_job_stop_owned_group() {
-  local owner=$1 members pid grace limit rc=0 i=0
-  members=$(fm_task_job_group_members "$owner" "$owner") || rc=$?
+  local group=$1 exclude=${2:-} members pid grace limit rc=0 i=0
+  members=$(fm_task_job_group_members "$group" "$exclude") || rc=$?
   [ "$rc" -ne 1 ] || return 0
   [ "$rc" -eq 0 ] || return 1
   while IFS= read -r pid; do
@@ -189,14 +189,14 @@ fm_task_job_stop_owned_group() {
   limit=$((SECONDS + grace))
   while [ "$SECONDS" -lt "$limit" ]; do
     rc=0
-    fm_task_job_group_members "$owner" "$owner" >/dev/null || rc=$?
+    fm_task_job_group_members "$group" "$exclude" >/dev/null || rc=$?
     [ "$rc" -ne 1 ] || return 0
     [ "$rc" -eq 0 ] || return 1
     sleep 0.1
   done
   while [ "$i" -lt 100 ]; do
     rc=0
-    members=$(fm_task_job_group_members "$owner" "$owner") || rc=$?
+    members=$(fm_task_job_group_members "$group" "$exclude") || rc=$?
     [ "$rc" -ne 1 ] || return 0
     [ "$rc" -eq 0 ] || return 1
     while IFS= read -r pid; do
