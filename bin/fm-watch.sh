@@ -271,7 +271,7 @@ WATCH_HOME_EXISTED=0
 # shellcheck source=bin/fm-task-inbox-lib.sh
 . "$SCRIPT_DIR/fm-task-inbox-lib.sh"
 # Task-job recovery (fm_task_job_reconcile in the pane loop below):
-# bin/fm-task-job-lib.sh owns delivering a worker's finished or lost job.
+# bin/fm-task-job-lib.sh owns recovery and completion delivery.
 # shellcheck source=bin/fm-task-job-lib.sh
 . "$SCRIPT_DIR/fm-task-job-lib.sh"
 # The away-posture record (state/.afk-contract) is the posture in both the

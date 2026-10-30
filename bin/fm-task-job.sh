@@ -17,6 +17,8 @@
 #       declaration, then returns. When the job finishes, or passes its
 #       timeout and is stopped, the runner publishes its exit record. The
 #       watcher delivers the completion and rings unless the task is held.
+#       If the runner exits during startup, start returns 1 and names the
+#       retained job directory; use the recovery contract above to assess it.
 #   fm-task-job.sh stop-all <state-dir> <task-id>
 #       Stop every live job of the task without delivering anything.
 #       bin/fm-teardown.sh runs it before it removes the task's inbox.
@@ -24,6 +26,7 @@
 #       Internal: the detached runner that start launches.
 #
 # The timeout is required, from 1 to 604800 seconds, so every job is bounded.
+# Leading zeros retain decimal meaning.
 # Exit codes: 0 ok, 1 refused or failed, 2 usage.
 set -u
 
@@ -64,7 +67,7 @@ cmd_run() {  # <state-dir> <task-id> <job-dir>
   local argv=()
   trap 'STOP_REQUESTED=1' TERM INT
   [ -f "$dir/job" ] && [ -f "$dir/argv" ] || exit 1
-  # Reconcile already concluded a runner that started too late; never run then.
+  # Never restart a job that already has a recorded terminal outcome.
   [ ! -e "$dir/exit" ] || exit 0
   [ "$(fm_meta_get "$dir/job" stopped)" != 1 ] || exit 0
   while IFS= read -r -d '' a; do

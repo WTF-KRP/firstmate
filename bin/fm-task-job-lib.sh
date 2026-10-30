@@ -46,6 +46,8 @@
 # fm_task_job_task_held reads the task's own open status decisions, its declared
 # captain-held wait, and its backlog captain hold through fm-captain-hold.sh,
 # in the watcher's own home and data context, never the runner's environment.
+# A failed backlog hold lookup suppresses rings and escalation and appends a
+# status diagnostic once per distinct error; delivery can resume after recovery.
 # An unheld completion is due its first ring in the delivering poll, subject to
 # the endpoint and busy guards. While held it consumes no delivery attempts or
 # busy deferrals; after release its delivery resumes. Each job owns its count, spacing,
@@ -58,11 +60,19 @@
 # recorded task): a completion captured but not delivered is delivered, and a
 # job whose runner is gone without an exit record is reported as
 # unrecoverable without signaling a group whose ownership cannot be proven.
+# A missing exit record does not establish that the command stopped.
+# Recovery and hold-lookup diagnostics are
+# comment status lines that preserve declared waits and open decisions.
 # fm_task_job_stop_all is teardown's stop for a task's live jobs, including
 # secondmate children, before removing their worktrees, metadata or homes.
 # A failed stop retains those resources. A finished job whose recorded runner
 # identity has ended is skipped before inspecting or signaling its historical
-# process group; a matching live runner is still stopped. The lifecycle and
+# process group; a matching live runner is still stopped. Confirmed cleanup
+# appends stopped=1 to the existing job record, so retries skip that job and
+# neither recovery nor delivery produces a completion for it. An unconfirmed
+# job without an exit record still refuses cleanup when ownership is unproven.
+# Concurrent job retirement is quiet at watcher bookkeeping boundaries, while
+# write failures for surviving job records remain errors. The lifecycle and
 # delivery regressions are in tests/fm-task-job.test.sh.
 #
 # Tunables (env):
@@ -144,7 +154,7 @@ fm_task_job_write_record() {  # <path> <key=value>...
 }
 
 # Publish the job's one exit record. The exclusive link makes the first writer
-# win, so a lost verdict can never replace a real exit or the reverse.
+# win, so concurrent publication can never replace an existing result.
 fm_task_job_publish_exit() {  # <job-dir> <outcome> <status>
   local dir=$1 tmp rc=0
   [ -d "$dir" ] || return 1
