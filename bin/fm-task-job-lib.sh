@@ -17,6 +17,11 @@
 # record with the command's exit status. At the deadline it stops its group
 # and the direct command's own group while that command's recorded identity
 # still proves ownership; an unproven group is never signaled.
+# Limit: a command that moves itself into another process group, or exits
+# leaving a background descendant running, is not guaranteed to be stopped at
+# the deadline or on cleanup, and its job can be published as finished while
+# that descendant still runs. The refusal to signal a group whose ownership
+# cannot be proven is unchanged by this limit.
 # Harness-native background commands and guardian outcomes are not covered.
 #
 # Layout under <state-dir>/<task>.inbox/jobs/<job-id>/ (teardown removes the

@@ -25,7 +25,8 @@
 #   fm-task-job.sh _run <state-dir> <task-id> <job-dir>
 #       Internal: the detached runner that start launches.
 #
-# The timeout is required, from 1 to 604800 seconds, so every job is bounded.
+# The timeout is required, from 1 to 604800 seconds, so every job is bounded,
+# within the process-group limit that bin/fm-task-job-lib.sh states.
 # Leading zeros retain decimal meaning.
 # Exit codes: 0 ok, 1 refused or failed, 2 usage.
 set -u
