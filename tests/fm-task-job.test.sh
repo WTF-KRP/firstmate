@@ -803,7 +803,7 @@ test_watcher_survives_retired_completion_bookkeeping() {
     retire=$jobdir
     [ "$scope" != inbox ] || retire="$dir/state/t1.inbox"
     [ "$scope" != surviving ] || retire=
-    send_retire= write_retire= fault= busy=0 send_fail=0
+    send_retire='' write_retire='' fault='' busy=0 send_fail=0
     if [ "$boundary" = delivery ] && [ "$scope" != surviving ]; then
       send_retire=$retire
       [ "$scope" != failed ] || send_fail=1
@@ -812,7 +812,7 @@ test_watcher_survives_retired_completion_bookkeeping() {
       fault="$jobdir/$boundary"
     fi
     if [ "$scenario" = escalated-job ]; then
-      write_retire= fault=
+      write_retire='' fault=''
       cat > "$dir/fakebin/tasks-axi" <<'SH'
 #!/usr/bin/env bash
 if [ "$1" = show ]; then
