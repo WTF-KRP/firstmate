@@ -45,6 +45,19 @@ make_stubs() {  # <dir>
 set -u
 case "${1:-}" in
   send-keys)
+    if [ -n "${FM_JOB_RETIRE_ON_SEND:-}" ]; then
+      for arg in "$@"; do
+        case "$arg" in
+          *"'t1.inbox'"*)
+            rm -rf -- "$FM_JOB_RETIRE_ON_SEND"
+            if [ "${FM_JOB_RETIRE_SEND_FAIL:-0}" = 1 ]; then
+              printf 'send failed\n' >> "${FM_SEND_LOG:-/dev/null}"
+              exit 1
+            fi
+            ;;
+        esac
+      done
+    fi
     if [ "${FM_FAKE_TMUX_SEND_FAIL:-0}" = 1 ]; then
       printf 'send failed\n' >> "${FM_SEND_LOG:-/dev/null}"
       exit 1
@@ -65,8 +78,14 @@ case "${1:-}" in
       case "$a" in *cursor_y*) printf '1\n'; exit 0 ;; esac
     done
     printf 'fakepane\n'; exit 0 ;;
-  capture-pane) printf '╭────╮\n│    │\n╰────╯\n'; exit 0 ;;
-  list-windows) printf 'fm-t1\n'; exit 0 ;;
+  capture-pane)
+    if [ "${FM_JOB_BUSY_TARGET:-0}" = 1 ]; then
+      for arg in "$@"; do
+        case "$arg" in *fm-t1*) printf 'BUSYTOKEN active\n'; exit 0 ;; esac
+      done
+    fi
+    printf '╭────╮\n│    │\n╰────╯\n'; exit 0 ;;
+  list-windows) printf '%s\n' "${FM_FAKE_TMUX_WINDOWS:-fm-t1}"; exit 0 ;;
 esac
 exit 0
 SH
@@ -757,6 +776,99 @@ watch_bg() {  # <dir> <out>
     "$WATCH" > "$2" 2>&1 &
 }
 
+test_watcher_survives_retired_completion_bookkeeping() {
+  local scenario boundary scope dir out jobdir other wpid i rc rec retire send_retire write_retire fault busy send_fail
+  for scenario in delivery-job delivery-inbox delivery-failed busy-job escalated-job delivery-surviving busy-surviving escalated-surviving; do
+    boundary=${scenario%%-*}
+    scope=${scenario#*-}
+    dir=$(setup_case "bookkeeping-$scenario")
+    printf 'working: monitoring a command\n' > "$dir/state/t1.status"
+    fm_write_meta "$dir/state/t2.meta" "window=sess:fm-t2" "kind=ship" "harness=grok" "spawn_gen=gen-B"
+    printf 'working: monitoring another command\n' > "$dir/state/t2.status"
+    prime_status_seen "$dir/state" "$dir/state/t1.status"
+    prime_status_seen "$dir/state" "$dir/state/t2.status"
+    out=$(job_start "$dir" --timeout 60 -- true) || fail "first start failed: $out"
+    jobdir=$(job_dir_of "$dir" "$out")
+    out=$(FM_TASK_INBOX="$dir/state/t2.inbox" case_command "$dir" "$JOB" start --timeout 60 -- true) \
+      || fail "second start failed: $out"
+    other="$dir/state/t2.inbox/jobs/$(printf '%s\n' "$out" | sed -n 's/^job: //p')"
+    wait_for_file "$jobdir/exit" || fail "first job did not finish"
+    wait_for_file "$other/exit" || fail "second job did not finish"
+    wait_gone "$(sed -n 's/^pid=//p' "$jobdir/runner")" || fail "first runner did not finish"
+    wait_gone "$(sed -n 's/^pid=//p' "$other/runner")" || fail "second runner did not finish"
+    job_lib "$dir" fm_task_job_deliver "$dir/state" t1 "$jobdir" || fail "could not prepare first completion"
+    if [ "$boundary" = escalated ]; then
+      job_lib "$dir" fm_task_job_write_record "$jobdir/delivery" count=999 last=1 || fail "could not prepare escalation"
+    fi
+    retire=$jobdir
+    [ "$scope" != inbox ] || retire="$dir/state/t1.inbox"
+    [ "$scope" != surviving ] || retire=
+    send_retire= write_retire= fault= busy=0 send_fail=0
+    if [ "$boundary" = delivery ] && [ "$scope" != surviving ]; then
+      send_retire=$retire
+      [ "$scope" != failed ] || send_fail=1
+    else
+      write_retire=$retire
+      fault="$jobdir/$boundary"
+    fi
+    if [ "$scenario" = escalated-job ]; then
+      write_retire= fault=
+      cat > "$dir/fakebin/tasks-axi" <<'SH'
+#!/usr/bin/env bash
+if [ "$1" = show ]; then
+  rm -rf -- "$FM_JOB_RETIRE_BEFORE_ESCALATION"
+fi
+exec "$FM_REAL_TASKS_AXI" "$@"
+SH
+      chmod +x "$dir/fakebin/tasks-axi"
+    fi
+    [ "$boundary" != busy ] || busy=1
+    cat > "$dir/fakebin/mv" <<'SH'
+#!/usr/bin/env bash
+if [ "${!#}" = "${FM_JOB_RECORD_FAULT:-}" ]; then
+  [ -z "${FM_JOB_RETIRE_AT_WRITE:-}" ] || rm -rf -- "$FM_JOB_RETIRE_AT_WRITE"
+  exit 1
+fi
+exec "$FM_REAL_MV" "$@"
+SH
+    chmod +x "$dir/fakebin/mv"
+    FM_FAKE_TMUX_WINDOWS=$'fm-t1\nfm-t2' FM_JOB_RETIRE_ON_SEND="$send_retire" \
+      FM_JOB_RETIRE_SEND_FAIL="$send_fail" FM_JOB_RECORD_FAULT="$fault" FM_JOB_RETIRE_AT_WRITE="$write_retire" \
+      FM_JOB_BUSY_TARGET="$busy" FM_BUSY_REGEX=BUSYTOKEN FM_REAL_MV="$(command -v mv)" \
+      FM_JOB_RETIRE_BEFORE_ESCALATION="$jobdir" FM_REAL_TASKS_AXI="$(command -v tasks-axi)" \
+      watch_bg "$dir" "$dir/watch.out"
+    wpid=$!
+    if [ "$scope" = surviving ]; then
+      wait_gone "$wpid" || { kill "$wpid" 2>/dev/null; fail "$scenario swallowed a surviving job's write failure"; }
+      rc=0
+      wait "$wpid" || rc=$?
+      [ "$rc" -ne 0 ] || fail "$scenario reported a successful watcher exit"
+      [ -d "$jobdir" ] || fail "$scenario removed the surviving job"
+      [ -s "$dir/watch.out" ] || fail "$scenario suppressed a surviving job's bookkeeping error"
+      continue
+    fi
+    i=0
+    while [ "$i" -lt 200 ] && ! grep -qF "'t2.inbox'" "$dir/send.log"; do
+      kill -0 "$wpid" 2>/dev/null || break
+      sleep 0.1
+      i=$((i + 1))
+    done
+    if ! grep -qF "'t2.inbox'" "$dir/send.log"; then
+      kill "$wpid" 2>/dev/null || true
+      fail "$scenario stopped supervision before the second task rang: $(cat "$dir/watch.out")"
+    fi
+    rec="$dir/state/t2.inbox/$(sed -n 's/^record=//p' "$other/delivered")"
+    mv "$rec" "$dir/state/t2.inbox/handled/"
+    sleep 2.5
+    kill -0 "$wpid" 2>/dev/null || fail "$scenario exited after concurrent retirement: $(cat "$dir/watch.out")"
+    kill "$wpid" 2>/dev/null || true
+    wait "$wpid" 2>/dev/null || true
+    [ ! -e "$retire" ] || fail "$scenario recreated retired job state"
+    [ ! -s "$dir/watch.out" ] || fail "$scenario was not a quiet no-op: $(cat "$dir/watch.out")"
+  done
+  pass "watcher: retired completion bookkeeping preserves supervision while surviving write failures remain errors"
+}
+
 test_watcher_reports_a_lost_runner_as_unrecoverable() {
   local dir out jobdir runner child descendant wpid i
   dir=$(setup_case lost)
@@ -1056,6 +1168,7 @@ fm_test_run \
   test_secondmate_teardown_stops_child_job_without_delivery \
   test_finished_live_runner_is_owned_until_stopped \
   test_watcher_rerings_until_acknowledged \
+  test_watcher_survives_retired_completion_bookkeeping \
   test_watcher_reports_a_lost_runner_as_unrecoverable \
   test_stop_all_stops_without_delivering \
   test_removed_inbox_is_never_recreated \
