@@ -1,0 +1,52 @@
+--- tests/fm-extension-binding.test.sh
++++ tests/.fm-8026-double-suspend.test.sh
+@@ -661,6 +661,13 @@
+ import concurrent.futures, json, os, pathlib, shutil, signal, subprocess, sys, time
+ 
+ root, temporary, package = map(pathlib.Path, sys.argv[1:])
++original_run = subprocess.run
++def traced_run(*args, **kwargs):
++    try: return original_run(*args, **kwargs)
++    except subprocess.CalledProcessError as e:
++        print("SUBPROCESS FAILURE", e.cmd, e.returncode, e.stdout, e.stderr, flush=True)
++        raise
++subprocess.run = traced_run
+ host = root / "bin/fm-extension.mjs"
+ 
+ def wait_for(predicate):
+@@ -752,7 +759,16 @@
+                 if kind != "suspended-stall": release.touch()
+                 os.kill(host_pid, signal.SIGCONT)
+                 os.killpg(group, signal.SIGCONT)
++                if kind == "suspended-stall":
++                    time.sleep(.2)
++                    os.kill(host_pid, signal.SIGSTOP)
++                    os.killpg(group, signal.SIGSTOP)
++                    time.sleep(4)
++                    resumed_again = time.monotonic()
++                    os.kill(host_pid, signal.SIGCONT)
++                    os.killpg(group, signal.SIGCONT)
+         output, error = process.communicate(timeout=6)
++        print("PRODUCT", kind, "exit", process.returncode, "stdout", repr(output), "stderr", repr(error), flush=True)
+         if kind in ("stalled", "suspended-stall"):
+             assert process.returncode != 0, "a genuinely stalled invocation succeeded"
+             evidence = json.loads(output)
+@@ -763,7 +779,8 @@
+                 assert 1000 <= evidence["deadline"]["elapsed_ms"] < 3000, evidence
+                 assert evidence["deadline"]["grace_ms"] == 0, evidence
+             else:
+-                assert 5000 <= evidence["deadline"]["elapsed_ms"] < 8000, evidence
++                assert 8000 <= evidence["deadline"]["elapsed_ms"] < 11000, evidence
++                assert time.monotonic() - resumed_again < .8, "a second suspension renewed grace"
+                 assert evidence["deadline"]["grace_ms"] == 1000, evidence
+             assert evidence["deadline"]["overrun_ms"] == evidence["deadline"]["elapsed_ms"] - 1000, evidence
+         else:
+@@ -787,7 +804,7 @@
+             except ProcessLookupError: pass
+ 
+ with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
+-    futures = [executor.submit(run_case, kind) for kind in ("invoke", "handshake", "launch", "startup", "stalled", "suspended-stall")]
++    futures = [executor.submit(run_case, kind) for kind in ("suspended-stall",)]
+     failures = []
+     for future in futures:
+         try: future.result()

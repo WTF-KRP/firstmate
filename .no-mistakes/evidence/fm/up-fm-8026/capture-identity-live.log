@@ -1,0 +1,31 @@
+REGISTER 0 registered: identity-source (ext-coalesce from org.example.coalesce@1.2.3)
+owner-token: sha256:e5300721937a6ba0e2c382329773de580c50d9a4dc3f5472ff85ec656886e005
+retire: bin/fm-procevent.sh retire identity-source --if-owner sha256:e5300721937a6ba0e2c382329773de580c50d9a4dc3f5472ff85ec656886e005
+ 
+COMMAND ('start', 'identity-source') EXIT 0 STDOUT captured: ./identity-source.1.result
+ STDERR not-autohandled: identity-source (left for the handler; still unacknowledged)
+
+CAPTURES launch-ready-0 [{"file": "identity-source.1.result", "result": {"code": "timeout", "deadline": {"bound": "launch-ready", "elapsed_ms": 5005, "grace_ms": 0, "operation": "handshake", "overrun_ms": 5, "timeout_ms": 5000}, "extension_id": "org.example.coalesce", "operation": "source.poll", "schema": "firstmate.process-event-extension-error.v1"}}]
+COMMAND ('start', 'identity-source') EXIT 0 STDOUT no-result: identity-source (exit 0)
+ STDERR 
+CAPTURES launch-ready-1 [{"file": "identity-source.1.result", "result": {"code": "timeout", "deadline": {"bound": "launch-ready", "elapsed_ms": 5005, "grace_ms": 0, "operation": "handshake", "overrun_ms": 5, "timeout_ms": 5000}, "extension_id": "org.example.coalesce", "operation": "source.poll", "schema": "firstmate.process-event-extension-error.v1"}}]
+COMMAND ('start', 'identity-source') EXIT 0 STDOUT captured: ./identity-source.2.result
+ STDERR not-autohandled: identity-source (left for the handler; still unacknowledged)
+
+CAPTURES invoke-0 [{"file": "identity-source.1.result", "result": {"code": "timeout", "deadline": {"bound": "launch-ready", "elapsed_ms": 5005, "grace_ms": 0, "operation": "handshake", "overrun_ms": 5, "timeout_ms": 5000}, "extension_id": "org.example.coalesce", "operation": "source.poll", "schema": "firstmate.process-event-extension-error.v1"}}, {"file": "identity-source.2.result", "result": {"code": "timeout", "deadline": {"bound": "invoke", "elapsed_ms": 1002, "grace_ms": 0, "operation": "source.poll", "overrun_ms": 2, "timeout_ms": 1000}, "extension_id": "org.example.coalesce", "operation": "source.poll", "schema": "firstmate.process-event-extension-error.v1"}}]
+COMMAND ('start', 'identity-source') EXIT 0 STDOUT no-result: identity-source (exit 0)
+ STDERR 
+CAPTURES invoke-1 [{"file": "identity-source.1.result", "result": {"code": "timeout", "deadline": {"bound": "launch-ready", "elapsed_ms": 5005, "grace_ms": 0, "operation": "handshake", "overrun_ms": 5, "timeout_ms": 5000}, "extension_id": "org.example.coalesce", "operation": "source.poll", "schema": "firstmate.process-event-extension-error.v1"}}, {"file": "identity-source.2.result", "result": {"code": "timeout", "deadline": {"bound": "invoke", "elapsed_ms": 1002, "grace_ms": 0, "operation": "source.poll", "overrun_ms": 2, "timeout_ms": 1000}, "extension_id": "org.example.coalesce", "operation": "source.poll", "schema": "firstmate.process-event-extension-error.v1"}}]
+COMMAND ('register-extension', 'ext-coalesce', 'identity-source', '--config-ref', 'host-error-output') EXIT 0 STDOUT registered: identity-source (ext-coalesce from org.example.coalesce@1.2.3)
+owner-token: sha256:8931c1e71b88ea18c84ac91323e09dd930ee77bf9a7631f3b676edb3651b9cd4
+retire: bin/fm-procevent.sh retire identity-source --if-owner sha256:8931c1e71b88ea18c84ac91323e09dd930ee77bf9a7631f3b676edb3651b9cd4
+ STDERR 
+COMMAND ('start', 'identity-source') EXIT 0 STDOUT captured: ./identity-source.3.result
+ STDERR not-autohandled: identity-source (left for the handler; still unacknowledged)
+
+CAPTURES successful-host-shaped-0 [{"file": "identity-source.1.result", "result": {"code": "timeout", "deadline": {"bound": "launch-ready", "elapsed_ms": 5005, "grace_ms": 0, "operation": "handshake", "overrun_ms": 5, "timeout_ms": 5000}, "extension_id": "org.example.coalesce", "operation": "source.poll", "schema": "firstmate.process-event-extension-error.v1"}}, {"file": "identity-source.2.result", "result": {"code": "timeout", "deadline": {"bound": "invoke", "elapsed_ms": 1002, "grace_ms": 0, "operation": "source.poll", "overrun_ms": 2, "timeout_ms": 1000}, "extension_id": "org.example.coalesce", "operation": "source.poll", "schema": "firstmate.process-event-extension-error.v1"}}, {"file": "identity-source.3.result", "result": {"code": "package-missing", "extension_id": "org.example.coalesce", "operation": "source.poll", "schema": "firstmate.process-event-extension-error.v1"}}]
+COMMAND ('start', 'identity-source') EXIT 0 STDOUT captured: ./identity-source.4.result
+ STDERR not-autohandled: identity-source (left for the handler; still unacknowledged)
+
+CAPTURES successful-host-shaped-1 [{"file": "identity-source.1.result", "result": {"code": "timeout", "deadline": {"bound": "launch-ready", "elapsed_ms": 5005, "grace_ms": 0, "operation": "handshake", "overrun_ms": 5, "timeout_ms": 5000}, "extension_id": "org.example.coalesce", "operation": "source.poll", "schema": "firstmate.process-event-extension-error.v1"}}, {"file": "identity-source.2.result", "result": {"code": "timeout", "deadline": {"bound": "invoke", "elapsed_ms": 1002, "grace_ms": 0, "operation": "source.poll", "overrun_ms": 2, "timeout_ms": 1000}, "extension_id": "org.example.coalesce", "operation": "source.poll", "schema": "firstmate.process-event-extension-error.v1"}}, {"file": "identity-source.3.result", "result": {"code": "package-missing", "extension_id": "org.example.coalesce", "operation": "source.poll", "schema": "firstmate.process-event-extension-error.v1"}}, {"file": "identity-source.4.result", "result": {"code": "package-missing", "extension_id": "org.example.coalesce", "operation": "source.poll", "schema": "firstmate.process-event-extension-error.v1"}}]
+PASS timing diagnostics coalesce, distinct bounds remain distinct, successful results remain distinct

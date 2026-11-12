@@ -1,0 +1,15 @@
+PRODUCT stalled exit 70 stdout b'{"code":"timeout","deadline":{"bound":"invoke","elapsed_ms":1002,"grace_ms":0,"operation":"source.poll","overrun_ms":2,"timeout_ms":1000},"extension_id":"org.example.sleep","operation":"source.poll","schema":"firstmate.process-event-extension-error.v1"}\n' stderr b''
+ok - real deadline stalled
+PRODUCT invoke exit 0 stdout b'active runner completed\n' stderr b''
+ok - real deadline invoke
+PRODUCT suspended-stall exit 70 stdout b'{"code":"timeout","deadline":{"bound":"invoke","elapsed_ms":5204,"grace_ms":1000,"operation":"source.poll","overrun_ms":4204,"timeout_ms":1000},"extension_id":"org.example.sleep","operation":"source.poll","schema":"firstmate.process-event-extension-error.v1"}\n' stderr b''
+ok - real deadline suspended-stall
+PRODUCT startup exit 0 stdout b'' stderr b''
+ok - real deadline startup
+PRODUCT handshake exit 0 stdout b'bound: org.example.sleep@1.2.3\nbinding: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-extension-binding.q1tLZh/deadline-handshake/home/config/extensions.d/org.example.sleep.json\nbinding-digest: sha256:d19d622ed21c3f0721d844383c62478980dde45b4336a40d9f97c98c2163de6f\npackage: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-extension-binding.q1tLZh/deadline-handshake/home/data/extensions/packages/org.example.sleep/1.2.3/7174c6879de2bd4839760d55388cdd28544d07984cb54e6d5977e6ab23e3dbc9\npackage-digest: sha256:7174c6879de2bd4839760d55388cdd28544d07984cb54e6d5977e6ab23e3dbc9\nverified: process-event-adapter/1 (ext-sleep)\n' stderr b''
+ok - real deadline handshake
+PRODUCT launch exit 0 stdout b'bound: org.example.sleep@1.2.3\nbinding: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-extension-binding.q1tLZh/deadline-launch/home/config/extensions.d/org.example.sleep.json\nbinding-digest: sha256:92196f005a823ed02a60c68eeae79899f8175d5974d89268e9699275692dbeb2\npackage: /private/var/folders/gn/m0fr4_4962q75gpmcl14_z0w0000gn/T/fm-extension-binding.q1tLZh/deadline-launch/home/data/extensions/packages/org.example.sleep/1.2.3/5b32df4583bbcdafd533cfb174656d936540365d0b43085cc7878781c99253c0\npackage-digest: sha256:5b32df4583bbcdafd533cfb174656d936540365d0b43085cc7878781c99253c0\nverified: process-event-adapter/1 (ext-sleep)\n' stderr b''
+ok - real deadline launch
+ok - invoke, handshake, readiness and release survive suspension while awake stalls time out
+
+all extension-binding tests passed

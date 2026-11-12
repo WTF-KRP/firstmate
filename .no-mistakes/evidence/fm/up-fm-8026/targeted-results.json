@@ -1,0 +1,22 @@
+[
+  {
+    "segment": "deadlines",
+    "exit": 0
+  },
+  {
+    "segment": "early-bind",
+    "exit": 0
+  },
+  {
+    "segment": "early-handshake",
+    "exit": 0
+  },
+  {
+    "segment": "matrix-runtime",
+    "exit": 0
+  },
+  {
+    "segment": "lifecycle-host-errors",
+    "exit": 0
+  }
+]

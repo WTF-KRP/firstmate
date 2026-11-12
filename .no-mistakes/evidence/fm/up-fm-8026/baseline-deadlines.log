@@ -1,0 +1,16 @@
+Baseline product files: a02b089835a114844cc53d0429570155dfe4ef3a; current regression driver with output tracing.
+PRODUCT stalled exit 70 stdout b'{"code":"timeout","extension_id":"org.example.sleep","operation":"source.poll","schema":"firstmate.process-event-extension-error.v1"}\n' stderr b''
+PRODUCT suspended-stall exit 70 stdout b'{"code":"timeout","extension_id":"org.example.sleep","operation":"source.poll","schema":"firstmate.process-event-extension-error.v1"}\n' stderr b''
+PRODUCT invoke exit 70 stdout b'{"code":"timeout","extension_id":"org.example.sleep","operation":"source.poll","schema":"firstmate.process-event-extension-error.v1"}\n' stderr b''
+PRODUCT startup exit 125 stdout b'' stderr b'extension launch barrier: host did not release the launch barrier\n'
+PRODUCT launch exit 1 stdout b'' stderr b'error[binding-failed]: error[timeout]: extension launch barrier did not publish ownership in time\n'
+PRODUCT handshake exit 1 stdout b'' stderr b'error[binding-failed]: error[timeout]: extension handshake exceeded 5000 ms\n'
+Traceback (most recent call last):
+  File "<stdin>", line 143, in <module>
+AssertionError: AssertionError(('invoke', 70, b'{"code":"timeout","extension_id":"org.example.sleep","operation":"source.poll","schema":"firstmate.process-event-extension-error.v1"}\n', b''))
+AssertionError(('handshake', 1, b'', b'error[binding-failed]: error[timeout]: extension handshake exceeded 5000 ms\n'))
+AssertionError(('launch', 1, b'', b'error[binding-failed]: error[timeout]: extension launch barrier did not publish ownership in time\n'))
+AssertionError(('startup', 125, b'', b'extension launch barrier: host did not release the launch barrier\n'))
+KeyError('deadline')
+KeyError('deadline')
+not ok - real invocation deadlines did not survive suspension with bounded stall enforcement

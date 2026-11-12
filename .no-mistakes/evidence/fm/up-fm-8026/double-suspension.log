@@ -1,0 +1,5 @@
+PRODUCT suspended-stall exit 70 stdout b'{"code":"timeout","deadline":{"bound":"invoke","elapsed_ms":8777,"grace_ms":1000,"operation":"source.poll","overrun_ms":7777,"timeout_ms":1000},"extension_id":"org.example.sleep","operation":"source.poll","schema":"firstmate.process-event-extension-error.v1"}\n' stderr b''
+ok - real deadline suspended-stall
+ok - invoke, handshake, readiness and release survive suspension while awake stalls time out
+
+all extension-binding tests passed

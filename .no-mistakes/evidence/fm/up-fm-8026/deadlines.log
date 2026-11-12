@@ -1,0 +1,14 @@
+FM_TEST_BEGIN 2026-11-12T06:01:05Z tests/fm-extension-binding.test.sh family=standalone expected_gate_skip=none
+ok - real deadline startup
+Traceback (most recent call last):
+  File "<stdin>", line 135, in <module>
+AssertionError: CalledProcessError(1, ['node', '{run-worktree}/bin/fm-extension.mjs', 'bind', '{run-worktree}/.test-8026/tmp/fm-extension-binding.tW4rNp/deadline-invoke/package', '--adapter', 'ext-sleep', '--trust-same-user-code', '--timeout-ms', '1000'])
+AssertionError('deadline fixture did not reach its control boundary')
+AssertionError('deadline fixture did not reach its control boundary')
+CalledProcessError(1, ['node', '{run-worktree}/bin/fm-extension.mjs', 'bind', '{run-worktree}/.test-8026/tmp/fm-extension-binding.tW4rNp/deadline-stalled/package', '--adapter', 'ext-sleep', '--trust-same-user-code', '--timeout-ms', '1000'])
+CalledProcessError(1, ['node', '{run-worktree}/bin/fm-extension.mjs', 'bind', '{run-worktree}/.test-8026/tmp/fm-extension-binding.tW4rNp/deadline-suspended-stall/package', '--adapter', 'ext-sleep', '--trust-same-user-code', '--timeout-ms', '1000'])
+not ok - real invocation deadlines did not survive suspension with bounded stall enforcement
+FM_TEST_END 2026-11-12T06:02:11Z tests/fm-extension-binding.test.sh exit=1 duration_ms=65827 gate_skip=false
+FM_TEST_SUMMARY total=1 failed=1 skipped_gate=0 duration_ms=65898
+FM_TEST_SUMMARY_FAMILY family=standalone count=1 duration_ms=65827 failed=1
+FM_TEST_SLOWEST rank=1 script=tests/fm-extension-binding.test.sh duration_ms=65827

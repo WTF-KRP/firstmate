@@ -1,0 +1,47 @@
+{
+  "candidate": "d0f69a2eb91047b6ce8272fdaf8d56d99cc016ab",
+  "baseline": "a02b089835a114844cc53d0429570155dfe4ef3a",
+  "cwd": "{run-worktree}",
+  "platform": "Darwin 25.5.0 arm64",
+  "node": "v26.12.1",
+  "python": "Python 3.15.1",
+  "canonical_segments": [
+    {
+      "segment": "deadlines",
+      "exit": 0
+    },
+    {
+      "segment": "early-bind",
+      "exit": 0
+    },
+    {
+      "segment": "early-handshake",
+      "exit": 0
+    },
+    {
+      "segment": "matrix-runtime",
+      "exit": 0
+    },
+    {
+      "segment": "lifecycle-host-errors",
+      "exit": 0
+    }
+  ],
+  "canonical_command": "FM_TEST_SKIP_ORPHAN_REAP=1 FM_EXTENSION_BINDING_SEGMENT=<segment> bash bin/fm-test-run.sh tests/fm-extension-binding.test.sh",
+  "tracing_command": "FM_TEST_SKIP_ORPHAN_REAP=1 FM_EXTENSION_BINDING_SEGMENT=deadlines bash tests/.fm-8026-evidence.test.sh",
+  "double_suspension_command": "FM_TEST_SKIP_ORPHAN_REAP=1 FM_EXTENSION_BINDING_SEGMENT=deadlines bash tests/.fm-8026-double-suspend.test.sh",
+  "capture_command": "FM_TEST_SKIP_ORPHAN_REAP=1 bash tests/.fm-8026-capture.test.sh",
+  "additional_exit_status": {
+    "tracing": 0,
+    "double-suspension": 0,
+    "capture-identity": 0,
+    "baseline-regression": 1
+  },
+  "setup_correction": "Initial TMPDIR inside the worktree was rejected by the package path guard. Tests passed using their ordinary toolchain temp directory. No guard was disabled or changed.",
+  "limitations": [
+    "SIGSTOP/SIGCONT exercised suspension deterministically. No physical machine sleep was requested.",
+    "The early-handshake suite skipped its unrelated foreign-owner fixture because chown privilege was unavailable.",
+    "Test phase only. No lint, documentation static check, push, PR, or CI phase was run."
+  ],
+  "cleanup": "All invoked test children exited; temporary fixture roots were removed by suite cleanup. Scratch baseline and instrumented test drivers removed from worktree."
+}

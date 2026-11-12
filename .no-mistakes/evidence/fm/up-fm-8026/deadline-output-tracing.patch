@@ -1,0 +1,24 @@
+--- tests/fm-extension-binding.test.sh
++++ tests/.fm-8026-evidence.test.sh
+@@ -661,6 +661,13 @@
+ import concurrent.futures, json, os, pathlib, shutil, signal, subprocess, sys, time
+ 
+ root, temporary, package = map(pathlib.Path, sys.argv[1:])
++original_run = subprocess.run
++def traced_run(*args, **kwargs):
++    try: return original_run(*args, **kwargs)
++    except subprocess.CalledProcessError as e:
++        print("SUBPROCESS FAILURE", e.cmd, e.returncode, e.stdout, e.stderr, flush=True)
++        raise
++subprocess.run = traced_run
+ host = root / "bin/fm-extension.mjs"
+ 
+ def wait_for(predicate):
+@@ -753,6 +760,7 @@
+                 os.kill(host_pid, signal.SIGCONT)
+                 os.killpg(group, signal.SIGCONT)
+         output, error = process.communicate(timeout=6)
++        print("PRODUCT", kind, "exit", process.returncode, "stdout", repr(output), "stderr", repr(error), flush=True)
+         if kind in ("stalled", "suspended-stall"):
+             assert process.returncode != 0, "a genuinely stalled invocation succeeded"
+             evidence = json.loads(output)

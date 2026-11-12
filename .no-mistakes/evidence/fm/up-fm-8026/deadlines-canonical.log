@@ -1,0 +1,14 @@
+FM_TEST_BEGIN 2026-11-12T06:04:43Z tests/fm-extension-binding.test.sh family=standalone expected_gate_skip=none
+ok - real deadline stalled
+ok - real deadline invoke
+ok - real deadline suspended-stall
+ok - real deadline startup
+ok - real deadline handshake
+ok - real deadline launch
+ok - invoke, handshake, readiness and release survive suspension while awake stalls time out
+
+all extension-binding tests passed
+FM_TEST_END 2026-11-12T06:04:53Z tests/fm-extension-binding.test.sh exit=0 duration_ms=9257 gate_skip=false
+FM_TEST_SUMMARY total=1 failed=0 skipped_gate=0 duration_ms=9325
+FM_TEST_SUMMARY_FAMILY family=standalone count=1 duration_ms=9257 failed=0
+FM_TEST_SLOWEST rank=1 script=tests/fm-extension-binding.test.sh duration_ms=9257
