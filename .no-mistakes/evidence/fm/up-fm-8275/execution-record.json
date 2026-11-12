@@ -1,0 +1,14 @@
+{
+  "revision": "e836fca3cf5bdba5a0b23da2e222712f7d4bd73e",
+  "worktree": "{run-worktree}",
+  "executor_model_family": "OpenAI Codex",
+  "scope": "Test phase only. Cross-family issue-closure review belongs to the outer executor.",
+  "suite_command": "TMPDIR=\"$PWD/.test-8275/tmp\" bash bin/fm-test-run.sh tests/fm-watcher-lock.test.sh",
+  "suite_exit": 0,
+  "live_driver_exit": 0,
+  "baseline_repro_exit": 0,
+  "targeted_selectors_exit": 0,
+  "scratch_removed": true,
+  "owned_scratch_processes_remaining": [],
+  "git_status_short": ""
+}
