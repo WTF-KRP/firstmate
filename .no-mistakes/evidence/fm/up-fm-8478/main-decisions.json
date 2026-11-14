@@ -1,0 +1,12 @@
+{
+  "design": {
+    "key": "lab-design",
+    "decision": "stable input order",
+    "reason": "Within approved scope per data/lab-contract.md; MAIN is the sole local decision writer."
+  },
+  "qualification": {
+    "key": "lab-release",
+    "decision": "release",
+    "reason": "Local prerequisite already met; releasing the queued local run needs no money, remote change, or scope expansion."
+  }
+}

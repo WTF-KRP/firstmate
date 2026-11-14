@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 24925,
+  "stop_reason": "end_turn",
+  "session_id": "e675b04d-ce20-4f1b-803e-7531641c43df",
+  "total_cost_usd": 0.2614442,
+  "usage": {
+    "input_tokens": 14,
+    "cache_creation_input_tokens": 24830,
+    "cache_read_input_tokens": 131841,
+    "output_tokens": 1819,
+    "output_tokens_details": {
+      "thinking_tokens": 182
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 24830,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 329,
+        "cache_read_input_tokens": 24145,
+        "cache_creation_input_tokens": 685,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 685
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 14,
+      "outputTokens": 1819,
+      "cacheReadInputTokens": 131841,
+      "cacheCreationInputTokens": 24830,
+      "webSearchRequests": 0,
+      "costUSD": 0.2614442,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 182,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 24830,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 8,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I handled the handback from the supervision host. One item is held for the captain: the red merge.\n\n- **Design (`lab-design`):** I chose stable input order and recorded it in `data/decisions.json`. The lab contract puts this inside the approved scope, and only MAIN can write that decision.\n- **Qualification (`lab-release`):** I recorded a release decision for the queued local run. Its prerequisite was already met, and releasing it costs no money, changes no remote host and doesn't widen scope.\n- **Redmerge (`lab-redmerge`):** Not touched. Its required checks are red, and only the captain can approve merging despite that, so it stays open for when the captain returns.\n\nI acknowledged all wakes through 14, and the command exited 0. I sent no messages to the workers and did no forge or remote work. The away record `state/.afk-contract` is still in place. I didn't start another park or run the return.",
+  "ttft_ms": 2709,
+  "type": "result",
+  "duration_ms": 125998,
+  "uuid": "0653a6e2-1732-4c4f-8887-3d03f4e81d08",
+  "ttft_stream_ms": 2049,
+  "time_to_request_ms": 145,
+  "first_content_frame_ms": 2050,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-18T22:04:13.344Z"
+}

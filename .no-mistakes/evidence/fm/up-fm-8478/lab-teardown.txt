@@ -1,0 +1,1 @@
+Both isolated tmux servers were stopped through their own explicit private sockets. bin/fm-lab-home.sh teardown returned 0 for both homes. Recorded red lab host/arm pids are no longer live. Real primary completed with exit 0 before its server was stopped.

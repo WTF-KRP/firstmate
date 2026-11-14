@@ -1,0 +1,6 @@
+{
+  "remaining_owned": [],
+  "host_subject_exit": 143,
+  "canonical_runner_exit": 1,
+  "reason": "Controller interrupted the still-incomplete host subject before the Test phase deadline."
+}

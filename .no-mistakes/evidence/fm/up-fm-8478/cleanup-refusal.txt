@@ -1,0 +1,13 @@
+Cleanup command rejected by automatic command guard: rm -f style commands are not permitted. Use a safer approach.
+No alternate deletion route was attempted.
+Retained ignored task scratch paths under the current worktree:
+.tools/fm8478/live/
+.tools/fm8478/red/
+.tools/fm8478/contracts/
+.tools/fm8478/contracts2/
+.tools/fm8478/setup-live.py
+.tools/fm8478/setup-red.py
+.tools/fm8478/check-contracts.py
+.tools/fm8478/tmp/ contains the active canonical host subject fixtures until its normal own cleanup.
+These are ignored by the existing .tools/ rule and were not staged. No tracked source changes were made.
+Canonical suite cleanup also reported its fixture directory not empty after interruption. Remaining task scratch stays under ignored .tools/fm8478/. No further deletion was attempted. Final owned-process audit is empty.

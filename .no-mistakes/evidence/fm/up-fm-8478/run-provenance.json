@@ -1,0 +1,11 @@
+{
+  "candidate": "c2b02805f3bd9bc8fd3594568273cf4848f040a1",
+  "base": "427056c4181c41074ad24f051f79919330df0fa5",
+  "working_copy": "{run-worktree}",
+  "test_agent_model_family": "OpenAI/Codex",
+  "author_model_family": "OpenAI/Codex",
+  "real_product_engine_model_family": "Anthropic",
+  "real_primary_model": "claude-opus-5-5",
+  "closure_review_provenance": "This test execution does not claim the independent different-family issue closure review. The outer review phase owns that requirement.",
+  "isolation": "Marked disposable FM_HOME directories inside ignored .tools/fm8478. Private tmux sockets allocated by bin/fm-lab-home.sh tmux-dir, no live fleet sockets used. Normal Claude login was used without credential mutation. Interactive trust prompt left unanswered; product headless engine mode used as supported by fm-supervision-engine-lib.sh."
+}

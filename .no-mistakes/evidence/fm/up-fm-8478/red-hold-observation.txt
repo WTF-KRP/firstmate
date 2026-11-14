@@ -1,0 +1,2 @@
+Real Claude branch completed a handled away turn with captain verdict for red required checks. Host and arm were alive after the handled turn. No to-main log, no firstmate check, no captain processed marker, and no MAIN handback output existed. Away posture remained present. Controller now stops the disposable lab.
+watcher: started pid=84395 (beacon fresh)

@@ -1,0 +1,126 @@
+$ bin/fm-lab-home.sh create {run-worktree}/.tools/fm8478/contracts2
+{run-worktree}/.tools/fm8478/contracts2
+EXIT=0
+
+$ bin/fm-afk-contract.sh enter --words Continue approved work; hold red merges.
+Away posture recorded at 2026-11-14T21:08:50Z: hold-for-return only. No phone channel is configured; anything that needs you waits for your return. Your away instructions are recorded verbatim; the away session will carry them out where it can, and anything it is unsure of, or that needs you, waits for your return. Destructive, irreversible, and security-sensitive actions are never pre-authorizable, whatever the words say. Expected return: not given. Spend cap: 4 concurrent workers.
+Away posture (recorded):
+  entered: 2026-11-14T21:08:50Z
+  expected return: not given
+  spend cap: 4 concurrent workers
+  reach: hold-for-return only. No phone channel is configured; anything that needs you waits for your return.
+  your words (verbatim):
+    Continue approved work; hold red merges.
+EXIT=0
+
+$ bin/fm-branch-outcome.sh append --task fleet --verdict captain --summary red merge remains held
+1
+EXIT=0
+
+$ bin/fm-branch-outcome.sh append --task fleet --verdict firstmate --summary design choice belongs to MAIN
+2
+EXIT=0
+
+$ bin/fm-branch-outcome.sh append --task fleet --verdict routine --summary worker continues approved work
+3
+EXIT=0
+
+$ bin/fm-branch-outcome.sh handoff --seq 2
+EXIT=0
+
+$ bin/fm-branch-outcome.sh handoff --seq 2
+EXIT=0
+
+$ bash -c . bin/fm-wake-lib.sh; fm_wake_append heartbeat heartbeat heartbeat
+EXIT=0
+
+PERSISTED MIXED QUEUE
+1794690535	1	check	firstmate-outcome:2	check: firstmate-outcome: seq 2 for fleet: design choice belongs to MAIN; MAIN owns this decision: check current state and decide within standing authority this turn, or escalate only an act reserved for the captain. Acknowledge this wake after handling it; do not defer a Firstmate-owned OPEN DECISIONS entry to the return brief.
+1794690537	2	check	firstmate-outcome:2	check: firstmate-outcome: seq 2 for fleet: design choice belongs to MAIN; MAIN owns this decision: check current state and decide within standing authority this turn, or escalate only an act reserved for the captain. Acknowledge this wake after handling it; do not defer a Firstmate-owned OPEN DECISIONS entry to the return brief.
+1794690538	3	heartbeat	heartbeat	heartbeat
+
+$ node bin/fm-branch-dispatch.mjs offer
+eligible=0
+status=unsafe
+corrupted=0
+rows=
+tasks=
+unscoped=0
+EXIT=0
+
+$ node bin/fm-branch-dispatch.mjs offer
+eligible=0
+status=unsafe
+corrupted=0
+rows=
+tasks=
+unscoped=1
+EXIT=0
+
+$ node bin/fm-branch-dispatch.mjs offer --afk
+eligible=0
+status=unsafe
+corrupted=0
+rows=
+tasks=
+unscoped=0
+EXIT=0
+
+$ node bin/fm-branch-dispatch.mjs offer --afk
+eligible=0
+status=unsafe
+corrupted=0
+rows=
+tasks=
+unscoped=1
+EXIT=0
+
+$ bin/fm-branch-outcome.sh handoff --seq 1
+error: only a firstmate outcome may be handed to MAIN
+EXIT=2
+
+$ bin/fm-branch-outcome.sh append --task fleet --verdict firstmate --summary must remain visible --silent true
+error: silent outcomes must have the routine verdict
+EXIT=2
+
+$ bin/fm-branch-outcome.sh mark-read --through 3
+EXIT=0
+
+$ bin/fm-branch-outcome.sh mark-processed --through 2
+error: refusing processed advancement because seq 2 is not an unprocessed captain outcome
+EXIT=1
+
+CONFIRMED: mixed handoff always stays MAIN-owned; replay retains the durable handoff; firstmate cannot be silent or acknowledge the held captain row; away posture persists.
+
+$ bin/fm-afk-return.sh begin
+fm-afk-launch: away-posture record archived at {run-worktree}/.tools/fm8478/contracts2/state/afk-contracts/1794690530.afk-contract
+fm-afk-launch: away mode stopped; no daemon terminal was running, .afk cleared, and the posture record archived
+=== Return brief (away 2026-11-14T21:08:50Z -> 2026-11-14T21:09:12Z, 22s) ===
+Supervisor health:
+  - GAP: watcher downtime was detected during the away window (recovery marker present)
+  - GAP: the watcher beat was 999999s old at return (grace 300s)
+Your instructions:
+  your words at entry:
+    Continue approved work; hold red merges.
+  the away session took no action under them.
+Waiting on you:
+  escalated by the away session:
+    - fleet: red merge remains held
+Tried and failed, or could not be fixed:
+  (nothing)
+Landed, cleanup due:
+  (nothing)
+Handled while away:
+  3 outcome(s) handled by the away session (1 routine, 1 handed to Firstmate, 1 escalated above)
+  1 routine outcome(s) recorded; the latest visible:
+    - fleet: worker continues approved work
+Cost: 3 supervision outcome(s) recorded (1 routine, 1 firstmate, 1 captain); 0 task(s) live at return.
+catch-up health: GAP: watcher downtime was detected during the away window (recovery marker present)
+catch-up health: GAP: the watcher beat was 999999s old at return (grace 300s)
+catch-up wake: 1794690537 2 check firstmate-outcome:2 check: firstmate-outcome: seq 2 for fleet: design choice belongs to MAIN; MAIN owns this decision: check current state and decide within standing authority this turn, or escalate only an act reserved for the captain. Acknowledge this wake after handling it; do not defer a Firstmate-owned OPEN DECISIONS entry to the return brief.
+catch-up wake: 1794690538 3 heartbeat heartbeat heartbeat
+WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh --ack-through 3 --recovery-generation 68497.1794690535.HVc7hB
+fm-afk-return: catch-up clear; ordinary captain work may proceed
+EXIT=0
+
+CONFIRMED: return brief counts every verdict and keeps the captain-only red merge in its held list.

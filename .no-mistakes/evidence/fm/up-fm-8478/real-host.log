@@ -1,0 +1,4 @@
+1794690457	start	gen=host-92851-1794690456	primary=claude
+1794690504	handled	turn=host-92851-1794690456.1	posture=away	rc=0	reports=3	error=0 cost=0.091668 conversation_cost=0.091668 input=10 cache_read=80924 cache_write=18629 output=904 turns=6	signal: {run-worktree}/.tools/fm8478/live/state/design.status {run-worktree}/.tools/fm8478/live/state/qualification.status {run-worktree}/.tools/fm8478/live/state/redmerge.status
+1794690541	handled	turn=host-92851-1794690456.2	posture=away	rc=0	reports=1	error=0 cost=0.026785 conversation_cost=0.118453 input=10 cache_read=88064 cache_write=2292 output=879 turns=4	stale: fm-design
+1794690542	to-main	firstmate-outcome: the supervision session needs MAIN's standing authority (store rows 4); run bin/fm-wake-drain.sh and decide the queued firstmate-outcome checks this turn, including Firstmate-owned OPEN DECISIONS; captain-only outcomes still wait for the return

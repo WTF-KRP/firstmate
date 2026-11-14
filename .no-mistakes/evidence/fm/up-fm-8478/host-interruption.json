@@ -1,0 +1,2653 @@
+{
+  "reason": "Stopped the incomplete required host subject to preserve the Test phase deadline and leave time to stop all owned children. This is not evidence of a product assertion failure.",
+  "time_utc": "2026-11-14T21:31:38.236624+00:00",
+  "runner_command": "bash bin/fm-test-run.sh --json ~/.no-mistakes/evidence/01M7DX6WEE2RPYFAECVX8QYV31/host-result.json tests/fm-supervision-host.test.sh",
+  "signals": [
+    {
+      "pid": 27846,
+      "signal": 15
+    },
+    {
+      "pid": 30090,
+      "signal": 15
+    },
+    {
+      "pid": 30608,
+      "signal": 15
+    },
+    {
+      "pid": 24722,
+      "signal": 15
+    },
+    {
+      "pid": 44704,
+      "signal": 15
+    },
+    {
+      "pid": 18211,
+      "signal": 15
+    },
+    {
+      "pid": 9644,
+      "signal": 15
+    },
+    {
+      "pid": 77229,
+      "signal": 15
+    },
+    {
+      "pid": 44855,
+      "signal": 15
+    },
+    {
+      "pid": 71246,
+      "signal": 15
+    },
+    {
+      "pid": 31962,
+      "signal": 15
+    },
+    {
+      "pid": 54754,
+      "signal": 15
+    },
+    {
+      "pid": 77284,
+      "signal": 15
+    },
+    {
+      "pid": 31977,
+      "signal": 15
+    },
+    {
+      "pid": 30704,
+      "signal": 15
+    },
+    {
+      "pid": 97274,
+      "signal": 15
+    },
+    {
+      "pid": 45202,
+      "signal": 15
+    },
+    {
+      "pid": 45477,
+      "signal": 15
+    },
+    {
+      "pid": 45478,
+      "signal": 15
+    },
+    {
+      "pid": 45485,
+      "signal": 15
+    },
+    {
+      "pid": 45516,
+      "signal": 15
+    },
+    {
+      "pid": 45521,
+      "signal": 15
+    },
+    {
+      "pid": 45430,
+      "signal": 15
+    },
+    {
+      "pid": 18211,
+      "signal": 9
+    },
+    {
+      "pid": 9644,
+      "signal": 9
+    },
+    {
+      "pid": 31962,
+      "signal": 9
+    },
+    {
+      "pid": 54754,
+      "signal": 9
+    },
+    {
+      "pid": 31977,
+      "signal": 9
+    },
+    {
+      "pid": 97274,
+      "signal": 9
+    },
+    {
+      "pid": 50517,
+      "signal": 9
+    }
+  ],
+  "last_home": "{run-worktree}/.tools/fm8478/tmp/fm-supervision-host.JtbzNI/away-return-silent",
+  "remaining_owned": {},
+  "observed_processes": {
+    "38404": {
+      "parent": 24722,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "38407": {
+      "parent": 18211,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "30090": {
+      "parent": 28641,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:08:11",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "38411": {
+      "parent": 38404,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "38414": {
+      "parent": 38407,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "30608": {
+      "parent": 24722,
+      "group": 30608,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:06:31",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "24722": {
+      "parent": 24240,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:06:24",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "38418": {
+      "parent": 38414,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "37779": {
+      "parent": 37719,
+      "group": 37664,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:37",
+        "2026",
+        "bash"
+      ],
+      "state": "R"
+    },
+    "27797": {
+      "parent": 19987,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:04:15",
+        "2026",
+        "/bin/zsh"
+      ],
+      "state": "Ss"
+    },
+    "44704": {
+      "parent": 30090,
+      "group": 44704,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:08:26",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "93081": {
+      "parent": 27846,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:30:56",
+        "2026",
+        "{run-worktree}/.tools/fm8478/tmp/fm-supervision-host.JtbzNI/fakebin/fakebin/claude"
+      ],
+      "state": "S"
+    },
+    "37786": {
+      "parent": 77284,
+      "group": 77229,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:37",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "38430": {
+      "parent": 38418,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "<defunct>"
+      ],
+      "state": "Z"
+    },
+    "37664": {
+      "parent": 36572,
+      "group": 37664,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:37",
+        "2026",
+        "/opt/homebrew/bin/timeout"
+      ],
+      "state": "S"
+    },
+    "38433": {
+      "parent": 32309,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "38050": {
+      "parent": 9644,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:37",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "18211": {
+      "parent": 17076,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:15:05",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "27812": {
+      "parent": 27797,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:04:15",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "38307": {
+      "parent": 30090,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "38308": {
+      "parent": 71246,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "38437": {
+      "parent": 30704,
+      "group": 30608,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "64296": {
+      "parent": 27846,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:24:18",
+        "2026",
+        "{run-worktree}/.tools/fm8478/tmp/fm-supervision-host.JtbzNI/fakebin/fakebin/claude"
+      ],
+      "state": "S"
+    },
+    "38438": {
+      "parent": 38433,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "bash"
+      ],
+      "state": "R"
+    },
+    "38434": {
+      "parent": 44855,
+      "group": 44704,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "38440": {
+      "parent": 38434,
+      "group": 44704,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "9644": {
+      "parent": 53875,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:23:24",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "38444": {
+      "parent": 38411,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(bash)"
+      ],
+      "state": "?"
+    },
+    "77229": {
+      "parent": 71246,
+      "group": 77229,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:07:19",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "24240": {
+      "parent": 27846,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:06:24",
+        "2026",
+        "{run-worktree}/.tools/fm8478/tmp/fm-supervision-host.JtbzNI/fakebin/fakebin/claude"
+      ],
+      "state": "S"
+    },
+    "70833": {
+      "parent": 27846,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:07:13",
+        "2026",
+        "{run-worktree}/.tools/fm8478/tmp/fm-supervision-host.JtbzNI/fakebin/fakebin/claude"
+      ],
+      "state": "S"
+    },
+    "38448": {
+      "parent": 38437,
+      "group": 30608,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "17076": {
+      "parent": 27846,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:15:04",
+        "2026",
+        "{run-worktree}/.tools/fm8478/tmp/fm-supervision-host.JtbzNI/fakebin/fakebin/claude"
+      ],
+      "state": "S"
+    },
+    "32309": {
+      "parent": 31977,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:23:48",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "44855": {
+      "parent": 44704,
+      "group": 44704,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:08:26",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "38331": {
+      "parent": 54754,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "97471": {
+      "parent": 97274,
+      "group": 97274,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:14:44",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "7237": {
+      "parent": 93132,
+      "group": 7237,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:08",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "27846": {
+      "parent": 27812,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:04:15",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "27847": {
+      "parent": 27812,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:04:15",
+        "2026",
+        "tee"
+      ],
+      "state": "S"
+    },
+    "93132": {
+      "parent": 93081,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:30:56",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "71246": {
+      "parent": 70833,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:07:14",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "36563": {
+      "parent": 32114,
+      "group": 31962,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:36",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "37719": {
+      "parent": 37664,
+      "group": 37664,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:37",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "31962": {
+      "parent": 18211,
+      "group": 31962,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:15:19",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "38363": {
+      "parent": 64296,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "50268": {
+      "parent": 27846,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:13:56",
+        "2026",
+        "{run-worktree}/.tools/fm8478/tmp/fm-supervision-host.JtbzNI/fakebin/fakebin/claude"
+      ],
+      "state": "S"
+    },
+    "38365": {
+      "parent": 93132,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "36572": {
+      "parent": 36563,
+      "group": 31962,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:36",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "28641": {
+      "parent": 27846,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:08:10",
+        "2026",
+        "{run-worktree}/.tools/fm8478/tmp/fm-supervision-host.JtbzNI/fakebin/fakebin/claude"
+      ],
+      "state": "S"
+    },
+    "54754": {
+      "parent": 50268,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:14:01",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "38242": {
+      "parent": 97471,
+      "group": 97274,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:37",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "77284": {
+      "parent": 77229,
+      "group": 77229,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:07:19",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "38373": {
+      "parent": 27846,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:38",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "7399": {
+      "parent": 7237,
+      "group": 7237,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:08",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "31977": {
+      "parent": 9644,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:23:47",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "38255": {
+      "parent": 38242,
+      "group": 97274,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:37",
+        "2026",
+        "bash"
+      ],
+      "state": "R"
+    },
+    "30704": {
+      "parent": 30608,
+      "group": 30608,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:06:32",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "32114": {
+      "parent": 31962,
+      "group": 31962,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:15:19",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "53875": {
+      "parent": 27846,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:15:41",
+        "2026",
+        "{run-worktree}/.tools/fm8478/tmp/fm-supervision-host.JtbzNI/fakebin/fakebin/claude"
+      ],
+      "state": "S"
+    },
+    "97274": {
+      "parent": 54754,
+      "group": 97274,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:14:44",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "39936": {
+      "parent": 9644,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "39942": {
+      "parent": 39922,
+      "group": 44704,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "39943": {
+      "parent": 71246,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "39946": {
+      "parent": 93132,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "39950": {
+      "parent": 30704,
+      "group": 30608,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "39951": {
+      "parent": 39166,
+      "group": 39091,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "39952": {
+      "parent": 27846,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "39956": {
+      "parent": 39942,
+      "group": 44704,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "(stat)"
+      ],
+      "state": "?"
+    },
+    "39957": {
+      "parent": 39951,
+      "group": 39091,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "(bash)"
+      ],
+      "state": "?"
+    },
+    "39966": {
+      "parent": 39952,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "(ps)"
+      ],
+      "state": "R"
+    },
+    "39969": {
+      "parent": 39957,
+      "group": 39091,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "<defunct>"
+      ],
+      "state": "Z"
+    },
+    "39971": {
+      "parent": 39952,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "(tr)"
+      ],
+      "state": "S"
+    },
+    "39970": {
+      "parent": 39950,
+      "group": 30608,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "39976": {
+      "parent": 39597,
+      "group": 31962,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "39978": {
+      "parent": 54754,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "39980": {
+      "parent": 39970,
+      "group": 30608,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "(stat)"
+      ],
+      "state": "R"
+    },
+    "39992": {
+      "parent": 7399,
+      "group": 7237,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "39994": {
+      "parent": 39976,
+      "group": 31962,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "39996": {
+      "parent": 77284,
+      "group": 77229,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "39999": {
+      "parent": 64296,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "40003": {
+      "parent": 39316,
+      "group": 39249,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "(bash)"
+      ],
+      "state": "?"
+    },
+    "39249": {
+      "parent": 38438,
+      "group": 39249,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "/opt/homebrew/bin/timeout"
+      ],
+      "state": "S"
+    },
+    "39281": {
+      "parent": 39249,
+      "group": 39249,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "39316": {
+      "parent": 39281,
+      "group": 39249,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "bash"
+      ],
+      "state": "R"
+    },
+    "39597": {
+      "parent": 32114,
+      "group": 31962,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "39854": {
+      "parent": 30090,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "39091": {
+      "parent": 38255,
+      "group": 39091,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "/opt/homebrew/bin/timeout"
+      ],
+      "state": "S"
+    },
+    "39115": {
+      "parent": 39091,
+      "group": 39091,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "39885": {
+      "parent": 24722,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "39886": {
+      "parent": 18211,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "39922": {
+      "parent": 44855,
+      "group": 44704,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "39166": {
+      "parent": 39115,
+      "group": 39091,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:39",
+        "2026",
+        "bash"
+      ],
+      "state": "R"
+    },
+    "41738": {
+      "parent": 32114,
+      "group": 31962,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "41745": {
+      "parent": 93132,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "41752": {
+      "parent": 27846,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(find)"
+      ],
+      "state": "S"
+    },
+    "41753": {
+      "parent": 30704,
+      "group": 30608,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(rm)"
+      ],
+      "state": "?"
+    },
+    "41763": {
+      "parent": 40868,
+      "group": 77229,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(uname)"
+      ],
+      "state": "R"
+    },
+    "41772": {
+      "parent": 41705,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "41775": {
+      "parent": 41752,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(find)"
+      ],
+      "state": "R"
+    },
+    "41776": {
+      "parent": 44855,
+      "group": 44704,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "41265": {
+      "parent": 18211,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "41268": {
+      "parent": 24722,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "41780": {
+      "parent": 7237,
+      "group": 7237,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:42",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "41784": {
+      "parent": 41772,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:42",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "41277": {
+      "parent": 71246,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "41535": {
+      "parent": 41185,
+      "group": 97274,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(bash)"
+      ],
+      "state": "?E"
+    },
+    "41352": {
+      "parent": 54754,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "40865": {
+      "parent": 77284,
+      "group": 77229,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "41379": {
+      "parent": 32309,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "40868": {
+      "parent": 40865,
+      "group": 77229,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:40",
+        "2026",
+        "bash"
+      ],
+      "state": "R"
+    },
+    "41416": {
+      "parent": 9644,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "41699": {
+      "parent": 64296,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "41185": {
+      "parent": 97471,
+      "group": 97274,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "41705": {
+      "parent": 41379,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "41212": {
+      "parent": 30090,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:41",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "?"
+    },
+    "41984": {
+      "parent": 41944,
+      "group": 41944,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:42",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "42763": {
+      "parent": 42722,
+      "group": 42697,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "42792": {
+      "parent": 41810,
+      "group": 42792,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "/opt/homebrew/bin/timeout"
+      ],
+      "state": "S"
+    },
+    "43048": {
+      "parent": 97471,
+      "group": 97274,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "43058": {
+      "parent": 30090,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "<defunct>"
+      ],
+      "state": "Z"
+    },
+    "42035": {
+      "parent": 41984,
+      "group": 41944,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:42",
+        "2026",
+        "bash"
+      ],
+      "state": "R"
+    },
+    "41796": {
+      "parent": 44855,
+      "group": 44704,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:42",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "41810": {
+      "parent": 41796,
+      "group": 44704,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:42",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "42844": {
+      "parent": 42792,
+      "group": 42792,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "43101": {
+      "parent": 54754,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "43108": {
+      "parent": 43101,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "?"
+    },
+    "43115": {
+      "parent": 71246,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "43119": {
+      "parent": 43115,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "43133": {
+      "parent": 18211,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "43134": {
+      "parent": 24722,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "43135": {
+      "parent": 32309,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "43140": {
+      "parent": 27846,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(find)"
+      ],
+      "state": "R"
+    },
+    "43141": {
+      "parent": 42893,
+      "group": 42792,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "?"
+    },
+    "43148": {
+      "parent": 43141,
+      "group": 42792,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "?"
+    },
+    "41869": {
+      "parent": 30704,
+      "group": 30608,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:42",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "42893": {
+      "parent": 42844,
+      "group": 42792,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "bash"
+      ],
+      "state": "R"
+    },
+    "43155": {
+      "parent": 9644,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "43154": {
+      "parent": 43135,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "43156": {
+      "parent": 43148,
+      "group": 42792,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(dirname)"
+      ],
+      "state": "?"
+    },
+    "43159": {
+      "parent": 42228,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(rm)"
+      ],
+      "state": "R"
+    },
+    "43157": {
+      "parent": 32114,
+      "group": 31962,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "41881": {
+      "parent": 41869,
+      "group": 30608,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:42",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "43161": {
+      "parent": 42035,
+      "group": 41944,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "43163": {
+      "parent": 43154,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "?"
+    },
+    "43166": {
+      "parent": 43163,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "<defunct>"
+      ],
+      "state": "Z"
+    },
+    "43167": {
+      "parent": 43108,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(sed)"
+      ],
+      "state": "R"
+    },
+    "43168": {
+      "parent": 43155,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "43169": {
+      "parent": 43161,
+      "group": 41944,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "43174": {
+      "parent": 42763,
+      "group": 42697,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "43176": {
+      "parent": 43119,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "42697": {
+      "parent": 41881,
+      "group": 42697,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "/opt/homebrew/bin/timeout"
+      ],
+      "state": "S"
+    },
+    "41944": {
+      "parent": 40868,
+      "group": 41944,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:42",
+        "2026",
+        "/opt/homebrew/bin/timeout"
+      ],
+      "state": "S"
+    },
+    "42722": {
+      "parent": 42697,
+      "group": 42697,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:43",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "42228": {
+      "parent": 93132,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:42",
+        "2026",
+        "(bash)"
+      ],
+      "state": "S"
+    },
+    "44295": {
+      "parent": 97274,
+      "group": 97274,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:45",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "43811": {
+      "parent": 9644,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:44",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "44355": {
+      "parent": 32309,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:45",
+        "2026",
+        "(sh)"
+      ],
+      "state": "R"
+    },
+    "44356": {
+      "parent": 27812,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:45",
+        "2026",
+        "(bash)"
+      ],
+      "state": "?E"
+    },
+    "44357": {
+      "parent": 32114,
+      "group": 31962,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:45",
+        "2026",
+        "(sh)"
+      ],
+      "state": "R"
+    },
+    "44358": {
+      "parent": 44295,
+      "group": 97274,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:45",
+        "2026",
+        "(bash)"
+      ],
+      "state": "?"
+    },
+    "44360": {
+      "parent": 43960,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:45",
+        "2026",
+        "(sh)"
+      ],
+      "state": "R"
+    },
+    "44367": {
+      "parent": 44358,
+      "group": 97274,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:45",
+        "2026",
+        "(cut)"
+      ],
+      "state": "?"
+    },
+    "44369": {
+      "parent": 44134,
+      "group": 30608,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:45",
+        "2026",
+        "(bash)"
+      ],
+      "state": "?"
+    },
+    "44370": {
+      "parent": 44855,
+      "group": 44704,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:45",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "44372": {
+      "parent": 44369,
+      "group": 30608,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:45",
+        "2026",
+        "<defunct>"
+      ],
+      "state": "Z"
+    },
+    "44119": {
+      "parent": 18211,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:44",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "44381": {
+      "parent": 77284,
+      "group": 77229,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:45",
+        "2026",
+        "(bash)"
+      ],
+      "state": "?"
+    },
+    "44130": {
+      "parent": 30704,
+      "group": 30608,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:44",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "44134": {
+      "parent": 44130,
+      "group": 30608,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:44",
+        "2026",
+        "bash"
+      ],
+      "state": "R"
+    },
+    "44164": {
+      "parent": 54754,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:44",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "44185": {
+      "parent": 30090,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:44",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "44197": {
+      "parent": 71246,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:44",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "44212": {
+      "parent": 24722,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:45",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "43960": {
+      "parent": 93132,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:44",
+        "2026",
+        "bash"
+      ],
+      "state": "S"
+    },
+    "45202": {
+      "parent": 30704,
+      "group": 30608,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:45",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "45715": {
+      "parent": 31962,
+      "group": 31962,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:46",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "45477": {
+      "parent": 44855,
+      "group": 44704,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:46",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "45478": {
+      "parent": 54754,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:46",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "45485": {
+      "parent": 30090,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:46",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "45742": {
+      "parent": 31977,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:46",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "45747": {
+      "parent": 97274,
+      "group": 97274,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:46",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    },
+    "45113": {
+      "parent": 9644,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:45",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "?"
+    },
+    "45516": {
+      "parent": 71246,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:46",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "45776": {
+      "parent": 77284,
+      "group": 77229,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:46",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "45521": {
+      "parent": 24722,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:46",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "45430": {
+      "parent": 18211,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:46",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "50517": {
+      "parent": 9644,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:50",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "50520": {
+      "parent": 31962,
+      "group": 31962,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:50",
+        "2026",
+        "(bash)"
+      ],
+      "state": "?"
+    },
+    "50526": {
+      "parent": 31977,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:50",
+        "2026",
+        "(bash)"
+      ],
+      "state": "R"
+    },
+    "50528": {
+      "parent": 50526,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:50",
+        "2026",
+        "(bash)"
+      ],
+      "state": "?"
+    },
+    "50469": {
+      "parent": 18211,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:50",
+        "2026",
+        "sleep"
+      ],
+      "state": "S"
+    },
+    "50533": {
+      "parent": 50528,
+      "group": 31977,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:50",
+        "2026",
+        "<defunct>"
+      ],
+      "state": "Z"
+    },
+    "50479": {
+      "parent": 54754,
+      "group": 27797,
+      "identity": [
+        "Sat",
+        "Nov",
+        "14",
+        "16:31:50",
+        "2026",
+        "(sleep)"
+      ],
+      "state": "S"
+    }
+  }
+}
