@@ -1,0 +1,9 @@
+{
+  "historical_baseline": "427056c4181c41074ad24f051f79919330df0fa5",
+  "current_candidate": "71d75e5eab1b99dd4e0d84433dfd1c49b188f17f",
+  "baseline_reexecuted_this_run": false,
+  "current_diagnostics": 48,
+  "historical_baseline_diagnostics": 48,
+  "equal_typescript_diagnostics": true,
+  "limitation": "Baseline command was refused before execution because its recursive-delete cleanup target used an expansion. No alternate deletion or baseline fixture route was attempted. Comparison reads the explicitly supplied historical evidence only."
+}

@@ -1,78 +1,77 @@
-candidate=834781965bf8a77a2da0b092192df96521b13f80
-$ bin/fm-afk-contract.sh enter --words Observe synthetic lab decisions. No external operations authorized.
-Away posture recorded at 2026-11-15T01:15:12Z: hold-for-return only. No phone channel is configured; anything that needs you waits for your return. Your away instructions are recorded verbatim; the away session will carry them out where it can, and anything it is unsure of, or that needs you, waits for your return. Destructive, irreversible, and security-sensitive actions are never pre-authorizable, whatever the words say. Expected return: not given. Spend cap: 4 concurrent workers.
+$ bin/fm-lab-home.sh create {run-worktree}/.nm8478-iko8tyhf
+{run-worktree}/.nm8478-iko8tyhf
+EXIT 0
+$ bin/fm-afk-contract.sh enter --words watch this disposable fleet
+Away posture recorded at 2026-11-15T02:20:17Z: hold-for-return only. No phone channel is configured; anything that needs you waits for your return. Your away instructions are recorded verbatim; the away session will carry them out where it can, and anything it is unsure of, or that needs you, waits for your return. Destructive, irreversible, and security-sensitive actions are never pre-authorizable, whatever the words say. Expected return: not given. Spend cap: 4 concurrent workers.
 Away posture (recorded):
-  entered: 2026-11-15T01:15:12Z
+  entered: 2026-11-15T02:20:17Z
   expected return: not given
   spend cap: 4 concurrent workers
   reach: hold-for-return only. No phone channel is configured; anything that needs you waits for your return.
   your words (verbatim):
-    Observe synthetic lab decisions. No external operations authorized.
-exit=0
-$ bin/fm-branch-outcome.sh append --task red-control --verdict captain --summary RED_CONTROL: red merge requires captain
-1
-exit=0
-$ bin/fm-branch-outcome.sh append --task design --verdict firstmate --summary DESIGN: select an in-scope design under approved authority
-2
-exit=0
-$ bin/fm-branch-outcome.sh append --task qualification --verdict firstmate --summary PAUSED_MAIN: release an already approved local qualification run
-3
-exit=0
-STORE-FIRST INTERRUPTED STATE: persisted outcomes, no handoff queue
-{"seq":1,"epoch":1794705313,"task":"red-control","wake":"","verdict":"captain","summary":"RED_CONTROL: red merge requires captain","silent":false,"statusEndpoint":0,"statusIdent":"-"}
-{"seq":2,"epoch":1794705314,"task":"design","wake":"","verdict":"firstmate","summary":"DESIGN: select an in-scope design under approved authority","silent":false,"statusEndpoint":0,"statusIdent":"-"}
-{"seq":3,"epoch":1794705315,"task":"qualification","wake":"","verdict":"firstmate","summary":"PAUSED_MAIN: release an already approved local qualification run","silent":false,"statusEndpoint":0,"statusIdent":"-"}
-
+    watch this disposable fleet
+EXIT 0
+$ bin/fm-branch-report.sh --task cap --verdict captain --summary Red merge requires captain decision
+recorded seq 1 [captain]; it waits in the outcome store for MAIN
+EXIT 0
+$ bin/fm-branch-report.sh --task design --verdict firstmate --summary In-scope design choice needs MAIN
+recorded seq 2 [firstmate]; queued for MAIN in either posture
+EXIT 0
+$ bin/fm-branch-report.sh --task release --verdict firstmate --summary Worker paused waiting for MAIN to release approved local run
+recorded seq 3 [firstmate]; queued for MAIN in either posture
+EXIT 0
+DURABLE WAKE QUEUE
+1794709219	1	check	firstmate-outcome:2	check: firstmate-outcome: seq 2 for design: In-scope design choice needs MAIN; MAIN owns this decision: check current state and decide within standing authority this turn, or escalate only an act reserved for the captain. Acknowledge this wake after handling it; do not defer a Firstmate-owned OPEN DECISIONS entry to the return brief.
+1794709220	2	check	firstmate-outcome:3	check: firstmate-outcome: seq 3 for release: Worker paused waiting for MAIN to release approved local run; MAIN owns this decision: check current state and decide within standing authority this turn, or escalate only an act reserved for the captain. Acknowledge this wake after handling it; do not defer a Firstmate-owned OPEN DECISIONS entry to the return brief.
+$ bin/fm-branch-report.sh --task design --verdict firstmate --summary hidden decision --silent true
+invalid report: --silent true requires the routine verdict
+EXIT 2
+$ bin/fm-branch-report.sh --task other --verdict firstmate --summary wrong task
+report refused: the wake being handled (row 1) names design release cap, not other; report only that task, never fleet or a task from memory
+EXIT 3
+$ node bin/fm-branch-dispatch.mjs scope --afk --heartbeat
+status=unsafe
+corrupted=0
+rows=
+tasks=
+unscoped=1
+EXIT 0
+$ node bin/fm-branch-dispatch.mjs offer --afk
+eligible=0
+status=unsafe
+corrupted=0
+rows=
+tasks=
+unscoped=1
+EXIT 0
 $ bin/fm-wake-drain.sh
-1794705317	1	check	firstmate-outcome:2	check: firstmate-outcome: seq 2 for design: DESIGN: select an in-scope design under approved authority; MAIN owns this decision: check current state and decide within standing authority this turn, or escalate only an act reserved for the captain. Acknowledge this wake after handling it; do not defer a Firstmate-owned OPEN DECISIONS entry to the return brief.
-1794705319	2	check	firstmate-outcome:3	check: firstmate-outcome: seq 3 for qualification: PAUSED_MAIN: release an already approved local qualification run; MAIN owns this decision: check current state and decide within standing authority this turn, or escalate only an act reserved for the captain. Acknowledge this wake after handling it; do not defer a Firstmate-owned OPEN DECISIONS entry to the return brief.
-WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh --ack-through 2 --recovery-generation 426.1794705318.Kn0ROe
-exit=0
-DURABLE QUEUE BEFORE READ ADVANCEMENT:
-1794705317	1	check	firstmate-outcome:2	check: firstmate-outcome: seq 2 for design: DESIGN: select an in-scope design under approved authority; MAIN owns this decision: check current state and decide within standing authority this turn, or escalate only an act reserved for the captain. Acknowledge this wake after handling it; do not defer a Firstmate-owned OPEN DECISIONS entry to the return brief.
-1794705319	2	check	firstmate-outcome:3	check: firstmate-outcome: seq 3 for qualification: PAUSED_MAIN: release an already approved local qualification run; MAIN owns this decision: check current state and decide within standing authority this turn, or escalate only an act reserved for the captain. Acknowledge this wake after handling it; do not defer a Firstmate-owned OPEN DECISIONS entry to the return brief.
-
-$ bin/fm-wake-drain.sh --ack-through 2 --recovery-generation 426.1794705318.Kn0ROe
-exit=0
-$ bin/fm-branch-outcome.sh recover-handoffs
-exit=0
-$ bin/fm-branch-outcome.sh recover-handoffs
-exit=0
-RESTART RECOVERY: acked Firstmate checks stayed absent despite unread captain row; checkpoint=3
-
+1794709221	3	check	firstmate-outcome:2	check: firstmate-outcome: seq 2 for design: In-scope design choice needs MAIN; MAIN owns this decision: check current state and decide within standing authority this turn, or escalate only an act reserved for the captain. Acknowledge this wake after handling it; do not defer a Firstmate-owned OPEN DECISIONS entry to the return brief.
+1794709222	4	check	firstmate-outcome:3	check: firstmate-outcome: seq 3 for release: Worker paused waiting for MAIN to release approved local run; MAIN owns this decision: check current state and decide within standing authority this turn, or escalate only an act reserved for the captain. Acknowledge this wake after handling it; do not defer a Firstmate-owned OPEN DECISIONS entry to the return brief.
+WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh --ack-through 4 --recovery-generation 73975.1794709219.3gAcSH
+EXIT 0
+$ bin/fm-wake-drain.sh --ack-through 4 --recovery-generation 73975.1794709219.3gAcSH
+EXIT 0
+$ bin/fm-branch-outcome.sh append --task design --verdict firstmate --summary Saved decision after interrupted reporter
+4
+EXIT 0
+$ bin/fm-wake-drain.sh
+1794709226	5	check	firstmate-outcome:4	check: firstmate-outcome: seq 4 for design: Saved decision after interrupted reporter; MAIN owns this decision: check current state and decide within standing authority this turn, or escalate only an act reserved for the captain. Acknowledge this wake after handling it; do not defer a Firstmate-owned OPEN DECISIONS entry to the return brief.
+WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh --ack-through 5 --recovery-generation 81395.1794709226.nOouEv
+EXIT 0
+$ bin/fm-wake-drain.sh --ack-through 5 --recovery-generation 81395.1794709226.nOouEv
+EXIT 0
 $ bin/fm-afk-contract.sh archive
-{run-worktree}/.l/state/afk-contracts/1794705312.afk-contract
-exit=0
+{run-worktree}/.nm8478-iko8tyhf/state/afk-contracts/1794709217.afk-contract
+EXIT 0
 $ bin/fm-wake-drain.sh
 BRANCH OUTCOMES (captain outcomes the supervision session recorded for you, one line per task, oldest first; each says what was true when it was recorded, so check the task's current state first, including its still-open decisions listed above under OPEN DECISIONS, and sort them into still open and already settled, such as a decision since answered, a PR since merged, or a task since finished - process the still-open ones as firstmate: tell the captain, land or merge what is ready, answer or escalate a decision, or act on a blocker; your reply to the captain covers only those, as if the settled ones had never been listed, and a settled one needs only the acknowledgement):
-[seq 1, recorded 0m ago] red-control: RED_CONTROL: red merge requires captain
+[seq 1, recorded 0m ago] cap: Red merge requires captain decision
 BRANCH OUTCOMES: after processing them run bin/fm-branch-outcome.sh mark-processed --through 1; until then every drain presents them again
-exit=0
-RETURN: only red control presented; captain processed marker absent
-$ bin/fm-lab-home.sh create {run-worktree}/.l/attended
-{run-worktree}/.l/attended
-exit=0
-$ bin/fm-branch-outcome.sh append --task saved --verdict firstmate --summary ATTENDED_RECOVERY: saved MAIN decision before handoff
-1
-exit=0
-$ bin/fm-wake-drain.sh
-1794705335	1	check	firstmate-outcome:1	check: firstmate-outcome: seq 1 for saved: ATTENDED_RECOVERY: saved MAIN decision before handoff; MAIN owns this decision: check current state and decide within standing authority this turn, or escalate only an act reserved for the captain. Acknowledge this wake after handling it; do not defer a Firstmate-owned OPEN DECISIONS entry to the return brief.
-WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh --ack-through 1 --recovery-generation 16565.1794705335.EqAcZU
-exit=0
-ATTENDED: durable wake exists before read cursor 1
-$ bin/fm-lab-home.sh create {run-worktree}/.l/failure
-{run-worktree}/.l/failure
-exit=0
-$ bin/fm-branch-outcome.sh append --task blocked --verdict firstmate --summary FAILURE_RETRY: delivery must remain retryable
-1
-exit=0
-$ bin/fm-branch-outcome.sh recover-handoffs
-{run-worktree}/bin/fm-wake-lib.sh: line 2807: {run-worktree}/.l/failure/state/.wake-queue: Is a directory
-exit=1
-$ bin/fm-branch-outcome.sh recover-handoffs
-exit=0
-$ bin/fm-branch-outcome.sh recover-handoffs
-error: malformed Firstmate recovery checkpoint
-exit=1
-RECOVERY FAILURE: delivery retried successfully; malformed checkpoint refused without read advancement
-ALL DIRECT CLI ASSERTIONS PASSED
+EXIT 0
+OBSERVED: MAIN checks delivered and acknowledged while away. Saved handoff recovered. Captain control held until return. Settled MAIN decisions absent on return.
+$ bin/fm-branch-outcome.sh list
+{"seq":1,"epoch":1794709218,"task":"cap","wake":"signal: design.status","verdict":"captain","summary":"Red merge requires captain decision","silent":false,"statusEndpoint":0,"statusIdent":"-"}
+{"seq":2,"epoch":1794709218,"task":"design","wake":"signal: design.status","verdict":"firstmate","summary":"In-scope design choice needs MAIN","silent":false,"statusEndpoint":0,"statusIdent":"-"}
+{"seq":3,"epoch":1794709219,"task":"release","wake":"signal: design.status","verdict":"firstmate","summary":"Worker paused waiting for MAIN to release approved local run","silent":false,"statusEndpoint":0,"statusIdent":"-"}
+{"seq":4,"epoch":1794709225,"task":"design","wake":"","verdict":"firstmate","summary":"Saved decision after interrupted reporter","silent":false,"statusEndpoint":0,"statusIdent":"-"}
+EXIT 0

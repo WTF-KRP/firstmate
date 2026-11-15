@@ -1,0 +1,1 @@
+Fresh baseline export/validation command was not executed. PreToolUse: BLOCKED: Recursive delete check: rm target "$BASELAB" depends on a variable, command substitution or other expansion, so it cannot be checked. Denied command and dependent baseline recreation stopped. No workaround attempted. No baseline directory was created by the denied command.

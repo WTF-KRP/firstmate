@@ -1,68 +1,60 @@
-import os, subprocess, pathlib, json, re
-root=pathlib.Path.cwd(); ev=pathlib.Path('~/.no-mistakes/evidence/01M7EB8N33JGRNN31XGPFQ318P')
+import os, pathlib, subprocess, tempfile, json, re, shutil, sys
+root=pathlib.Path.cwd()
+ev=pathlib.Path('~/.no-mistakes/evidence/01M7EFPKVWB34HQDAX5PBSK5QB')
+lab=pathlib.Path(tempfile.mkdtemp(prefix='.nm8478-', dir=root))
 env=os.environ.copy()
-for k in ('FM_ROOT_OVERRIDE','FM_STATE_OVERRIDE','FM_DATA_OVERRIDE','FM_CONFIG_OVERRIDE','FM_PROJECTS_OVERRIDE','FM_GATE_REFUSE_BYPASS','FM_TEST_SEAM','FM_TEST_HARNESS','FM_SUPERVISION_ACTOR','FM_BRANCH_REPORT_TURN'):
+for k in ['FM_ROOT_OVERRIDE','FM_STATE_OVERRIDE','FM_DATA_OVERRIDE','FM_CONFIG_OVERRIDE','FM_PROJECTS_OVERRIDE','FM_HOME','FM_BACKEND','FM_SUPERVISION_ACTOR','FM_BRANCH_REPORT_TURN']:
     env.pop(k,None)
-home=root/'.l'; env['FM_HOME']=str(home)
-def run(*args,ok=True):
-    p=subprocess.run([str(root/args[0]),*args[1:]],env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=100)
-    print('$ '+' '.join(args)+'\n'+p.stdout+'exit='+str(p.returncode),flush=True)
-    if ok: assert p.returncode==0
-    return p
-
-def append(task,verdict,summary):
-    return run('bin/fm-branch-outcome.sh','append','--task',task,'--verdict',verdict,'--summary',summary)
-
-def contents(name):
-    p=home/'state'/name
-    return p.read_text() if p.exists() else '<absent>'
-print('candidate='+subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),flush=True)
-run('bin/fm-afk-contract.sh','enter','--words','Observe synthetic lab decisions. No external operations authorized.')
-append('red-control','captain','RED_CONTROL: red merge requires captain')
-append('design','firstmate','DESIGN: select an in-scope design under approved authority')
-append('qualification','firstmate','PAUSED_MAIN: release an already approved local qualification run')
-assert not (home/'state'/'.wake-queue').exists()
-print('STORE-FIRST INTERRUPTED STATE: persisted outcomes, no handoff queue',flush=True)
-print(contents('branch-outcomes.jsonl'),flush=True)
-away=run('bin/fm-wake-drain.sh').stdout
-assert 'DESIGN:' in away and 'PAUSED_MAIN:' in away and 'MAIN owns this decision' in away
-assert 'RED_CONTROL:' not in away
-assert not (home/'state'/'.branch-outcomes-cursor').exists()
-assert not (home/'state'/'.branch-outcomes-processed').exists()
-print('DURABLE QUEUE BEFORE READ ADVANCEMENT:\n'+contents('.wake-queue'),flush=True)
-m=re.search(r'WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh --ack-through (\d+) --recovery-generation (\S+)',away)
-assert m
-run('bin/fm-wake-drain.sh','--ack-through',m[1],'--recovery-generation',m[2])
-assert contents('.wake-queue') in ('','<absent>')
-run('bin/fm-branch-outcome.sh','recover-handoffs')
-run('bin/fm-branch-outcome.sh','recover-handoffs')
-assert contents('.wake-queue') in ('','<absent>')
-print('RESTART RECOVERY: acked Firstmate checks stayed absent despite unread captain row; checkpoint='+contents('.branch-handoffs-recovered'),flush=True)
-run('bin/fm-afk-contract.sh','archive')
-returned=run('bin/fm-wake-drain.sh').stdout
-assert 'RED_CONTROL:' in returned and 'DESIGN:' not in returned and 'PAUSED_MAIN:' not in returned
-assert not (home/'state'/'.branch-outcomes-processed').exists()
-print('RETURN: only red control presented; captain processed marker absent',flush=True)
-# Independent attended store-first recovery path.
-home=root/'.l'/'attended'; env['FM_HOME']=str(home)
-run('bin/fm-lab-home.sh','create',str(home)); (home/'config'/'supervision-host').touch()
-append('saved','firstmate','ATTENDED_RECOVERY: saved MAIN decision before handoff')
-out=run('bin/fm-wake-drain.sh').stdout
-assert 'ATTENDED_RECOVERY:' in out and 'MAIN owns this decision' in out
-assert 'firstmate-outcome:1' in contents('.wake-queue') and contents('.branch-outcomes-cursor').strip()=='1'
-print('ATTENDED: durable wake exists before read cursor 1',flush=True)
-# Failed delivery may not advance state. Bad checkpoint must fail closed.
-home=root/'.l'/'failure'; env['FM_HOME']=str(home)
-run('bin/fm-lab-home.sh','create',str(home)); (home/'config'/'supervision-host').touch()
-append('blocked','firstmate','FAILURE_RETRY: delivery must remain retryable')
-(home/'state'/'.wake-queue').mkdir()
-p=run('bin/fm-branch-outcome.sh','recover-handoffs',ok=False); assert p.returncode!=0
-assert not (home/'state'/'.branch-handoffs-recovered').exists() and not (home/'state'/'.branch-outcomes-cursor').exists()
-(home/'state'/'.wake-queue').rmdir()
-run('bin/fm-branch-outcome.sh','recover-handoffs')
-assert 'FAILURE_RETRY:' in contents('.wake-queue')
-(home/'state'/'.branch-handoffs-recovered').write_text('malformed\n')
-p=run('bin/fm-branch-outcome.sh','recover-handoffs',ok=False); assert p.returncode!=0
-assert not (home/'state'/'.branch-outcomes-cursor').exists()
-print('RECOVERY FAILURE: delivery retried successfully; malformed checkpoint refused without read advancement',flush=True)
-print('ALL DIRECT CLI ASSERTIONS PASSED',flush=True)
+env['FM_HOME']=str(lab)
+log=open(ev/'cli-product.log','w')
+def run(args,expected=0,extra=None,input=None):
+    e=env| (extra or {})
+    p=subprocess.run(args,cwd=root,env=e,input=input,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=45)
+    log.write('$ '+ ' '.join(str(x) for x in args)+'\n'+p.stdout+f'EXIT {p.returncode}\n');log.flush()
+    assert p.returncode==expected,(args,p.stdout,p.returncode)
+    return p.stdout
+state=lab/'state'
+try:
+    run(['bin/fm-lab-home.sh','create',str(lab)])
+    (lab/'config/supervision-host').touch()
+    run(['bin/fm-afk-contract.sh','enter','--words','watch this disposable fleet'])
+    # Independent oracle: Firstmate decisions must be delivered during away, captain acts held.
+    (state/'.supervision-host-turn').write_text('turn=live1\nrows=1\ntasks=design release cap\nunscoped=0\nposture=away\nwake=signal: design.status\n')
+    branch={'FM_SUPERVISION_ACTOR':'branch','FM_BRANCH_REPORT_TURN':'live1'}
+    run(['bin/fm-branch-report.sh','--task','cap','--verdict','captain','--summary','Red merge requires captain decision'],extra=branch)
+    for task,summary in [('design','In-scope design choice needs MAIN'),('release','Worker paused waiting for MAIN to release approved local run')]:
+        run(['bin/fm-branch-report.sh','--task',task,'--verdict','firstmate','--summary',summary],extra=branch)
+    q=(state/'.wake-queue').read_text();log.write('DURABLE WAKE QUEUE\n'+q)
+    assert 'firstmate-outcome:2' in q and 'firstmate-outcome:3' in q and 'Red merge' not in q
+    run(['bin/fm-branch-report.sh','--task','design','--verdict','firstmate','--summary','hidden decision','--silent','true'],expected=2,extra=branch)
+    run(['bin/fm-branch-report.sh','--task','other','--verdict','firstmate','--summary','wrong task'],expected=3,extra=branch)
+    scope=run(['node','bin/fm-branch-dispatch.mjs','scope','--afk','--heartbeat'])
+    assert re.search(r'^rows=$',scope,re.M),scope
+    offer=run(['node','bin/fm-branch-dispatch.mjs','offer','--afk'],input='heartbeat\n')
+    assert 'eligible=0' in offer
+    drain=run(['bin/fm-wake-drain.sh'])
+    assert 'In-scope design choice needs MAIN' in drain and 'Worker paused' in drain and 'Red merge' not in drain
+    ack=re.search(r'WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh (.+)',drain)
+    assert ack,drain
+    import shlex
+    run(['bin/fm-wake-drain.sh']+shlex.split(ack.group(1)))
+    assert not (state/'.wake-queue').read_text().strip()
+    # Store-first crash reproduction: append completed but reporter died before handoff.
+    run(['bin/fm-branch-outcome.sh','append','--task','design','--verdict','firstmate','--summary','Saved decision after interrupted reporter'])
+    assert 'firstmate-outcome:4' not in (state/'.wake-queue').read_text()
+    drain=run(['bin/fm-wake-drain.sh'])
+    assert 'Saved decision after interrupted reporter' in drain and 'Red merge' not in drain
+    ack=re.search(r'WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh (.+)',drain)
+    assert ack
+    run(['bin/fm-wake-drain.sh']+shlex.split(ack.group(1)))
+    run(['bin/fm-afk-contract.sh','archive'])
+    drain=run(['bin/fm-wake-drain.sh'])
+    assert 'Red merge requires captain decision' in drain
+    assert 'In-scope design choice' not in drain and 'Worker paused' not in drain and 'Saved decision' not in drain
+    assert not (state/'.branch-outcomes-processed').exists()
+    log.write('OBSERVED: MAIN checks delivered and acknowledged while away. Saved handoff recovered. Captain control held until return. Settled MAIN decisions absent on return.\n')
+    run(['bin/fm-branch-outcome.sh','list'])
+finally:
+    log.close()
+    shutil.rmtree(lab)
+    print('Disposable CLI home removed:',lab)
