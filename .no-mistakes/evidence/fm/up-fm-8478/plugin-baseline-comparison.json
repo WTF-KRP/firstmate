@@ -1,0 +1,9 @@
+{
+  "baseline": "427056c4181c41074ad24f051f79919330df0fa5",
+  "candidate": "834781965bf8a77a2da0b092192df96521b13f80",
+  "candidate_only": [],
+  "baseline_only": [],
+  "equal_diagnostic_multisets": true,
+  "candidate_diagnostic_count": 48,
+  "baseline_diagnostic_count": 48
+}

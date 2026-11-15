@@ -1,0 +1,24 @@
+{
+  "candidate": "834781965bf8a77a2da0b092192df96521b13f80",
+  "baseline": "427056c4181c41074ad24f051f79919330df0fa5",
+  "host_cases_completed": 22,
+  "host_cases_planned": 33,
+  "host_subject_exit": 143,
+  "host_runner_exit": 1,
+  "host_interrupted_for_phase_budget": true,
+  "contracts_runner_exit": 1,
+  "portable_calm_exit": 0,
+  "store_exit": 0,
+  "host_drain_exit": 0,
+  "installed_plugin_exit": 1,
+  "baseline_installed_plugin_exit": 1,
+  "plugin_diagnostics_match_baseline": true,
+  "direct_cli_exit": 0,
+  "source_changes": false,
+  "visual_evidence_limitation": "Claude primary stopped at workspace trust. Strict plugin validation prevented Calm runtime rendering. No trust settings were changed.",
+  "retained_scratch": [
+    ".b/",
+    ".l/"
+  ],
+  "test_temp_cleanup_error": "Host test cleanup reported its incidental fm-supervision-host.a2dDPz temp directory not empty. No manual removal attempted."
+}

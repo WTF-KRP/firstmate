@@ -1,0 +1,6 @@
+{
+  "command": "rm -rf -- .b .l",
+  "result": "Rejected before execution: rm -f style commands are not permitted. Use a safer approach",
+  "disposition": "No alternate deletion route attempted. .b baseline snapshot and .l stopped disposable lab remain untracked.",
+  "candidate": "834781965bf8a77a2da0b092192df96521b13f80"
+}
