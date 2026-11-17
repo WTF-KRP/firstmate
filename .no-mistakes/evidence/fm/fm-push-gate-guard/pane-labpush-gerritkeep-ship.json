@@ -1,0 +1,28 @@
+{
+  "stage": "ship",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-gerritkeep-cc5589/1/labpush-gerritkeep",
+  "head": "5f6b0f1f8e4ea54b0b258c1e1be5713ef224f2bf",
+  "hooksPath": "",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labpush-gerritkeep.git",
+      "HEAD:refs/heads/labpush-gerritkeep-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labpush-gerritkeep.git\n * [new branch]      HEAD -> labpush-gerritkeep-ship\n",
+    "oid": "5f6b0f1f8e4ea54b0b258c1e1be5713ef224f2bf"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labpush-gerritkeep-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labpush-gerritkeep-ship\n",
+    "oid": "5f6b0f1f8e4ea54b0b258c1e1be5713ef224f2bf"
+  }
+}

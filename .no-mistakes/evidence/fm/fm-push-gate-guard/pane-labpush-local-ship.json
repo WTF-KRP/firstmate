@@ -1,0 +1,28 @@
+{
+  "stage": "ship",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-local-2ba17d/1/labpush-local",
+  "head": "4c6307d9b2dff0a6e984d9e38f3e80d436621275",
+  "hooksPath": "{run-worktree}/.test-phase-push/lab/state/labpush-local.git-hooks",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labpush-local.git",
+      "HEAD:refs/heads/labpush-local-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labpush-local.git\n * [new branch]      HEAD -> labpush-local-ship\n",
+    "oid": "4c6307d9b2dff0a6e984d9e38f3e80d436621275"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labpush-local-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labpush-local-ship\n",
+    "oid": "4c6307d9b2dff0a6e984d9e38f3e80d436621275"
+  }
+}

@@ -1,0 +1,36 @@
+Candidate: 0338e53f401fcc2028f4d789a621fe00740c9919
+Working copy: {run-worktree}
+Both live drivers exited 0. All six scenarios passed.
+Private tmux kill-server exited 0. Subsequent list-sessions exited 1: no server running on ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock
+No remaining fixture processes. Worktree fixture directory removed. git status --short exited 0 with empty output.
+No permanent code/test edits; no lint, broad suite, pipeline, PR or remote-host operations.
+Raw-command worker launches exercised real spawn and pane environment; no vendor model session was claimed.
+Product-created ephemeral scratch retained outside worktree because intentional deletion there is excluded by the user boundary:
+/tmp/fm-labprom-forgejo-keep
+/tmp/fm-labprom-forgejo-keep+c4eb0d95b8d0b63d000d19e4128518f5aa0b59224f0c18828d9b08bfedd7abad
+/tmp/fm-labprom-forgejo
+/tmp/fm-labprom-forgejo+c4eb0d95b8d0b63d000d19e4128518f5aa0b59224f0c18828d9b08bfedd7abad
+/tmp/fm-labprom-gerrit-keep
+/tmp/fm-labprom-gerrit-keep+c4eb0d95b8d0b63d000d19e4128518f5aa0b59224f0c18828d9b08bfedd7abad
+/tmp/fm-labprom-gerrit
+/tmp/fm-labprom-gerrit+c4eb0d95b8d0b63d000d19e4128518f5aa0b59224f0c18828d9b08bfedd7abad
+/tmp/fm-labprom-none-keep
+/tmp/fm-labprom-none-keep+c4eb0d95b8d0b63d000d19e4128518f5aa0b59224f0c18828d9b08bfedd7abad
+/tmp/fm-labprom-none
+/tmp/fm-labprom-none+c4eb0d95b8d0b63d000d19e4128518f5aa0b59224f0c18828d9b08bfedd7abad
+/tmp/fm-labpush-direct
+/tmp/fm-labpush-direct+c4eb0d95b8d0b63d000d19e4128518f5aa0b59224f0c18828d9b08bfedd7abad
+/tmp/fm-labpush-directkeep
+/tmp/fm-labpush-directkeep+c4eb0d95b8d0b63d000d19e4128518f5aa0b59224f0c18828d9b08bfedd7abad
+/tmp/fm-labpush-forgejo
+/tmp/fm-labpush-forgejo+c4eb0d95b8d0b63d000d19e4128518f5aa0b59224f0c18828d9b08bfedd7abad
+/tmp/fm-labpush-gerrit
+/tmp/fm-labpush-gerrit+c4eb0d95b8d0b63d000d19e4128518f5aa0b59224f0c18828d9b08bfedd7abad
+/tmp/fm-labpush-gerritkeep
+/tmp/fm-labpush-gerritkeep+c4eb0d95b8d0b63d000d19e4128518f5aa0b59224f0c18828d9b08bfedd7abad
+/tmp/fm-labpush-local
+/tmp/fm-labpush-local+c4eb0d95b8d0b63d000d19e4128518f5aa0b59224f0c18828d9b08bfedd7abad
+/tmp/fm-labpush-nm
+/tmp/fm-labpush-nm+c4eb0d95b8d0b63d000d19e4128518f5aa0b59224f0c18828d9b08bfedd7abad
+/tmp/fm-labpush-nmkeep
+/tmp/fm-labpush-nmkeep+c4eb0d95b8d0b63d000d19e4128518f5aa0b59224f0c18828d9b08bfedd7abad

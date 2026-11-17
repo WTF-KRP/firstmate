@@ -1,0 +1,28 @@
+{
+  "stage": "scout",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-forgejo-keep-96d795/1/labprom-forgejo-keep",
+  "head": "115117a975a4eb1d372aeffab49e1023798fbb79",
+  "hooksPath": "",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-forgejo-keep.git",
+      "HEAD:refs/heads/labprom-forgejo-keep-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labprom-forgejo-keep.git\n * [new branch]      HEAD -> labprom-forgejo-keep-scout\n",
+    "oid": "115117a975a4eb1d372aeffab49e1023798fbb79"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-forgejo-keep-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-forgejo-keep-scout\n",
+    "oid": "115117a975a4eb1d372aeffab49e1023798fbb79"
+  }
+}

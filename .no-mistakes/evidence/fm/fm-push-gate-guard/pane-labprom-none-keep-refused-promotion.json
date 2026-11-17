@@ -1,0 +1,28 @@
+{
+  "stage": "refused-promotion",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-none-keep-28a6db/1/labprom-none-keep",
+  "head": "e0ebac792aed6f512baa9feea54835e938d6d070",
+  "hooksPath": "",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-none-keep.git",
+      "HEAD:refs/heads/labprom-none-keep-refused-promotion"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labprom-none-keep.git\n * [new branch]      HEAD -> labprom-none-keep-refused-promotion\n",
+    "oid": "e0ebac792aed6f512baa9feea54835e938d6d070"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-none-keep-refused-promotion"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-none-keep-refused-promotion\n",
+    "oid": "e0ebac792aed6f512baa9feea54835e938d6d070"
+  }
+}

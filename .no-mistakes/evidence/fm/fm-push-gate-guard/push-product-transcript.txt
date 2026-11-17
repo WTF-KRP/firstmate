@@ -1,0 +1,196 @@
+$ git init -q -b main {run-worktree}/.test-phase-push/source
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/source commit -q --allow-empty -m "Synthetic task change"
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/source rev-parse HEAD
+8ed38b471ffe2d42c2f6e9662638bd373e3477f1
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/fork.git
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/gate.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/source remote add fork {run-worktree}/.test-phase-push/fork.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/source remote add no-mistakes {run-worktree}/.test-phase-push/gate.git
+EXIT=0
+$ bash {run-worktree}/bin/fm-git-push-guard.sh write-gate {run-worktree}/.test-phase-push/guard
+EXIT=0
+$ bash {run-worktree}/bin/fm-git-strip-ai-trailers.sh install --push-guard {run-worktree}/.test-phase-push/guard {run-worktree}/.test-phase-push/hooks {run-worktree}/.test-phase-push/source
+EXIT=0
+$ git clone -q {run-worktree}/.test-phase-push/source {run-worktree}/.test-phase-push/delivery
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/delivery remote add fork {run-worktree}/.test-phase-push/fork.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/source push file://{run-worktree}/.test-phase-push/fork.git HEAD:refs/heads/baseline-url-C
+To file://{run-worktree}/.test-phase-push/fork.git
+ * [new branch]      HEAD -> baseline-url-C
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/baseline-url-C
+8ed38b471ffe2d42c2f6e9662638bd373e3477f1
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/source push file://{run-worktree}/.test-phase-push/fork.git HEAD:refs/heads/guarded-url-C
+fm-git-push-guard: refused: file://{run-worktree}/.test-phase-push/fork.git is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block
+error: failed to push some refs to 'file://{run-worktree}/.test-phase-push/fork.git'
+EXIT=1
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/guarded-url-C
+EXIT=1
+$ git push fork HEAD:refs/heads/baseline-named
+To {run-worktree}/.test-phase-push/fork.git
+ * [new branch]      HEAD -> baseline-named
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/baseline-named
+8ed38b471ffe2d42c2f6e9662638bd373e3477f1
+EXIT=0
+$ git push fork HEAD:refs/heads/guarded-named
+fm-git-push-guard: refused: {run-worktree}/.test-phase-push/fork.git is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block
+error: failed to push some refs to '{run-worktree}/.test-phase-push/fork.git'
+EXIT=1
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/guarded-named
+EXIT=1
+$ git -C {run-worktree}/.test-phase-push/delivery push fork HEAD:refs/heads/baseline-clone
+To {run-worktree}/.test-phase-push/fork.git
+ * [new branch]      HEAD -> baseline-clone
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/baseline-clone
+8ed38b471ffe2d42c2f6e9662638bd373e3477f1
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/delivery push fork HEAD:refs/heads/guarded-clone
+fm-git-push-guard: refused: {run-worktree}/.test-phase-push/fork.git is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block
+error: failed to push some refs to '{run-worktree}/.test-phase-push/fork.git'
+EXIT=1
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/guarded-clone
+EXIT=1
+$ git push file://{run-worktree}/.test-phase-push/fork.git HEAD:refs/heads/baseline-changed-dir
+To file://{run-worktree}/.test-phase-push/fork.git
+ * [new branch]      HEAD -> baseline-changed-dir
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/baseline-changed-dir
+8ed38b471ffe2d42c2f6e9662638bd373e3477f1
+EXIT=0
+$ git push file://{run-worktree}/.test-phase-push/fork.git HEAD:refs/heads/guarded-changed-dir
+fm-git-push-guard: refused: file://{run-worktree}/.test-phase-push/fork.git is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block
+error: failed to push some refs to 'file://{run-worktree}/.test-phase-push/fork.git'
+EXIT=1
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/guarded-changed-dir
+EXIT=1
+$ git -c push.default=current push fork HEAD:refs/heads/baseline-config
+To {run-worktree}/.test-phase-push/fork.git
+ * [new branch]      HEAD -> baseline-config
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/baseline-config
+8ed38b471ffe2d42c2f6e9662638bd373e3477f1
+EXIT=0
+$ git -c push.default=current push fork HEAD:refs/heads/guarded-config
+fm-git-push-guard: refused: {run-worktree}/.test-phase-push/fork.git is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block
+error: failed to push some refs to '{run-worktree}/.test-phase-push/fork.git'
+EXIT=1
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/guarded-config
+EXIT=1
+$ env git push fork HEAD:refs/heads/baseline-env
+To {run-worktree}/.test-phase-push/fork.git
+ * [new branch]      HEAD -> baseline-env
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/baseline-env
+8ed38b471ffe2d42c2f6e9662638bd373e3477f1
+EXIT=0
+$ env git push fork HEAD:refs/heads/guarded-env
+fm-git-push-guard: refused: {run-worktree}/.test-phase-push/fork.git is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block
+error: failed to push some refs to '{run-worktree}/.test-phase-push/fork.git'
+EXIT=1
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/guarded-env
+EXIT=1
+SCENARIO 1 PASS: all baseline forms delivered HEAD; guarded forms refused and created no refs.
+$ git push no-mistakes HEAD:refs/heads/gate-named
+To {run-worktree}/.test-phase-push/gate.git
+ * [new branch]      HEAD -> gate-named
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/gate.git rev-parse --verify --quiet refs/heads/gate-named
+8ed38b471ffe2d42c2f6e9662638bd373e3477f1
+EXIT=0
+$ git push file://{run-worktree}/.test-phase-push/gate.git HEAD:refs/heads/gate-file
+To file://{run-worktree}/.test-phase-push/gate.git
+ * [new branch]      HEAD -> gate-file
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/gate.git rev-parse --verify --quiet refs/heads/gate-file
+8ed38b471ffe2d42c2f6e9662638bd373e3477f1
+EXIT=0
+$ git push {run-worktree}/.test-phase-push/gate.git HEAD:refs/heads/gate-absolute
+To {run-worktree}/.test-phase-push/gate.git
+ * [new branch]      HEAD -> gate-absolute
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/gate.git rev-parse --verify --quiet refs/heads/gate-absolute
+8ed38b471ffe2d42c2f6e9662638bd373e3477f1
+EXIT=0
+$ git push ../gate.git HEAD:refs/heads/gate-relative
+To ../gate.git
+ * [new branch]      HEAD -> gate-relative
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/gate.git rev-parse --verify --quiet refs/heads/gate-relative
+8ed38b471ffe2d42c2f6e9662638bd373e3477f1
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/source remote set-url no-mistakes {run-worktree}/.test-phase-push/fork.git
+EXIT=0
+$ git push no-mistakes HEAD:refs/heads/misleading
+fm-git-push-guard: refused: {run-worktree}/.test-phase-push/fork.git is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block
+error: failed to push some refs to '{run-worktree}/.test-phase-push/fork.git'
+EXIT=1
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/misleading
+EXIT=1
+$ git init -q --bare {run-worktree}/.test-phase-push/sibling-bare
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/sibling-bare.git
+EXIT=0
+$ git push {run-worktree}/.test-phase-push/sibling-bare HEAD:refs/heads/sibling
+fm-git-push-guard: refused: {run-worktree}/.test-phase-push/sibling-bare is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block
+error: failed to push some refs to '{run-worktree}/.test-phase-push/sibling-bare'
+EXIT=1
+$ git -C {run-worktree}/.test-phase-push/sibling-bare rev-parse --verify --quiet refs/heads/sibling
+EXIT=1
+$ git init -q {run-worktree}/.test-phase-push/sibling-nonbare
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/sibling-nonbare.git
+EXIT=0
+$ git push {run-worktree}/.test-phase-push/sibling-nonbare HEAD:refs/heads/sibling
+fm-git-push-guard: refused: {run-worktree}/.test-phase-push/sibling-nonbare is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block
+error: failed to push some refs to '{run-worktree}/.test-phase-push/sibling-nonbare'
+EXIT=1
+$ git -C {run-worktree}/.test-phase-push/sibling-nonbare rev-parse --verify --quiet refs/heads/sibling
+EXIT=1
+SCENARIO 2 PASS: stamped gate accepts all resolved local forms; misleading remote and stamped siblings refused.
+$ git -C {run-worktree}/.test-phase-push/gate.git worktree add -q {run-worktree}/.test-phase-push/gate-worktree gate-named
+EXIT=0
+$ git push file://{run-worktree}/.test-phase-push/fork.git HEAD:refs/heads/publication
+To file://{run-worktree}/.test-phase-push/fork.git
+ * [new branch]      HEAD -> publication
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/publication
+8ed38b471ffe2d42c2f6e9662638bd373e3477f1
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/gate.git push {run-worktree}/.test-phase-push/fork.git refs/heads/gate-named:refs/heads/bare-publication
+To {run-worktree}/.test-phase-push/fork.git
+ * [new branch]      gate-named -> bare-publication
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/bare-publication
+8ed38b471ffe2d42c2f6e9662638bd373e3477f1
+EXIT=0
+SCENARIO 3 PASS: gate linked worktree and bare common directory publish through inherited worker hooks.
+$ git push {run-worktree}/.test-phase-push/gate.git HEAD:refs/heads/chained
+To {run-worktree}/.test-phase-push/gate.git
+ * [new branch]      HEAD -> chained
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/gate.git rev-parse --verify --quiet refs/heads/chained
+8ed38b471ffe2d42c2f6e9662638bd373e3477f1
+EXIT=0
+Repository hook input: HEAD 8ed38b471ffe2d42c2f6e9662638bd373e3477f1 refs/heads/chained 0000000000000000000000000000000000000000
+$ git push {run-worktree}/.test-phase-push/gate.git HEAD:refs/heads/chain-reject
+error: failed to push some refs to '{run-worktree}/.test-phase-push/gate.git'
+EXIT=1
+$ git -C {run-worktree}/.test-phase-push/gate.git rev-parse --verify --quiet refs/heads/chain-reject
+EXIT=1
+$ git push fork HEAD:refs/heads/guard-first
+fm-git-push-guard: refused: {run-worktree}/.test-phase-push/fork.git is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block
+error: failed to push some refs to '{run-worktree}/.test-phase-push/fork.git'
+EXIT=1
+$ git -C {run-worktree}/.test-phase-push/fork.git rev-parse --verify --quiet refs/heads/guard-first
+EXIT=1
+SCENARIO 4 PASS: original hook receives ref input, rejects stamped-gate push, and never runs after guard refusal.

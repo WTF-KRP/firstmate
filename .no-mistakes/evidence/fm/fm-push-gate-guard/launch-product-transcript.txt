@@ -1,0 +1,983 @@
+$ bash {run-worktree}/bin/fm-lab-home.sh create {run-worktree}/.test-phase-push/lab
+{run-worktree}/.test-phase-push/lab
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock -f /dev/null new-session -d -s fm-lab -x 140 -y 45 -c {run-worktree} '/bin/bash --noprofile --norc'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock set-option -g default-shell /bin/bash
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock set-option -g default-command '/bin/bash --noprofile --norc'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock display-message -p -t fm-lab '#{socket_path},#{pid},#{session_id}'
+~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock,22730,$0
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/launch-gate.git
+EXIT=0
+$ git init -q -b main {run-worktree}/.test-phase-push/labpush-nm
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-nm commit -q --allow-empty -m 'Synthetic local project'
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/labpush-nm.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-nm.git symbolic-ref HEAD refs/heads/main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-nm remote add origin {run-worktree}/.test-phase-push/labpush-nm.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-nm push -q -u origin main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-nm remote set-head origin main
+EXIT=0
+$ bash {run-worktree}/bin/fm-spawn.sh labpush-nm {run-worktree}/.test-phase-push/labpush-nm --backend tmux --mode no-mistakes --yolo off '/bin/bash --noprofile --norc'
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.test-phase-push/lab
+spawned labpush-nm harness=bash kind=ship mode=no-mistakes yolo=off window=fm-lab:fm-labpush-nm worktree={run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-nm-f2552f/1/labpush-nm
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-nm -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labpush-nm-ship.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-nm-f2552f/1/labpush-nm {run-worktree}/.test-phase-push/labpush-nm.git {run-worktree}/.test-phase-push/launch-gate.git ship'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-nm Enter
+EXIT=0
+{
+  "stage": "ship",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-nm-f2552f/1/labpush-nm",
+  "head": "3df8040b154329d9f4540d4aff43fc8ef2ce7914",
+  "hooksPath": "{run-worktree}/.test-phase-push/lab/state/labpush-nm.git-hooks",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labpush-nm.git",
+      "HEAD:refs/heads/labpush-nm-ship"
+    ],
+    "rc": 1,
+    "output": "fm-git-push-guard: refused: {run-worktree}/.test-phase-push/labpush-nm.git is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block\nerror: failed to push some refs to '{run-worktree}/.test-phase-push/labpush-nm.git'\n",
+    "oid": null
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labpush-nm-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labpush-nm-ship\n",
+    "oid": "3df8040b154329d9f4540d4aff43fc8ef2ce7914"
+  }
+}
+SPAWN POLICY PASS labpush-nm
+$ git init -q -b main {run-worktree}/.test-phase-push/labpush-nmkeep
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-nmkeep commit -q --allow-empty -m 'Synthetic local project'
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/labpush-nmkeep.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-nmkeep.git symbolic-ref HEAD refs/heads/main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-nmkeep remote add origin {run-worktree}/.test-phase-push/labpush-nmkeep.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-nmkeep push -q -u origin main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-nmkeep remote set-head origin main
+EXIT=0
+$ bash {run-worktree}/bin/fm-spawn.sh labpush-nmkeep {run-worktree}/.test-phase-push/labpush-nmkeep --backend tmux --mode no-mistakes --yolo off '/bin/bash --noprofile --norc'
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.test-phase-push/lab
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  repair missing watcher supervision with a foreground checkpoint: bin/fm-watch-checkpoint.sh --seconds 180.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+spawned labpush-nmkeep harness=bash kind=ship mode=no-mistakes yolo=off window=fm-lab:fm-labpush-nmkeep worktree={run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-nmkeep-35eae3/1/labpush-nmkeep
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-nmkeep -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labpush-nmkeep-ship.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-nmkeep-35eae3/1/labpush-nmkeep {run-worktree}/.test-phase-push/labpush-nmkeep.git {run-worktree}/.test-phase-push/launch-gate.git ship'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-nmkeep Enter
+EXIT=0
+{
+  "stage": "ship",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-nmkeep-35eae3/1/labpush-nmkeep",
+  "head": "470e1bdf23f837e8646e4e0d08fd0a6ccb26439f",
+  "hooksPath": "{run-worktree}/.test-phase-push/lab/state/labpush-nmkeep.git-hooks",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labpush-nmkeep.git",
+      "HEAD:refs/heads/labpush-nmkeep-ship"
+    ],
+    "rc": 1,
+    "output": "fm-git-push-guard: refused: {run-worktree}/.test-phase-push/labpush-nmkeep.git is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block\nerror: failed to push some refs to '{run-worktree}/.test-phase-push/labpush-nmkeep.git'\n",
+    "oid": null
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labpush-nmkeep-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labpush-nmkeep-ship\n",
+    "oid": "470e1bdf23f837e8646e4e0d08fd0a6ccb26439f"
+  }
+}
+SPAWN POLICY PASS labpush-nmkeep
+$ git init -q -b main {run-worktree}/.test-phase-push/labpush-forgejo
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-forgejo commit -q --allow-empty -m 'Synthetic local project'
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/labpush-forgejo.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-forgejo.git symbolic-ref HEAD refs/heads/main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-forgejo remote add origin {run-worktree}/.test-phase-push/labpush-forgejo.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-forgejo push -q -u origin main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-forgejo remote set-head origin main
+EXIT=0
+$ bash {run-worktree}/bin/fm-spawn.sh labpush-forgejo {run-worktree}/.test-phase-push/labpush-forgejo --backend tmux --mode no-mistakes --yolo off '/bin/bash --noprofile --norc'
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.test-phase-push/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+spawned labpush-forgejo harness=bash kind=ship mode=no-mistakes yolo=off window=fm-lab:fm-labpush-forgejo worktree={run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-forgejo-999477/1/labpush-forgejo
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-forgejo -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labpush-forgejo-ship.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-forgejo-999477/1/labpush-forgejo {run-worktree}/.test-phase-push/labpush-forgejo.git {run-worktree}/.test-phase-push/launch-gate.git ship'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-forgejo Enter
+EXIT=0
+{
+  "stage": "ship",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-forgejo-999477/1/labpush-forgejo",
+  "head": "0080c3ddb352bf77214a40919ee12d3d7df9323c",
+  "hooksPath": "{run-worktree}/.test-phase-push/lab/state/labpush-forgejo.git-hooks",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labpush-forgejo.git",
+      "HEAD:refs/heads/labpush-forgejo-ship"
+    ],
+    "rc": 1,
+    "output": "fm-git-push-guard: refused: {run-worktree}/.test-phase-push/labpush-forgejo.git is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block\nerror: failed to push some refs to '{run-worktree}/.test-phase-push/labpush-forgejo.git'\n",
+    "oid": null
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labpush-forgejo-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labpush-forgejo-ship\n",
+    "oid": "0080c3ddb352bf77214a40919ee12d3d7df9323c"
+  }
+}
+SPAWN POLICY PASS labpush-forgejo
+$ git init -q -b main {run-worktree}/.test-phase-push/labpush-gerrit
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-gerrit commit -q --allow-empty -m 'Synthetic local project'
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/labpush-gerrit.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-gerrit.git symbolic-ref HEAD refs/heads/main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-gerrit remote add origin {run-worktree}/.test-phase-push/labpush-gerrit.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-gerrit push -q -u origin main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-gerrit remote set-head origin main
+EXIT=0
+$ bash {run-worktree}/bin/fm-spawn.sh labpush-gerrit {run-worktree}/.test-phase-push/labpush-gerrit --backend tmux --mode no-mistakes --yolo off '/bin/bash --noprofile --norc'
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.test-phase-push/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+spawned labpush-gerrit harness=bash kind=ship mode=no-mistakes yolo=off window=fm-lab:fm-labpush-gerrit worktree={run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-gerrit-5821a7/1/labpush-gerrit
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-gerrit -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labpush-gerrit-ship.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-gerrit-5821a7/1/labpush-gerrit {run-worktree}/.test-phase-push/labpush-gerrit.git {run-worktree}/.test-phase-push/launch-gate.git ship'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-gerrit Enter
+EXIT=0
+{
+  "stage": "ship",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-gerrit-5821a7/1/labpush-gerrit",
+  "head": "31fc94aadf7d9d0edbd67171af4c849788ce9425",
+  "hooksPath": "{run-worktree}/.test-phase-push/lab/state/labpush-gerrit.git-hooks",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labpush-gerrit.git",
+      "HEAD:refs/heads/labpush-gerrit-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labpush-gerrit.git\n * [new branch]      HEAD -> labpush-gerrit-ship\n",
+    "oid": "31fc94aadf7d9d0edbd67171af4c849788ce9425"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labpush-gerrit-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labpush-gerrit-ship\n",
+    "oid": "31fc94aadf7d9d0edbd67171af4c849788ce9425"
+  }
+}
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-gerrit -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labpush-gerrit-review.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-gerrit-5821a7/1/labpush-gerrit {run-worktree}/.test-phase-push/labpush-gerrit.git {run-worktree}/.test-phase-push/launch-gate.git review'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-gerrit Enter
+EXIT=0
+SPAWN POLICY PASS labpush-gerrit
+$ git init -q -b main {run-worktree}/.test-phase-push/labpush-gerritkeep
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-gerritkeep commit -q --allow-empty -m 'Synthetic local project'
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/labpush-gerritkeep.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-gerritkeep.git symbolic-ref HEAD refs/heads/main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-gerritkeep remote add origin {run-worktree}/.test-phase-push/labpush-gerritkeep.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-gerritkeep push -q -u origin main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-gerritkeep remote set-head origin main
+EXIT=0
+$ bash {run-worktree}/bin/fm-spawn.sh labpush-gerritkeep {run-worktree}/.test-phase-push/labpush-gerritkeep --backend tmux --mode no-mistakes --yolo off '/bin/bash --noprofile --norc'
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.test-phase-push/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+spawned labpush-gerritkeep harness=bash kind=ship mode=no-mistakes yolo=off window=fm-lab:fm-labpush-gerritkeep worktree={run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-gerritkeep-cc5589/1/labpush-gerritkeep
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-gerritkeep -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labpush-gerritkeep-ship.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-gerritkeep-cc5589/1/labpush-gerritkeep {run-worktree}/.test-phase-push/labpush-gerritkeep.git {run-worktree}/.test-phase-push/launch-gate.git ship'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-gerritkeep Enter
+EXIT=0
+{
+  "stage": "ship",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-gerritkeep-cc5589/1/labpush-gerritkeep",
+  "head": "5f6b0f1f8e4ea54b0b258c1e1be5713ef224f2bf",
+  "hooksPath": "",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labpush-gerritkeep.git",
+      "HEAD:refs/heads/labpush-gerritkeep-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labpush-gerritkeep.git\n * [new branch]      HEAD -> labpush-gerritkeep-ship\n",
+    "oid": "5f6b0f1f8e4ea54b0b258c1e1be5713ef224f2bf"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labpush-gerritkeep-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labpush-gerritkeep-ship\n",
+    "oid": "5f6b0f1f8e4ea54b0b258c1e1be5713ef224f2bf"
+  }
+}
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-gerritkeep -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labpush-gerritkeep-review.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-gerritkeep-cc5589/1/labpush-gerritkeep {run-worktree}/.test-phase-push/labpush-gerritkeep.git {run-worktree}/.test-phase-push/launch-gate.git review'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-gerritkeep Enter
+EXIT=0
+SPAWN POLICY PASS labpush-gerritkeep
+$ git init -q -b main {run-worktree}/.test-phase-push/labpush-direct
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-direct commit -q --allow-empty -m 'Synthetic local project'
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/labpush-direct.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-direct.git symbolic-ref HEAD refs/heads/main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-direct remote add origin {run-worktree}/.test-phase-push/labpush-direct.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-direct push -q -u origin main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-direct remote set-head origin main
+EXIT=0
+$ bash {run-worktree}/bin/fm-spawn.sh labpush-direct {run-worktree}/.test-phase-push/labpush-direct --backend tmux --mode direct-PR --yolo off '/bin/bash --noprofile --norc'
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.test-phase-push/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+spawned labpush-direct harness=bash kind=ship mode=direct-PR yolo=off window=fm-lab:fm-labpush-direct worktree={run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-direct-e10b83/1/labpush-direct
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-direct -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labpush-direct-ship.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-direct-e10b83/1/labpush-direct {run-worktree}/.test-phase-push/labpush-direct.git {run-worktree}/.test-phase-push/launch-gate.git ship'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-direct Enter
+EXIT=0
+{
+  "stage": "ship",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-direct-e10b83/1/labpush-direct",
+  "head": "4f02e4a2c8c345f9a03631d1502c6754c332eba0",
+  "hooksPath": "{run-worktree}/.test-phase-push/lab/state/labpush-direct.git-hooks",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labpush-direct.git",
+      "HEAD:refs/heads/labpush-direct-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labpush-direct.git\n * [new branch]      HEAD -> labpush-direct-ship\n",
+    "oid": "4f02e4a2c8c345f9a03631d1502c6754c332eba0"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labpush-direct-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labpush-direct-ship\n",
+    "oid": "4f02e4a2c8c345f9a03631d1502c6754c332eba0"
+  }
+}
+SPAWN POLICY PASS labpush-direct
+$ git init -q -b main {run-worktree}/.test-phase-push/labpush-directkeep
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-directkeep commit -q --allow-empty -m 'Synthetic local project'
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/labpush-directkeep.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-directkeep.git symbolic-ref HEAD refs/heads/main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-directkeep remote add origin {run-worktree}/.test-phase-push/labpush-directkeep.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-directkeep push -q -u origin main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-directkeep remote set-head origin main
+EXIT=0
+$ bash {run-worktree}/bin/fm-spawn.sh labpush-directkeep {run-worktree}/.test-phase-push/labpush-directkeep --backend tmux --mode direct-PR --yolo off '/bin/bash --noprofile --norc'
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.test-phase-push/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+spawned labpush-directkeep harness=bash kind=ship mode=direct-PR yolo=off window=fm-lab:fm-labpush-directkeep worktree={run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-directkeep-51e428/1/labpush-directkeep
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-directkeep -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labpush-directkeep-ship.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-directkeep-51e428/1/labpush-directkeep {run-worktree}/.test-phase-push/labpush-directkeep.git {run-worktree}/.test-phase-push/launch-gate.git ship'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-directkeep Enter
+EXIT=0
+{
+  "stage": "ship",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-directkeep-51e428/1/labpush-directkeep",
+  "head": "2ddc81bc07ad2d3d17479315b2d6629cedde1914",
+  "hooksPath": "",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labpush-directkeep.git",
+      "HEAD:refs/heads/labpush-directkeep-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labpush-directkeep.git\n * [new branch]      HEAD -> labpush-directkeep-ship\n",
+    "oid": "2ddc81bc07ad2d3d17479315b2d6629cedde1914"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labpush-directkeep-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labpush-directkeep-ship\n",
+    "oid": "2ddc81bc07ad2d3d17479315b2d6629cedde1914"
+  }
+}
+SPAWN POLICY PASS labpush-directkeep
+$ git init -q -b main {run-worktree}/.test-phase-push/labpush-local
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-local commit -q --allow-empty -m 'Synthetic local project'
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/labpush-local.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-local.git symbolic-ref HEAD refs/heads/main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-local remote add origin {run-worktree}/.test-phase-push/labpush-local.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-local push -q -u origin main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labpush-local remote set-head origin main
+EXIT=0
+$ bash {run-worktree}/bin/fm-spawn.sh labpush-local {run-worktree}/.test-phase-push/labpush-local --backend tmux --mode local-only --yolo off '/bin/bash --noprofile --norc'
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.test-phase-push/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+spawned labpush-local harness=bash kind=ship mode=local-only yolo=off window=fm-lab:fm-labpush-local worktree={run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-local-2ba17d/1/labpush-local
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-local -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labpush-local-ship.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-local-2ba17d/1/labpush-local {run-worktree}/.test-phase-push/labpush-local.git {run-worktree}/.test-phase-push/launch-gate.git ship'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labpush-local Enter
+EXIT=0
+{
+  "stage": "ship",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-local-2ba17d/1/labpush-local",
+  "head": "4c6307d9b2dff0a6e984d9e38f3e80d436621275",
+  "hooksPath": "{run-worktree}/.test-phase-push/lab/state/labpush-local.git-hooks",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labpush-local.git",
+      "HEAD:refs/heads/labpush-local-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labpush-local.git\n * [new branch]      HEAD -> labpush-local-ship\n",
+    "oid": "4c6307d9b2dff0a6e984d9e38f3e80d436621275"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labpush-local-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labpush-local-ship\n",
+    "oid": "4c6307d9b2dff0a6e984d9e38f3e80d436621275"
+  }
+}
+SPAWN POLICY PASS labpush-local
+SCENARIO 5 PASS: real fm-spawn, tmux, Treehouse, pane environment and Git enforce selected policy for local fixtures.
+$ git init -q -b main {run-worktree}/.test-phase-push/labprom-none
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-none commit -q --allow-empty -m 'Synthetic local project'
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/labprom-none.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-none.git symbolic-ref HEAD refs/heads/main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-none remote add origin {run-worktree}/.test-phase-push/labprom-none.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-none push -q -u origin main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-none remote set-head origin main
+EXIT=0
+$ bash {run-worktree}/bin/fm-spawn.sh labprom-none {run-worktree}/.test-phase-push/labprom-none --backend tmux --scout '/bin/bash --noprofile --norc'
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.test-phase-push/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+spawned labprom-none harness=bash kind=scout window=fm-lab:fm-labprom-none worktree={run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-none-e44f6c/1/labprom-none
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-none -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labprom-none-scout.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-none-e44f6c/1/labprom-none {run-worktree}/.test-phase-push/labprom-none.git {run-worktree}/.test-phase-push/launch-gate.git scout'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-none Enter
+EXIT=0
+{
+  "stage": "scout",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-none-e44f6c/1/labprom-none",
+  "head": "6f90012d5c46371519ee9aadadc69684ff6435fc",
+  "hooksPath": "{run-worktree}/.test-phase-push/lab/state/labprom-none.git-hooks",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-none.git",
+      "HEAD:refs/heads/labprom-none-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labprom-none.git\n * [new branch]      HEAD -> labprom-none-scout\n",
+    "oid": "6f90012d5c46371519ee9aadadc69684ff6435fc"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-none-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-none-scout\n",
+    "oid": "6f90012d5c46371519ee9aadadc69684ff6435fc"
+  }
+}
+$ bash {run-worktree}/bin/fm-promote.sh labprom-none --mode no-mistakes --yolo off
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+promoted labprom-none to ship mode=no-mistakes yolo=off (teardown protection restored)
+wrote ship instructions for mode=no-mistakes: {run-worktree}/.test-phase-push/lab/data/labprom-none/ship-instructions.md
+next: FM_HOME={run-worktree}/.test-phase-push/lab bin/fm-send.sh fm-labprom-none "$(cat {run-worktree}/.test-phase-push/lab/data/labprom-none/ship-instructions.md)"
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-none -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labprom-none-promoted.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-none-e44f6c/1/labprom-none {run-worktree}/.test-phase-push/labprom-none.git {run-worktree}/.test-phase-push/launch-gate.git promoted'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-none Enter
+EXIT=0
+{
+  "stage": "promoted",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-none-e44f6c/1/labprom-none",
+  "head": "6f90012d5c46371519ee9aadadc69684ff6435fc",
+  "hooksPath": "{run-worktree}/.test-phase-push/lab/state/labprom-none.git-hooks",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-none.git",
+      "HEAD:refs/heads/labprom-none-promoted"
+    ],
+    "rc": 1,
+    "output": "fm-git-push-guard: refused: {run-worktree}/.test-phase-push/labprom-none.git is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block\nerror: failed to push some refs to '{run-worktree}/.test-phase-push/labprom-none.git'\n",
+    "oid": null
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-none-promoted"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-none-promoted\n",
+    "oid": "6f90012d5c46371519ee9aadadc69684ff6435fc"
+  }
+}
+PROMOTION POLICY PASS labprom-none
+$ git init -q -b main {run-worktree}/.test-phase-push/labprom-none-keep
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-none-keep commit -q --allow-empty -m 'Synthetic local project'
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/labprom-none-keep.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-none-keep.git symbolic-ref HEAD refs/heads/main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-none-keep remote add origin {run-worktree}/.test-phase-push/labprom-none-keep.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-none-keep push -q -u origin main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-none-keep remote set-head origin main
+EXIT=0
+$ bash {run-worktree}/bin/fm-spawn.sh labprom-none-keep {run-worktree}/.test-phase-push/labprom-none-keep --backend tmux --scout '/bin/bash --noprofile --norc'
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.test-phase-push/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+spawned labprom-none-keep harness=bash kind=scout window=fm-lab:fm-labprom-none-keep worktree={run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-none-keep-28a6db/1/labprom-none-keep
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-none-keep -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labprom-none-keep-scout.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-none-keep-28a6db/1/labprom-none-keep {run-worktree}/.test-phase-push/labprom-none-keep.git {run-worktree}/.test-phase-push/launch-gate.git scout'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-none-keep Enter
+EXIT=0
+{
+  "stage": "scout",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-none-keep-28a6db/1/labprom-none-keep",
+  "head": "e0ebac792aed6f512baa9feea54835e938d6d070",
+  "hooksPath": "",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-none-keep.git",
+      "HEAD:refs/heads/labprom-none-keep-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labprom-none-keep.git\n * [new branch]      HEAD -> labprom-none-keep-scout\n",
+    "oid": "e0ebac792aed6f512baa9feea54835e938d6d070"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-none-keep-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-none-keep-scout\n",
+    "oid": "e0ebac792aed6f512baa9feea54835e938d6d070"
+  }
+}
+$ bash {run-worktree}/bin/fm-promote.sh labprom-none-keep --mode no-mistakes --yolo off
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+error: promotion to no-mistakes is refused: this scout was launched without the per-task Git hooksPath; spawn a fresh ship task so its gate push guard reaches the worker
+EXIT=1
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-none-keep -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labprom-none-keep-refused-promotion.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-none-keep-28a6db/1/labprom-none-keep {run-worktree}/.test-phase-push/labprom-none-keep.git {run-worktree}/.test-phase-push/launch-gate.git refused-promotion'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-none-keep Enter
+EXIT=0
+{
+  "stage": "refused-promotion",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-none-keep-28a6db/1/labprom-none-keep",
+  "head": "e0ebac792aed6f512baa9feea54835e938d6d070",
+  "hooksPath": "",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-none-keep.git",
+      "HEAD:refs/heads/labprom-none-keep-refused-promotion"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labprom-none-keep.git\n * [new branch]      HEAD -> labprom-none-keep-refused-promotion\n",
+    "oid": "e0ebac792aed6f512baa9feea54835e938d6d070"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-none-keep-refused-promotion"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-none-keep-refused-promotion\n",
+    "oid": "e0ebac792aed6f512baa9feea54835e938d6d070"
+  }
+}
+PROMOTION POLICY PASS labprom-none-keep
+$ git init -q -b main {run-worktree}/.test-phase-push/labprom-forgejo
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-forgejo commit -q --allow-empty -m 'Synthetic local project'
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/labprom-forgejo.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-forgejo.git symbolic-ref HEAD refs/heads/main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-forgejo remote add origin {run-worktree}/.test-phase-push/labprom-forgejo.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-forgejo push -q -u origin main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-forgejo remote set-head origin main
+EXIT=0
+$ bash {run-worktree}/bin/fm-spawn.sh labprom-forgejo {run-worktree}/.test-phase-push/labprom-forgejo --backend tmux --scout '/bin/bash --noprofile --norc'
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.test-phase-push/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+spawned labprom-forgejo harness=bash kind=scout window=fm-lab:fm-labprom-forgejo worktree={run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-forgejo-4109d9/1/labprom-forgejo
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-forgejo -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labprom-forgejo-scout.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-forgejo-4109d9/1/labprom-forgejo {run-worktree}/.test-phase-push/labprom-forgejo.git {run-worktree}/.test-phase-push/launch-gate.git scout'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-forgejo Enter
+EXIT=0
+{
+  "stage": "scout",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-forgejo-4109d9/1/labprom-forgejo",
+  "head": "65f993f42a5dd6657e56cce643475a47e4771cbd",
+  "hooksPath": "{run-worktree}/.test-phase-push/lab/state/labprom-forgejo.git-hooks",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-forgejo.git",
+      "HEAD:refs/heads/labprom-forgejo-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labprom-forgejo.git\n * [new branch]      HEAD -> labprom-forgejo-scout\n",
+    "oid": "65f993f42a5dd6657e56cce643475a47e4771cbd"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-forgejo-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-forgejo-scout\n",
+    "oid": "65f993f42a5dd6657e56cce643475a47e4771cbd"
+  }
+}
+$ bash {run-worktree}/bin/fm-promote.sh labprom-forgejo --mode no-mistakes --yolo off
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+promoted labprom-forgejo to ship mode=no-mistakes yolo=off forge=forgejo (teardown protection restored)
+wrote ship instructions for mode=no-mistakes forge=forgejo: {run-worktree}/.test-phase-push/lab/data/labprom-forgejo/ship-instructions.md
+next: FM_HOME={run-worktree}/.test-phase-push/lab bin/fm-send.sh fm-labprom-forgejo "$(cat {run-worktree}/.test-phase-push/lab/data/labprom-forgejo/ship-instructions.md)"
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-forgejo -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labprom-forgejo-promoted.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-forgejo-4109d9/1/labprom-forgejo {run-worktree}/.test-phase-push/labprom-forgejo.git {run-worktree}/.test-phase-push/launch-gate.git promoted'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-forgejo Enter
+EXIT=0
+{
+  "stage": "promoted",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-forgejo-4109d9/1/labprom-forgejo",
+  "head": "65f993f42a5dd6657e56cce643475a47e4771cbd",
+  "hooksPath": "{run-worktree}/.test-phase-push/lab/state/labprom-forgejo.git-hooks",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-forgejo.git",
+      "HEAD:refs/heads/labprom-forgejo-promoted"
+    ],
+    "rc": 1,
+    "output": "fm-git-push-guard: refused: {run-worktree}/.test-phase-push/labprom-forgejo.git is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block\nerror: failed to push some refs to '{run-worktree}/.test-phase-push/labprom-forgejo.git'\n",
+    "oid": null
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-forgejo-promoted"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-forgejo-promoted\n",
+    "oid": "65f993f42a5dd6657e56cce643475a47e4771cbd"
+  }
+}
+PROMOTION POLICY PASS labprom-forgejo
+$ git init -q -b main {run-worktree}/.test-phase-push/labprom-forgejo-keep
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-forgejo-keep commit -q --allow-empty -m 'Synthetic local project'
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/labprom-forgejo-keep.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-forgejo-keep.git symbolic-ref HEAD refs/heads/main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-forgejo-keep remote add origin {run-worktree}/.test-phase-push/labprom-forgejo-keep.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-forgejo-keep push -q -u origin main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-forgejo-keep remote set-head origin main
+EXIT=0
+$ bash {run-worktree}/bin/fm-spawn.sh labprom-forgejo-keep {run-worktree}/.test-phase-push/labprom-forgejo-keep --backend tmux --scout '/bin/bash --noprofile --norc'
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.test-phase-push/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+spawned labprom-forgejo-keep harness=bash kind=scout window=fm-lab:fm-labprom-forgejo-keep worktree={run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-forgejo-keep-96d795/1/labprom-forgejo-keep
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-forgejo-keep -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labprom-forgejo-keep-scout.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-forgejo-keep-96d795/1/labprom-forgejo-keep {run-worktree}/.test-phase-push/labprom-forgejo-keep.git {run-worktree}/.test-phase-push/launch-gate.git scout'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-forgejo-keep Enter
+EXIT=0
+{
+  "stage": "scout",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-forgejo-keep-96d795/1/labprom-forgejo-keep",
+  "head": "115117a975a4eb1d372aeffab49e1023798fbb79",
+  "hooksPath": "",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-forgejo-keep.git",
+      "HEAD:refs/heads/labprom-forgejo-keep-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labprom-forgejo-keep.git\n * [new branch]      HEAD -> labprom-forgejo-keep-scout\n",
+    "oid": "115117a975a4eb1d372aeffab49e1023798fbb79"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-forgejo-keep-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-forgejo-keep-scout\n",
+    "oid": "115117a975a4eb1d372aeffab49e1023798fbb79"
+  }
+}
+$ bash {run-worktree}/bin/fm-promote.sh labprom-forgejo-keep --mode no-mistakes --yolo off
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+error: promotion to no-mistakes is refused: this scout was launched without the per-task Git hooksPath; spawn a fresh ship task so its gate push guard reaches the worker
+EXIT=1
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-forgejo-keep -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labprom-forgejo-keep-refused-promotion.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-forgejo-keep-96d795/1/labprom-forgejo-keep {run-worktree}/.test-phase-push/labprom-forgejo-keep.git {run-worktree}/.test-phase-push/launch-gate.git refused-promotion'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-forgejo-keep Enter
+EXIT=0
+{
+  "stage": "refused-promotion",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-forgejo-keep-96d795/1/labprom-forgejo-keep",
+  "head": "115117a975a4eb1d372aeffab49e1023798fbb79",
+  "hooksPath": "",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-forgejo-keep.git",
+      "HEAD:refs/heads/labprom-forgejo-keep-refused-promotion"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labprom-forgejo-keep.git\n * [new branch]      HEAD -> labprom-forgejo-keep-refused-promotion\n",
+    "oid": "115117a975a4eb1d372aeffab49e1023798fbb79"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-forgejo-keep-refused-promotion"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-forgejo-keep-refused-promotion\n",
+    "oid": "115117a975a4eb1d372aeffab49e1023798fbb79"
+  }
+}
+PROMOTION POLICY PASS labprom-forgejo-keep
+$ git init -q -b main {run-worktree}/.test-phase-push/labprom-gerrit
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-gerrit commit -q --allow-empty -m 'Synthetic local project'
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/labprom-gerrit.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-gerrit.git symbolic-ref HEAD refs/heads/main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-gerrit remote add origin {run-worktree}/.test-phase-push/labprom-gerrit.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-gerrit push -q -u origin main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-gerrit remote set-head origin main
+EXIT=0
+$ bash {run-worktree}/bin/fm-spawn.sh labprom-gerrit {run-worktree}/.test-phase-push/labprom-gerrit --backend tmux --scout '/bin/bash --noprofile --norc'
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.test-phase-push/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+spawned labprom-gerrit harness=bash kind=scout window=fm-lab:fm-labprom-gerrit worktree={run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-gerrit-139b32/1/labprom-gerrit
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-gerrit -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labprom-gerrit-scout.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-gerrit-139b32/1/labprom-gerrit {run-worktree}/.test-phase-push/labprom-gerrit.git {run-worktree}/.test-phase-push/launch-gate.git scout'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-gerrit Enter
+EXIT=0
+{
+  "stage": "scout",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-gerrit-139b32/1/labprom-gerrit",
+  "head": "2c4fb71ccd0efdcbf8bc7d95a2e4c931fddb6ed4",
+  "hooksPath": "{run-worktree}/.test-phase-push/lab/state/labprom-gerrit.git-hooks",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-gerrit.git",
+      "HEAD:refs/heads/labprom-gerrit-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labprom-gerrit.git\n * [new branch]      HEAD -> labprom-gerrit-scout\n",
+    "oid": "2c4fb71ccd0efdcbf8bc7d95a2e4c931fddb6ed4"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-gerrit-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-gerrit-scout\n",
+    "oid": "2c4fb71ccd0efdcbf8bc7d95a2e4c931fddb6ed4"
+  }
+}
+$ bash {run-worktree}/bin/fm-promote.sh labprom-gerrit --mode no-mistakes --yolo off
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+promoted labprom-gerrit to ship mode=no-mistakes yolo=off forge=gerrit (teardown protection restored)
+wrote ship instructions for mode=no-mistakes forge=gerrit: {run-worktree}/.test-phase-push/lab/data/labprom-gerrit/ship-instructions.md
+next: FM_HOME={run-worktree}/.test-phase-push/lab bin/fm-send.sh fm-labprom-gerrit "$(cat {run-worktree}/.test-phase-push/lab/data/labprom-gerrit/ship-instructions.md)"
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-gerrit -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labprom-gerrit-promoted.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-gerrit-139b32/1/labprom-gerrit {run-worktree}/.test-phase-push/labprom-gerrit.git {run-worktree}/.test-phase-push/launch-gate.git promoted'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-gerrit Enter
+EXIT=0
+{
+  "stage": "promoted",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-gerrit-139b32/1/labprom-gerrit",
+  "head": "2c4fb71ccd0efdcbf8bc7d95a2e4c931fddb6ed4",
+  "hooksPath": "{run-worktree}/.test-phase-push/lab/state/labprom-gerrit.git-hooks",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-gerrit.git",
+      "HEAD:refs/heads/labprom-gerrit-promoted"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labprom-gerrit.git\n * [new branch]      HEAD -> labprom-gerrit-promoted\n",
+    "oid": "2c4fb71ccd0efdcbf8bc7d95a2e4c931fddb6ed4"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-gerrit-promoted"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-gerrit-promoted\n",
+    "oid": "2c4fb71ccd0efdcbf8bc7d95a2e4c931fddb6ed4"
+  }
+}
+PROMOTION POLICY PASS labprom-gerrit
+$ git init -q -b main {run-worktree}/.test-phase-push/labprom-gerrit-keep
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-gerrit-keep commit -q --allow-empty -m 'Synthetic local project'
+EXIT=0
+$ git init -q --bare {run-worktree}/.test-phase-push/labprom-gerrit-keep.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-gerrit-keep.git symbolic-ref HEAD refs/heads/main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-gerrit-keep remote add origin {run-worktree}/.test-phase-push/labprom-gerrit-keep.git
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-gerrit-keep push -q -u origin main
+EXIT=0
+$ git -C {run-worktree}/.test-phase-push/labprom-gerrit-keep remote set-head origin main
+EXIT=0
+$ bash {run-worktree}/bin/fm-spawn.sh labprom-gerrit-keep {run-worktree}/.test-phase-push/labprom-gerrit-keep --backend tmux --scout '/bin/bash --noprofile --norc'
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.test-phase-push/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+spawned labprom-gerrit-keep harness=bash kind=scout window=fm-lab:fm-labprom-gerrit-keep worktree={run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-gerrit-keep-28ddf3/1/labprom-gerrit-keep
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-gerrit-keep -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labprom-gerrit-keep-scout.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-gerrit-keep-28ddf3/1/labprom-gerrit-keep {run-worktree}/.test-phase-push/labprom-gerrit-keep.git {run-worktree}/.test-phase-push/launch-gate.git scout'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-gerrit-keep Enter
+EXIT=0
+{
+  "stage": "scout",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-gerrit-keep-28ddf3/1/labprom-gerrit-keep",
+  "head": "48810b7593c463f1dff5b8eeeec0a353edbde52d",
+  "hooksPath": "",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-gerrit-keep.git",
+      "HEAD:refs/heads/labprom-gerrit-keep-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labprom-gerrit-keep.git\n * [new branch]      HEAD -> labprom-gerrit-keep-scout\n",
+    "oid": "48810b7593c463f1dff5b8eeeec0a353edbde52d"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-gerrit-keep-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-gerrit-keep-scout\n",
+    "oid": "48810b7593c463f1dff5b8eeeec0a353edbde52d"
+  }
+}
+$ bash {run-worktree}/bin/fm-promote.sh labprom-gerrit-keep --mode no-mistakes --yolo off
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+promoted labprom-gerrit-keep to ship mode=no-mistakes yolo=off forge=gerrit (teardown protection restored)
+wrote ship instructions for mode=no-mistakes forge=gerrit: {run-worktree}/.test-phase-push/lab/data/labprom-gerrit-keep/ship-instructions.md
+next: FM_HOME={run-worktree}/.test-phase-push/lab bin/fm-send.sh fm-labprom-gerrit-keep "$(cat {run-worktree}/.test-phase-push/lab/data/labprom-gerrit-keep/ship-instructions.md)"
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-gerrit-keep -l 'python3 {run-worktree}/.test-phase-push/pane_probe.py ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/pane-labprom-gerrit-keep-promoted.json {run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-gerrit-keep-28ddf3/1/labprom-gerrit-keep {run-worktree}/.test-phase-push/labprom-gerrit-keep.git {run-worktree}/.test-phase-push/launch-gate.git promoted'
+EXIT=0
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock send-keys -t fm-lab:fm-labprom-gerrit-keep Enter
+EXIT=0
+{
+  "stage": "promoted",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-gerrit-keep-28ddf3/1/labprom-gerrit-keep",
+  "head": "48810b7593c463f1dff5b8eeeec0a353edbde52d",
+  "hooksPath": "",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-gerrit-keep.git",
+      "HEAD:refs/heads/labprom-gerrit-keep-promoted"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labprom-gerrit-keep.git\n * [new branch]      HEAD -> labprom-gerrit-keep-promoted\n",
+    "oid": "48810b7593c463f1dff5b8eeeec0a353edbde52d"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-gerrit-keep-promoted"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-gerrit-keep-promoted\n",
+    "oid": "48810b7593c463f1dff5b8eeeec0a353edbde52d"
+  }
+}
+PROMOTION POLICY PASS labprom-gerrit-keep
+SCENARIO 6 PASS: existing pane gains protection in place, missing hooks refuse without changing scout contract, Gerrit remains publishable.
+$ tmux -S ~/.no-mistakes/evidence/01M7NWE3646DJF93YGBYAK20M8/tmux.sock kill-server
+EXIT=0

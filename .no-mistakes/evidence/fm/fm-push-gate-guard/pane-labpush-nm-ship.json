@@ -1,0 +1,28 @@
+{
+  "stage": "ship",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labpush-nm-f2552f/1/labpush-nm",
+  "head": "3df8040b154329d9f4540d4aff43fc8ef2ce7914",
+  "hooksPath": "{run-worktree}/.test-phase-push/lab/state/labpush-nm.git-hooks",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labpush-nm.git",
+      "HEAD:refs/heads/labpush-nm-ship"
+    ],
+    "rc": 1,
+    "output": "fm-git-push-guard: refused: {run-worktree}/.test-phase-push/labpush-nm.git is not a no-mistakes gate; a mode=no-mistakes task publishes only through its gate. Use 'git push no-mistakes <branch>' or 'no-mistakes axi run'. A direct push leaves the pull request head without a matching pipeline attestation. If the gate is blocked, report the block\nerror: failed to push some refs to '{run-worktree}/.test-phase-push/labpush-nm.git'\n",
+    "oid": null
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labpush-nm-ship"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labpush-nm-ship\n",
+    "oid": "3df8040b154329d9f4540d4aff43fc8ef2ce7914"
+  }
+}

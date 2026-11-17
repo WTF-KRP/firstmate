@@ -1,0 +1,28 @@
+{
+  "stage": "scout",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-forgejo-4109d9/1/labprom-forgejo",
+  "head": "65f993f42a5dd6657e56cce643475a47e4771cbd",
+  "hooksPath": "{run-worktree}/.test-phase-push/lab/state/labprom-forgejo.git-hooks",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-forgejo.git",
+      "HEAD:refs/heads/labprom-forgejo-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labprom-forgejo.git\n * [new branch]      HEAD -> labprom-forgejo-scout\n",
+    "oid": "65f993f42a5dd6657e56cce643475a47e4771cbd"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-forgejo-scout"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-forgejo-scout\n",
+    "oid": "65f993f42a5dd6657e56cce643475a47e4771cbd"
+  }
+}

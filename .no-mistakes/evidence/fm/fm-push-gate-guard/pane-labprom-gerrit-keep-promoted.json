@@ -1,0 +1,28 @@
+{
+  "stage": "promoted",
+  "worktree": "{run-worktree}/.test-phase-push/treehouse/.treehouse/labprom-gerrit-keep-28ddf3/1/labprom-gerrit-keep",
+  "head": "48810b7593c463f1dff5b8eeeec0a353edbde52d",
+  "hooksPath": "",
+  "fork": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/labprom-gerrit-keep.git",
+      "HEAD:refs/heads/labprom-gerrit-keep-promoted"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/labprom-gerrit-keep.git\n * [new branch]      HEAD -> labprom-gerrit-keep-promoted\n",
+    "oid": "48810b7593c463f1dff5b8eeeec0a353edbde52d"
+  },
+  "gate": {
+    "command": [
+      "git",
+      "push",
+      "{run-worktree}/.test-phase-push/launch-gate.git",
+      "HEAD:refs/heads/labprom-gerrit-keep-promoted"
+    ],
+    "rc": 0,
+    "output": "To {run-worktree}/.test-phase-push/launch-gate.git\n * [new branch]      HEAD -> labprom-gerrit-keep-promoted\n",
+    "oid": "48810b7593c463f1dff5b8eeeec0a353edbde52d"
+  }
+}
