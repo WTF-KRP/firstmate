@@ -1,0 +1,3 @@
+ok - spawned ship and scout scratch stays out of git status and git add -A
+ok - spawn refuses scratch path collisions and project rules that defeat its exclusion
+ok - gate scratch and lab markers stay ignored without worker info/exclude

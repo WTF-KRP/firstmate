@@ -1,0 +1,24 @@
+$ git worktree list --porcelain
+worktree {run-worktree}/.fm-scratch/live/project
+HEAD 0a468fdcf838bad0541e0d3094a41dd3ba20fd30
+branch refs/heads/main
+
+worktree {run-worktree}/.fm-scratch/live/pool/.treehouse/project-b4a93d/1/project
+HEAD 0a468fdcf838bad0541e0d3094a41dd3ba20fd30
+detached
+
+[exit 0]
+$ tmux -S .fm-scratch/live.sock -f /dev/null new-session -d -s fm-lab-scratch -x 120 -y 40 -c {run-worktree} /bin/bash --noprofile --norc
+[exit 0]
+$ tmux -S .fm-scratch/live.sock display-message -p -t fm-lab-scratch #{pid}
+83323
+[exit 0]
+$ bash bin/fm-spawn.sh collision-file {run-worktree}/.fm-scratch/live/project --mode local-only --yolo off /bin/sleep 600
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.fm-scratch/live/lab
+warning: {run-worktree}/.fm-scratch/live/lab/data/collision-file/launch-brief.md records no ship branch; defaulting to legacy branch fm/collision-file
+warning: {run-worktree}/.fm-scratch/live/lab/data/collision-file/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode local-only - confirm its definition of done matches
+notice: collision-file ships mode=local-only while the standing posture for project is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+spawned collision-file harness=sleep kind=ship mode=local-only yolo=off window=fm-lab-scratch:fm-collision-file worktree={run-worktree}/.fm-scratch/live/pool/.treehouse/project-b4a93d/2/project
+[exit 0]
+$ tmux -S .fm-scratch/live.sock kill-server
+[exit 0]

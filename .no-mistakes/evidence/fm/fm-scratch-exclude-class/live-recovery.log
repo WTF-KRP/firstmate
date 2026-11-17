@@ -1,0 +1,60 @@
+$ bash bin/fm-lab-home.sh create {run-worktree}/.fm-scratch/live/lab-recovery
+{run-worktree}/.fm-scratch/live/lab-recovery
+[exit 0]
+$ tmux -S .fm-scratch/recovery.sock -f /dev/null new-session -d -s fm-lab-recovery -x 120 -y 40 -c {run-worktree} /bin/bash --noprofile --norc
+[exit 0]
+$ tmux -S .fm-scratch/recovery.sock display-message -p -t fm-lab-recovery #{pid}
+70363
+[exit 0]
+$ bash bin/fm-spawn.sh recovery-scout {run-worktree}/.fm-scratch/live/project --scout /bin/sleep 600
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.fm-scratch/live/lab-recovery
+spawned recovery-scout harness=sleep kind=scout window=fm-lab-recovery:fm-recovery-scout worktree={run-worktree}/.fm-scratch/live/pool/.treehouse/project-b4a93d/3/project
+[exit 0]
+$ git rev-parse --is-inside-work-tree
+fatal: gitfile does not point to a valid repository: {run-worktree}/.fm-scratch/live/pool/.treehouse/project-b4a93d/3/project/.git
+[exit 128]
+$ bash bin/fm-teardown.sh recovery-scout
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.fm-scratch/live/lab-recovery
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  repair missing watcher supervision with a foreground checkpoint: bin/fm-watch-checkpoint.sh --seconds 180.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+teardown: reaping leaked worktree process(es) for recovery-scout: 71889 74691
+teardown: force-killing leaked worktree process(es) for recovery-scout: 71889
+🌳 Worktree returned to pool.
+teardown recovery-scout complete (window fm-lab-recovery:fm-recovery-scout, worktree {run-worktree}/.fm-scratch/live/pool/.treehouse/project-b4a93d/3/project)
+Backlog: recovery-scout just finished (this home keeps no markdown backlog at {run-worktree}/.fm-scratch/live/lab-recovery/data/backlog.md). Update {run-worktree}/.fm-scratch/live/lab-recovery/data/backlog.md - move recovery-scout to Done, keep Done to the 10 most recent, then re-scan Queued and dispatch only work whose blockers are gone and date is due.
+[exit 0]
+S5 scout: teardown exit=0; task_metadata_exists=False
+$ bash bin/fm-spawn.sh recovery-ship {run-worktree}/.fm-scratch/live/project --mode local-only --yolo off /bin/sleep 600
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.fm-scratch/live/lab-recovery
+warning: {run-worktree}/.fm-scratch/live/lab-recovery/data/recovery-ship/launch-brief.md records no ship branch; defaulting to legacy branch fm/recovery-ship
+warning: {run-worktree}/.fm-scratch/live/lab-recovery/data/recovery-ship/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode local-only - confirm its definition of done matches
+notice: recovery-ship ships mode=local-only while the standing posture for project is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+spawned recovery-ship harness=sleep kind=ship mode=local-only yolo=off window=fm-lab-recovery:fm-recovery-ship worktree={run-worktree}/.fm-scratch/live/pool/.treehouse/project-b4a93d/4/project
+[exit 0]
+$ git rev-parse --is-inside-work-tree
+fatal: gitfile does not point to a valid repository: {run-worktree}/.fm-scratch/live/pool/.treehouse/project-b4a93d/4/project/.git
+[exit 128]
+$ bash bin/fm-teardown.sh recovery-ship --force
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.fm-scratch/live/lab-recovery
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  repair missing watcher supervision with a foreground checkpoint: bin/fm-watch-checkpoint.sh --seconds 180.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+teardown: reaping leaked worktree process(es) for recovery-ship: 79723 80657 81393
+teardown: force-killing leaked worktree process(es) for recovery-ship: 79723
+🌳 Worktree returned to pool.
+teardown recovery-ship complete (window fm-lab-recovery:fm-recovery-ship, worktree {run-worktree}/.fm-scratch/live/pool/.treehouse/project-b4a93d/4/project)
+Backlog: recovery-ship just finished (this home keeps no markdown backlog at {run-worktree}/.fm-scratch/live/lab-recovery/data/backlog.md). Update {run-worktree}/.fm-scratch/live/lab-recovery/data/backlog.md - move recovery-ship to Done, keep Done to the 10 most recent, then re-scan Queued and dispatch only work whose blockers are gone and date is due.
+[exit 0]
+S5 ship: teardown exit=0; task_metadata_exists=False
+RECOVERY_COMPLETED
+$ tmux -S .fm-scratch/recovery.sock kill-server
+[exit 0]

@@ -1,0 +1,119 @@
+$ git init -q {run-worktree}/.fm-scratch/nested-repo
+[exit 0]
+$ git check-ignore -v .fm-scratch/random name/.fm-lab-home .fm-scratch/nested-repo/output
+.gitignore:6:/.fm-scratch/	.fm-scratch/random name/.fm-lab-home
+.gitignore:6:/.fm-scratch/	.fm-scratch/nested-repo/output
+[exit 0]
+$ git status --porcelain --untracked-files=all
+[exit 0]
+$ git add --dry-run -A
+[exit 0]
+S1: actual gate worktree scratch excluded from status and broad add dry-run
+$ bash bin/fm-lab-home.sh create {run-worktree}/.fm-scratch/live/lab
+{run-worktree}/.fm-scratch/live/lab
+[exit 0]
+$ git init -q -b main {run-worktree}/.fm-scratch/live/project
+[exit 0]
+$ git add -A
+[exit 0]
+$ git commit -qm baseline
+[exit 0]
+$ git clone -q --bare {run-worktree}/.fm-scratch/live/project {run-worktree}/.fm-scratch/live/origin.git
+[exit 0]
+$ git remote add origin {run-worktree}/.fm-scratch/live/origin.git
+[exit 0]
+$ git fetch -q origin
+[exit 0]
+$ git remote set-head origin main
+[exit 0]
+$ tmux -S .fm-scratch/live.sock -f /dev/null new-session -d -s fm-lab-scratch -x 120 -y 40 -c {run-worktree} /bin/bash --noprofile --norc
+[exit 0]
+$ tmux -S .fm-scratch/live.sock display-message -p -t fm-lab-scratch #{pid}
+55731
+[exit 0]
+$ bash bin/fm-spawn.sh scratch-ship {run-worktree}/.fm-scratch/live/project --mode local-only --yolo off /bin/sleep 600
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.fm-scratch/live/lab
+warning: {run-worktree}/.fm-scratch/live/lab/data/scratch-ship/launch-brief.md records no ship branch; defaulting to legacy branch fm/scratch-ship
+warning: {run-worktree}/.fm-scratch/live/lab/data/scratch-ship/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode local-only - confirm its definition of done matches
+notice: scratch-ship ships mode=local-only while the standing posture for project is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+spawned scratch-ship harness=sleep kind=ship mode=local-only yolo=off window=fm-lab-scratch:fm-scratch-ship worktree={run-worktree}/.fm-scratch/live/pool/.treehouse/project-b4a93d/1/project
+[exit 0]
+$ git init -q {run-worktree}/.fm-scratch/live/pool/.treehouse/project-b4a93d/1/project/.fm-scratch/nested-repo
+[exit 0]
+$ git status --porcelain --untracked-files=all
+[exit 0]
+$ git add -A
+[exit 0]
+$ git diff --cached --name-only
+[exit 0]
+$ git add -A
+[exit 0]
+$ git diff --cached --name-only
+src/.fm-scratch/keep.txt
+[exit 0]
+$ git reset -q
+[exit 0]
+$ bash bin/fm-teardown.sh scratch-ship
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.fm-scratch/live/lab
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  repair missing watcher supervision with a foreground checkpoint: bin/fm-watch-checkpoint.sh --seconds 180.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+REFUSED: worktree {run-worktree}/.fm-scratch/live/pool/.treehouse/project-b4a93d/1/project has uncommitted changes.
+uncommitted changes present (untracked-only leftovers)
+untracked paths (up to 10):
+  unadded.txt
+Commit them (or get the captain's explicit OK to discard, then --force).
+[exit 1]
+S4: dirty deliverable refuses teardown and retains scratch/task state
+$ bash bin/fm-teardown.sh scratch-ship
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.fm-scratch/live/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+teardown: reaping leaked worktree process(es) for scratch-ship: 59811 66929 70545
+teardown: force-killing leaked worktree process(es) for scratch-ship: 59811
+🌳 Worktree returned to pool.
+teardown scratch-ship complete (window fm-lab-scratch:fm-scratch-ship, worktree {run-worktree}/.fm-scratch/live/pool/.treehouse/project-b4a93d/1/project)
+Backlog: scratch-ship just finished (this home keeps no markdown backlog at {run-worktree}/.fm-scratch/live/lab/data/backlog.md). Update {run-worktree}/.fm-scratch/live/lab/data/backlog.md - move scratch-ship to Done, keep Done to the 10 most recent, then re-scan Queued and dispatch only work whose blockers are gone and date is due.
+[exit 0]
+S2/S3: real ship spawn excludes arbitrary scratch, keeps nested deliverable visible; teardown removes only reserved scratch
+$ bash bin/fm-spawn.sh scratch-scout {run-worktree}/.fm-scratch/live/project --scout /bin/sleep 600
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.fm-scratch/live/lab
+spawned scratch-scout harness=sleep kind=scout window=fm-lab-scratch:fm-scratch-scout worktree={run-worktree}/.fm-scratch/live/pool/.treehouse/project-b4a93d/1/project
+[exit 0]
+$ git init -q {run-worktree}/.fm-scratch/live/pool/.treehouse/project-b4a93d/1/project/.fm-scratch/nested-repo
+[exit 0]
+$ git status --porcelain --untracked-files=all
+[exit 0]
+$ git add -A
+[exit 0]
+$ git diff --cached --name-only
+[exit 0]
+$ git add -A
+[exit 0]
+$ git diff --cached --name-only
+src/.fm-scratch/keep.txt
+[exit 0]
+$ git reset -q
+[exit 0]
+$ bash bin/fm-teardown.sh scratch-scout
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.fm-scratch/live/lab
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  repair missing watcher supervision with a foreground checkpoint: bin/fm-watch-checkpoint.sh --seconds 180.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+teardown: reaping leaked worktree process(es) for scratch-scout: 79739 81044
+teardown: force-killing leaked worktree process(es) for scratch-scout: 79739
+🌳 Worktree returned to pool.
+teardown scratch-scout complete (window fm-lab-scratch:fm-scratch-scout, worktree {run-worktree}/.fm-scratch/live/pool/.treehouse/project-b4a93d/1/project)
+Backlog: scratch-scout just finished (this home keeps no markdown backlog at {run-worktree}/.fm-scratch/live/lab/data/backlog.md). Update {run-worktree}/.fm-scratch/live/lab/data/backlog.md - move scratch-scout to Done, keep Done to the 10 most recent, then re-scan Queued and dispatch only work whose blockers are gone and date is due.
+[exit 0]
+S2/S3: real scout spawn excludes arbitrary scratch, keeps nested deliverable visible; teardown removes only reserved scratch
+LIVE_COMPLETED
+$ tmux -S .fm-scratch/live.sock kill-server
+[exit 0]

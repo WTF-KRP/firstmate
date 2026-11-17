@@ -1,0 +1,5 @@
+ok - teardown removes an unused empty worker scratch root
+ok - forced and scout teardown reach removal with unreadable Git metadata on tmux and Orca
+ok - hidden untracked work is refused before return while a clean control returns
+ok - local-only worktree with HEAD on a fork remote is torn down and the home summary is refreshed
+ok - local-only worktree with truly unpushed work is refused (safety preserved)

@@ -1,0 +1,106 @@
+$ tmux -S .fm-scratch/live.sock -f /dev/null new-session -d -s fm-lab-scratch -x 120 -y 40 -c {run-worktree} /bin/bash --noprofile --norc
+[exit 0]
+$ tmux -S .fm-scratch/live.sock display-message -p -t fm-lab-scratch #{pid}
+40033
+[exit 0]
+$ git init -q -b main {run-worktree}/.fm-scratch/live/seeded-file
+[exit 0]
+$ git add -A
+[exit 0]
+$ git commit -qm collision fixture
+[exit 0]
+$ git clone -q --bare {run-worktree}/.fm-scratch/live/seeded-file {run-worktree}/.fm-scratch/live/seeded-file.git
+[exit 0]
+$ git remote add origin {run-worktree}/.fm-scratch/live/seeded-file.git
+[exit 0]
+$ git fetch -q origin
+[exit 0]
+$ git remote set-head origin main
+[exit 0]
+$ bash bin/fm-spawn.sh seeded-file {run-worktree}/.fm-scratch/live/seeded-file --mode local-only --yolo off /bin/sleep 600
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.fm-scratch/live/lab
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  repair missing watcher supervision with a foreground checkpoint: bin/fm-watch-checkpoint.sh --seconds 180.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+warning: {run-worktree}/.fm-scratch/live/lab/data/seeded-file/launch-brief.md records no ship branch; defaulting to legacy branch fm/seeded-file
+warning: {run-worktree}/.fm-scratch/live/lab/data/seeded-file/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode local-only - confirm its definition of done matches
+notice: seeded-file ships mode=local-only while the standing posture for seeded-file is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+error: {run-worktree}/.fm-scratch/live/pool/.treehouse/seeded-file-5e2fc9/1/seeded-file/.fm-scratch is tracked, linked or not a directory; refusing to reserve worker scratch
+[exit 1]
+S3: real spawn refused file collision; no metadata published and project content preserved
+$ git init -q -b main {run-worktree}/.fm-scratch/live/seeded-symlink
+[exit 0]
+$ git add -A
+[exit 0]
+$ git commit -qm collision fixture
+[exit 0]
+$ git clone -q --bare {run-worktree}/.fm-scratch/live/seeded-symlink {run-worktree}/.fm-scratch/live/seeded-symlink.git
+[exit 0]
+$ git remote add origin {run-worktree}/.fm-scratch/live/seeded-symlink.git
+[exit 0]
+$ git fetch -q origin
+[exit 0]
+$ git remote set-head origin main
+[exit 0]
+$ bash bin/fm-spawn.sh seeded-symlink {run-worktree}/.fm-scratch/live/seeded-symlink --mode local-only --yolo off /bin/sleep 600
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.fm-scratch/live/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+warning: {run-worktree}/.fm-scratch/live/lab/data/seeded-symlink/launch-brief.md records no ship branch; defaulting to legacy branch fm/seeded-symlink
+warning: {run-worktree}/.fm-scratch/live/lab/data/seeded-symlink/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode local-only - confirm its definition of done matches
+notice: seeded-symlink ships mode=local-only while the standing posture for seeded-symlink is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+error: {run-worktree}/.fm-scratch/live/pool/.treehouse/seeded-symlink-6d2733/1/seeded-symlink/.fm-scratch is tracked, linked or not a directory; refusing to reserve worker scratch
+[exit 1]
+S3: real spawn refused symlink collision; no metadata published and project content preserved
+$ git init -q -b main {run-worktree}/.fm-scratch/live/seeded-unignored
+[exit 0]
+$ git add -A
+[exit 0]
+$ git commit -qm collision fixture
+[exit 0]
+$ git clone -q --bare {run-worktree}/.fm-scratch/live/seeded-unignored {run-worktree}/.fm-scratch/live/seeded-unignored.git
+[exit 0]
+$ git remote add origin {run-worktree}/.fm-scratch/live/seeded-unignored.git
+[exit 0]
+$ git fetch -q origin
+[exit 0]
+$ git remote set-head origin main
+[exit 0]
+$ bash bin/fm-spawn.sh seeded-unignored {run-worktree}/.fm-scratch/live/seeded-unignored --mode local-only --yolo off /bin/sleep 600
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.fm-scratch/live/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+warning: {run-worktree}/.fm-scratch/live/lab/data/seeded-unignored/launch-brief.md records no ship branch; defaulting to legacy branch fm/seeded-unignored
+warning: {run-worktree}/.fm-scratch/live/lab/data/seeded-unignored/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode local-only - confirm its definition of done matches
+notice: seeded-unignored ships mode=local-only while the standing posture for seeded-unignored is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+error: cannot create and Git-exclude {run-worktree}/.fm-scratch/live/pool/.treehouse/seeded-unignored-c92bab/1/seeded-unignored/.fm-scratch; refusing to launch with visible worker scratch
+[exit 1]
+S3: real spawn refused unignored collision; no metadata published and project content preserved
+$ git init -q -b main {run-worktree}/.fm-scratch/live/seeded-tracked
+[exit 0]
+$ git add -A
+[exit 0]
+$ git commit -qm collision fixture
+[exit 0]
+$ git clone -q --bare {run-worktree}/.fm-scratch/live/seeded-tracked {run-worktree}/.fm-scratch/live/seeded-tracked.git
+[exit 0]
+$ git remote add origin {run-worktree}/.fm-scratch/live/seeded-tracked.git
+[exit 0]
+$ git fetch -q origin
+[exit 0]
+$ git remote set-head origin main
+[exit 0]
+$ bash bin/fm-spawn.sh seeded-tracked {run-worktree}/.fm-scratch/live/seeded-tracked --mode local-only --yolo off /bin/sleep 600
+fm-gate-refuse: gate agent lifecycle permitted only against lab home {run-worktree}/.fm-scratch/live/lab
+WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
+warning: {run-worktree}/.fm-scratch/live/lab/data/seeded-tracked/launch-brief.md records no ship branch; defaulting to legacy branch fm/seeded-tracked
+warning: {run-worktree}/.fm-scratch/live/lab/data/seeded-tracked/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode local-only - confirm its definition of done matches
+notice: seeded-tracked ships mode=local-only while the standing posture for seeded-tracked is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+error: {run-worktree}/.fm-scratch/live/pool/.treehouse/seeded-tracked-7c7754/1/seeded-tracked/.fm-scratch is tracked, linked or not a directory; refusing to reserve worker scratch
+[exit 1]
+S3: real spawn refused tracked collision; no metadata published and project content preserved
+COLLISIONS_COMPLETED
+$ tmux -S .fm-scratch/live.sock kill-server
+[exit 0]
