@@ -1,0 +1,16 @@
+Warning: this sign-in can end at any time from now until 2026-11-18. Renewing it does not move that date. Run claude auth login now, or use claude setup-token for unattended jobs.
+Captain, I ran `bash .test-phase/live-driver.sh` once. It exited with status 0, and all 9 cases passed.
+
+| Case | Result |
+|---|---|
+| initial-progress | Watcher ready after 31s |
+| direct-progress | Host returned in 31s, retained successor: yes |
+| direct-stalled | 25s, retained successor: no |
+| direct-explicit | 5s, retained successor: no |
+| direct-dead | 1s, retained successor: no |
+| ack-progress | 31s, retained successor: yes |
+| ack-stalled | 24s, retained successor: no |
+| ack-explicit | 6s, retained successor: no |
+| ack-dead | 1s, retained successor: no |
+
+The script's cleanup printed one `Terminated: 15` line after the first case. That was its own cleanup stopping the background host on purpose, not a failure. The results and saved output for each case are in `~/.no-mistakes-upstream-codex/evidence/01M7PH8J6P5MQJS1CXZ3MGG21E/`. The test homes the script created under `.test-phase/` are still there.

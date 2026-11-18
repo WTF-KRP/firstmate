@@ -1,0 +1,10 @@
+PASS initial-progress: genuine initial watcher ready after 31s
+PASS direct-progress: real host returned in 31s, retained-successor=yes
+PASS direct-stalled: real host returned in 25s, retained-successor=no
+PASS direct-explicit: real host returned in 5s, retained-successor=no
+PASS direct-dead: real host returned in 1s, retained-successor=no
+PASS ack-progress: real host returned in 31s, retained-successor=yes
+PASS ack-stalled: real host returned in 24s, retained-successor=no
+PASS ack-explicit: real host returned in 6s, retained-successor=no
+PASS ack-dead: real host returned in 1s, retained-successor=no
+COMPLETED

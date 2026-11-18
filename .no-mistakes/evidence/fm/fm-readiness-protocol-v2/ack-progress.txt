@@ -1,0 +1,30 @@
+candidate=99df4245a6c7fc938b0e8a4395272196e84112b0
+case=ack-progress
+
+--- lock.out ---
+lock acquired: harness pid 62363
+
+--- host.out ---
+watcher: started pid=19945 (beacon fresh)
+signal: {run-worktree}/.test-phase/ack-progress/state/demo.status
+
+--- host.rc ---
+0
+
+--- state/.supervision-host.log ---
+1794980684	start	gen=host-19205-1794980684	primary=claude
+1794980688	pass-through	attended	main-only	signal: {run-worktree}/.test-phase/ack-progress/state/demo.status
+1794980720	handoff	host-19205-1794980684
+
+--- state/.supervision-host-left ---
+29780	Wed Nov 18 05:44:49 2026     bash {run-worktree}/bin/fm-watch-arm.sh
+
+--- state/.supervision-handoff-owner ---
+
+--- state/.supervision-handoff.log ---
+
+--- state/.watch-cycle-exits.log ---
+arm_pid=19823	watcher_pid=19945	origin=started	started_at=1794980684	ended_at=1794980687	exit_code=0	signal=none	reason=actionable-signal	beacon_age=1	lock_before=pid:19945|identity:Wed Nov 18 05:44:44 2026     bash {run-worktree}/bin/fm-watch.sh	lock_after=pid:none|identity:none	successor=started:44165
+
+--- cleanup.out ---
+watcher: stopped pid=44165

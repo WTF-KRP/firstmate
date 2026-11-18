@@ -1,0 +1,24 @@
+candidate=99df4245a6c7fc938b0e8a4395272196e84112b0
+case=initial-progress
+
+--- lock.out ---
+lock acquired: harness pid 62363
+
+--- host.out ---
+watcher: started pid=87356 (beacon fresh)
+
+--- host.rc ---
+
+--- state/.supervision-host.log ---
+1794980574	start	gen=host-65925-1794980574	primary=claude
+
+--- state/.supervision-host-left ---
+
+--- state/.supervision-handoff-owner ---
+
+--- state/.supervision-handoff.log ---
+
+--- state/.watch-cycle-exits.log ---
+
+--- cleanup.out ---
+watcher: stopped pid=87356

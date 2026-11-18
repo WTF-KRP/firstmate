@@ -1,0 +1,30 @@
+candidate=99df4245a6c7fc938b0e8a4395272196e84112b0
+case=direct-explicit
+
+--- lock.out ---
+lock acquired: harness pid 62363
+
+--- host.out ---
+watcher: started pid=95662 (beacon fresh)
+signal: {run-worktree}/.test-phase/direct-explicit/state/demo.status
+{run-worktree}/bin/fm-supervision-host.sh: line 477:   946 Terminated: 15          FM_WATCH_PREDECESSOR_ARM_PID=$predecessor FM_GUARD_GRACE="$GRACE" "$SCRIPT_DIR/fm-watch-arm.sh" "$@" > "$out" 2>&1 < /dev/null
+
+--- host.rc ---
+0
+
+--- state/.supervision-host.log ---
+1794980670	start	gen=host-94957-1794980670	primary=claude
+1794980672	pass-through	attended	main-only	signal: {run-worktree}/.test-phase/direct-explicit/state/demo.status
+1794980678	pass-through	successor-unverified	signal: {run-worktree}/.test-phase/direct-explicit/state/demo.status
+
+--- state/.supervision-host-left ---
+
+--- state/.supervision-handoff-owner ---
+
+--- state/.supervision-handoff.log ---
+
+--- state/.watch-cycle-exits.log ---
+arm_pid=95558	watcher_pid=95662	origin=started	started_at=1794980670	ended_at=1794980672	exit_code=0	signal=none	reason=actionable-signal	beacon_age=1	lock_before=pid:95662|identity:Wed Nov 18 05:44:30 2026     bash {run-worktree}/bin/fm-watch.sh	lock_after=pid:none|identity:none	successor=none
+
+--- cleanup.out ---
+watcher: none running

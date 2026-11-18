@@ -1,0 +1,29 @@
+candidate=99df4245a6c7fc938b0e8a4395272196e84112b0
+case=ack-dead
+
+--- lock.out ---
+lock acquired: harness pid 62363
+
+--- host.out ---
+watcher: started pid=32410 (beacon fresh)
+signal: {run-worktree}/.test-phase/ack-dead/state/demo.status
+supervision-host: the acknowledged hand-back successor could not be verified
+
+--- host.rc ---
+1
+
+--- state/.supervision-host.log ---
+1794980762	start	gen=host-32178-1794980762	primary=claude
+1794980766	pass-through	attended	main-only	signal: {run-worktree}/.test-phase/ack-dead/state/demo.status
+
+--- state/.supervision-host-left ---
+
+--- state/.supervision-handoff-owner ---
+
+--- state/.supervision-handoff.log ---
+
+--- state/.watch-cycle-exits.log ---
+arm_pid=32364	watcher_pid=32410	origin=started	started_at=1794980762	ended_at=1794980765	exit_code=0	signal=none	reason=actionable-signal	beacon_age=1	lock_before=pid:32410|identity:Wed Nov 18 05:46:02 2026     bash {run-worktree}/bin/fm-watch.sh	lock_after=pid:none|identity:none	successor=none
+
+--- cleanup.out ---
+watcher: none running

@@ -1,0 +1,304 @@
+Real product validation at 99df4245a6c7fc938b0e8a4395272196e84112b0.
+Real Claude print-mode primary, normal login, private tmux socket, marked disposable stock-layout homes.
+No fake primary, engine, arm or watcher. Real elapsed time, synthetic local task statuses and configuration/recovery-lock barriers.
+Progress cases exceeded 25 seconds. Stalled cases included malformed wrong-nonce records and repeated file touches. Explicit caps were six seconds. Death cases terminated only the fixture successor before admission.
+These runs are local contention proofs, not the requested loaded CI-box proof or real OpenCode/OMP proof.
+
+PASS initial-progress: genuine initial watcher ready after 31s
+PASS direct-progress: real host returned in 31s, retained-successor=yes
+PASS direct-stalled: real host returned in 25s, retained-successor=no
+PASS direct-explicit: real host returned in 5s, retained-successor=no
+PASS direct-dead: real host returned in 1s, retained-successor=no
+PASS ack-progress: real host returned in 31s, retained-successor=yes
+PASS ack-stalled: real host returned in 24s, retained-successor=no
+PASS ack-explicit: real host returned in 6s, retained-successor=no
+PASS ack-dead: real host returned in 1s, retained-successor=no
+COMPLETED
+
+
+===== initial-progress =====
+candidate=99df4245a6c7fc938b0e8a4395272196e84112b0
+case=initial-progress
+
+--- lock.out ---
+lock acquired: harness pid 62363
+
+--- host.out ---
+watcher: started pid=87356 (beacon fresh)
+
+--- host.rc ---
+
+--- state/.supervision-host.log ---
+1794980574	start	gen=host-65925-1794980574	primary=claude
+
+--- state/.supervision-host-left ---
+
+--- state/.supervision-handoff-owner ---
+
+--- state/.supervision-handoff.log ---
+
+--- state/.watch-cycle-exits.log ---
+
+--- cleanup.out ---
+watcher: stopped pid=87356
+
+
+===== direct-progress =====
+candidate=99df4245a6c7fc938b0e8a4395272196e84112b0
+case=direct-progress
+
+--- lock.out ---
+lock acquired: harness pid 62363
+
+--- host.out ---
+watcher: started pid=12464 (beacon fresh)
+signal: {run-worktree}/.test-phase/direct-progress/state/demo.status
+
+--- host.rc ---
+0
+
+--- state/.supervision-host.log ---
+1794980605	start	gen=host-11840-1794980605	primary=claude
+1794980609	pass-through	attended	main-only	signal: {run-worktree}/.test-phase/direct-progress/state/demo.status
+
+--- state/.supervision-host-left ---
+17980	Wed Nov 18 05:43:29 2026     bash {run-worktree}/bin/fm-watch-arm.sh
+
+--- state/.supervision-handoff-owner ---
+
+--- state/.supervision-handoff.log ---
+
+--- state/.watch-cycle-exits.log ---
+arm_pid=12392	watcher_pid=12464	origin=started	started_at=1794980605	ended_at=1794980608	exit_code=0	signal=none	reason=actionable-signal	beacon_age=0	lock_before=pid:12464|identity:Wed Nov 18 05:43:25 2026     bash {run-worktree}/bin/fm-watch.sh	lock_after=pid:none|identity:none	successor=started:36284
+arm_pid=17980	watcher_pid=36284	origin=started	started_at=1794980624	ended_at=1794980640	exit_code=143	signal=TERM	reason=signal-exit	beacon_age=1	lock_before=pid:36284|identity:Wed Nov 18 05:43:44 2026     bash {run-worktree}/bin/fm-watch.sh	lock_after=pid:none|identity:none	successor=none
+
+--- cleanup.out ---
+watcher: stopped pid=36284
+
+
+===== direct-stalled =====
+candidate=99df4245a6c7fc938b0e8a4395272196e84112b0
+case=direct-stalled
+
+--- lock.out ---
+lock acquired: harness pid 62363
+
+--- host.out ---
+watcher: started pid=60204 (beacon fresh)
+signal: {run-worktree}/.test-phase/direct-stalled/state/demo.status
+{run-worktree}/bin/fm-supervision-host.sh: line 477: 64407 Terminated: 15          FM_WATCH_PREDECESSOR_ARM_PID=$predecessor FM_GUARD_GRACE="$GRACE" "$SCRIPT_DIR/fm-watch-arm.sh" "$@" > "$out" 2>&1 < /dev/null
+
+--- host.rc ---
+0
+
+--- state/.supervision-host.log ---
+1794980641	start	gen=host-59840-1794980640	primary=claude
+1794980644	pass-through	attended	main-only	signal: {run-worktree}/.test-phase/direct-stalled/state/demo.status
+1794980669	pass-through	successor-unverified	signal: {run-worktree}/.test-phase/direct-stalled/state/demo.status
+
+--- state/.supervision-host-left ---
+
+--- state/.supervision-handoff-owner ---
+
+--- state/.supervision-handoff.log ---
+
+--- state/.watch-cycle-exits.log ---
+arm_pid=60141	watcher_pid=60204	origin=started	started_at=1794980641	ended_at=1794980644	exit_code=0	signal=none	reason=actionable-signal	beacon_age=1	lock_before=pid:60204|identity:Wed Nov 18 05:44:01 2026     bash {run-worktree}/bin/fm-watch.sh	lock_after=pid:none|identity:none	successor=none
+
+--- cleanup.out ---
+watcher: none running
+
+
+===== direct-explicit =====
+candidate=99df4245a6c7fc938b0e8a4395272196e84112b0
+case=direct-explicit
+
+--- lock.out ---
+lock acquired: harness pid 62363
+
+--- host.out ---
+watcher: started pid=95662 (beacon fresh)
+signal: {run-worktree}/.test-phase/direct-explicit/state/demo.status
+{run-worktree}/bin/fm-supervision-host.sh: line 477:   946 Terminated: 15          FM_WATCH_PREDECESSOR_ARM_PID=$predecessor FM_GUARD_GRACE="$GRACE" "$SCRIPT_DIR/fm-watch-arm.sh" "$@" > "$out" 2>&1 < /dev/null
+
+--- host.rc ---
+0
+
+--- state/.supervision-host.log ---
+1794980670	start	gen=host-94957-1794980670	primary=claude
+1794980672	pass-through	attended	main-only	signal: {run-worktree}/.test-phase/direct-explicit/state/demo.status
+1794980678	pass-through	successor-unverified	signal: {run-worktree}/.test-phase/direct-explicit/state/demo.status
+
+--- state/.supervision-host-left ---
+
+--- state/.supervision-handoff-owner ---
+
+--- state/.supervision-handoff.log ---
+
+--- state/.watch-cycle-exits.log ---
+arm_pid=95558	watcher_pid=95662	origin=started	started_at=1794980670	ended_at=1794980672	exit_code=0	signal=none	reason=actionable-signal	beacon_age=1	lock_before=pid:95662|identity:Wed Nov 18 05:44:30 2026     bash {run-worktree}/bin/fm-watch.sh	lock_after=pid:none|identity:none	successor=none
+
+--- cleanup.out ---
+watcher: none running
+
+
+===== direct-dead =====
+candidate=99df4245a6c7fc938b0e8a4395272196e84112b0
+case=direct-dead
+
+--- lock.out ---
+lock acquired: harness pid 62363
+
+--- host.out ---
+watcher: started pid=9967 (beacon fresh)
+signal: {run-worktree}/.test-phase/direct-dead/state/demo.status
+
+--- host.rc ---
+0
+
+--- state/.supervision-host.log ---
+1794980679	start	gen=host-9319-1794980679	primary=claude
+1794980683	pass-through	attended	main-only	signal: {run-worktree}/.test-phase/direct-dead/state/demo.status
+1794980683	pass-through	successor-unverified	signal: {run-worktree}/.test-phase/direct-dead/state/demo.status
+
+--- state/.supervision-host-left ---
+
+--- state/.supervision-handoff-owner ---
+
+--- state/.supervision-handoff.log ---
+
+--- state/.watch-cycle-exits.log ---
+arm_pid=9878	watcher_pid=9967	origin=started	started_at=1794980679	ended_at=1794980682	exit_code=0	signal=none	reason=actionable-signal	beacon_age=1	lock_before=pid:9967|identity:Wed Nov 18 05:44:39 2026     bash {run-worktree}/bin/fm-watch.sh	lock_after=pid:none|identity:none	successor=none
+
+--- cleanup.out ---
+watcher: none running
+
+
+===== ack-progress =====
+candidate=99df4245a6c7fc938b0e8a4395272196e84112b0
+case=ack-progress
+
+--- lock.out ---
+lock acquired: harness pid 62363
+
+--- host.out ---
+watcher: started pid=19945 (beacon fresh)
+signal: {run-worktree}/.test-phase/ack-progress/state/demo.status
+
+--- host.rc ---
+0
+
+--- state/.supervision-host.log ---
+1794980684	start	gen=host-19205-1794980684	primary=claude
+1794980688	pass-through	attended	main-only	signal: {run-worktree}/.test-phase/ack-progress/state/demo.status
+1794980720	handoff	host-19205-1794980684
+
+--- state/.supervision-host-left ---
+29780	Wed Nov 18 05:44:49 2026     bash {run-worktree}/bin/fm-watch-arm.sh
+
+--- state/.supervision-handoff-owner ---
+
+--- state/.supervision-handoff.log ---
+
+--- state/.watch-cycle-exits.log ---
+arm_pid=19823	watcher_pid=19945	origin=started	started_at=1794980684	ended_at=1794980687	exit_code=0	signal=none	reason=actionable-signal	beacon_age=1	lock_before=pid:19945|identity:Wed Nov 18 05:44:44 2026     bash {run-worktree}/bin/fm-watch.sh	lock_after=pid:none|identity:none	successor=started:44165
+
+--- cleanup.out ---
+watcher: stopped pid=44165
+
+
+===== ack-stalled =====
+candidate=99df4245a6c7fc938b0e8a4395272196e84112b0
+case=ack-stalled
+
+--- lock.out ---
+lock acquired: harness pid 62363
+
+--- host.out ---
+watcher: started pid=68469 (beacon fresh)
+signal: {run-worktree}/.test-phase/ack-stalled/state/demo.status
+supervision-host: the acknowledged hand-back successor could not be verified
+
+--- host.rc ---
+1
+
+--- state/.supervision-host.log ---
+1794980722	start	gen=host-68059-1794980721	primary=claude
+1794980726	pass-through	attended	main-only	signal: {run-worktree}/.test-phase/ack-stalled/state/demo.status
+
+--- state/.supervision-host-left ---
+
+--- state/.supervision-handoff-owner ---
+
+--- state/.supervision-handoff.log ---
+
+--- state/.watch-cycle-exits.log ---
+arm_pid=68403	watcher_pid=68469	origin=started	started_at=1794980722	ended_at=1794980725	exit_code=0	signal=none	reason=actionable-signal	beacon_age=1	lock_before=pid:68469|identity:Wed Nov 18 05:45:22 2026     bash {run-worktree}/bin/fm-watch.sh	lock_after=pid:none|identity:none	successor=none
+
+--- cleanup.out ---
+watcher: none running
+
+
+===== ack-explicit =====
+candidate=99df4245a6c7fc938b0e8a4395272196e84112b0
+case=ack-explicit
+
+--- lock.out ---
+lock acquired: harness pid 62363
+
+--- host.out ---
+watcher: started pid=18580 (beacon fresh)
+signal: {run-worktree}/.test-phase/ack-explicit/state/demo.status
+supervision-host: the acknowledged hand-back successor could not be verified
+
+--- host.rc ---
+1
+
+--- state/.supervision-host.log ---
+1794980752	start	gen=host-17749-1794980751	primary=claude
+1794980755	pass-through	attended	main-only	signal: {run-worktree}/.test-phase/ack-explicit/state/demo.status
+
+--- state/.supervision-host-left ---
+
+--- state/.supervision-handoff-owner ---
+27076	Wed Nov 18 05:45:56 2026     bash {run-worktree}/bin/fm-supervision-handoff.sh host-17749-1794980751 18479
+
+--- state/.supervision-handoff.log ---
+
+--- state/.watch-cycle-exits.log ---
+arm_pid=18479	watcher_pid=18580	origin=started	started_at=1794980752	ended_at=1794980755	exit_code=0	signal=none	reason=actionable-signal	beacon_age=1	lock_before=pid:18580|identity:Wed Nov 18 05:45:52 2026     bash {run-worktree}/bin/fm-watch.sh	lock_after=pid:none|identity:none	successor=none
+
+--- cleanup.out ---
+watcher: none running
+
+
+===== ack-dead =====
+candidate=99df4245a6c7fc938b0e8a4395272196e84112b0
+case=ack-dead
+
+--- lock.out ---
+lock acquired: harness pid 62363
+
+--- host.out ---
+watcher: started pid=32410 (beacon fresh)
+signal: {run-worktree}/.test-phase/ack-dead/state/demo.status
+supervision-host: the acknowledged hand-back successor could not be verified
+
+--- host.rc ---
+1
+
+--- state/.supervision-host.log ---
+1794980762	start	gen=host-32178-1794980762	primary=claude
+1794980766	pass-through	attended	main-only	signal: {run-worktree}/.test-phase/ack-dead/state/demo.status
+
+--- state/.supervision-host-left ---
+
+--- state/.supervision-handoff-owner ---
+
+--- state/.supervision-handoff.log ---
+
+--- state/.watch-cycle-exits.log ---
+arm_pid=32364	watcher_pid=32410	origin=started	started_at=1794980762	ended_at=1794980765	exit_code=0	signal=none	reason=actionable-signal	beacon_age=1	lock_before=pid:32410|identity:Wed Nov 18 05:46:02 2026     bash {run-worktree}/bin/fm-watch.sh	lock_after=pid:none|identity:none	successor=none
+
+--- cleanup.out ---
+watcher: none running
