@@ -1,0 +1,20 @@
+Candidate c1742381501aae7c535bd0949cb591f1057cda0c
+
+$ HOME=<synthetic-user> agy_live_stage_home <throwaway>
+Staged settings.json:
+{
+  "colorScheme": "dark"
+}
+Staged login.keychain-db: symlink to the synthetic source file.
+Legacy token and installation ID: absent from the staged home.
+Source settings, legacy files and placeholder keychain: identical SHA-256 digests.
+
+$ agy_live_failure_tail < synthetic-terminal-output
+Authorization page: [URL omitted]
+Authorization: Bearer [credential omitted]
+[credential field omitted]
+Provider token: [credential omitted]
+Diagnostic: SessionStart hook did not create state/.lock
+Output contained exactly 40 lines and omitted the oldest row.
+
+These checks use disposable files and synthetic terminal text. No account or CLI session was opened.
