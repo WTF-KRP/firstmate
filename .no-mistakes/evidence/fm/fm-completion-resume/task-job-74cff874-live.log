@@ -1,0 +1,167 @@
+74cff8747c899eff1a4ea07a9d05cc4d5eb5365b
+
+Real Firstmate CLI and watcher with synthetic tasks and a private empty tmux socket directory.
+
+S1. Held completion, starting generation, release and acknowledgement
+
+job: 20261125T220822Z-99421
+output: $LAB/state/verify-resume.inbox/jobs/20261125T220822Z-99421/output
+until: 2026-11-25T22:10Z
+
+schema=fm-task-inbox.v1
+at=2026-11-25T22:08:55Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261125T220822Z-99421 finished: the command exited with status 7.
+Task: verify-resume; started by worker generation original.
+Started: 2026-11-25T22:08Z; ended: 2026-11-25T22:08Z.
+Output: $LAB/state/verify-resume.inbox/jobs/20261125T220822Z-99421/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+The held completion was retained through watcher polls without a delivery attempt or stale wake.
+
+captain-held [key=approval]: waiting for synthetic approval
+resolved [key=approval]: synthetic approval received
+
+1795644579	5	stale	lab:fm-verify-resume	stale: lab:fm-verify-resume (task job 20261125T220822Z-99421: completion $LAB/state/verify-resume.inbox/001.msg still unhandled after 3 doorbell delivery attempts; inspect the worker)
+
+Traceback (most recent call last):
+  File "<stdin>", line 115, in scenario
+  File "<stdin>", line 144, in hold
+AssertionError: 1795644579	5	stale	lab:fm-verify-resume	stale: lab:fm-verify-resume (task job 20261125T220822Z-99421: completion $LAB/state/verify-resume.inbox/001.msg still unhandled after 3 doorbell delivery attempts; inspect the worker)
+
+S2. Timeout, lost-runner refusal, recovery and teardown
+
+job: 20261125T220940Z-95851
+output: $LAB/state/verify-recover.inbox/jobs/20261125T220940Z-95851/output
+until: 2026-11-25T22:10Z
+
+schema=fm-task-inbox.v1
+at=2026-11-25T22:09:44Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261125T220940Z-95851 finished: the command passed its 3-second timeout and was stopped (status 143).
+Task: verify-recover; started by worker generation original.
+Started: 2026-11-25T22:09Z; ended: 2026-11-25T22:09Z.
+Output: $LAB/state/verify-recover.inbox/jobs/20261125T220940Z-95851/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+job: 20261125T220945Z-99826
+output: $LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826/output
+until: 2026-11-25T22:12Z
+
+Traceback (most recent call last):
+  File "<stdin>", line 115, in scenario
+  File "<stdin>", line 165, in recover
+  File "<stdin>", line 98, in watched
+  File "<stdin>", line 20, in wait_for
+AssertionError: watcher did not report unproven ownership
+
+S3. Worker races to start a job during task retirement
+
+job: 20261125T221030Z-46114
+output: $LAB/state/verify-retire.inbox/jobs/20261125T221030Z-46114/output
+until: 2026-11-25T22:12Z
+
+Retirement lock observed before late start.
+Teardown exit 0
+fm-gate-refuse: gate agent lifecycle permitted only against lab home $LAB
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  3 task(s) in flight, but no live watcher process holds this home lock (last beat: 3s ago).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  After draining queued wakes, repair missing watcher supervision with a foreground checkpoint: bin/fm-watch-checkpoint.sh --seconds 180.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WARNING: queued wakes pending - drain them with bin/fm-wake-drain.sh before anything else.
+error: tmux window lab:fm-verify-retire could not be read after its close, so whether it survived is unknown
+error: the tmux endpoint lab:fm-verify-retire for verify-retire could not be closed, so it may still be live.
+error: --force authorizes continuing past a close that failed, so this cleanup proceeds toward removing the task's records; reconcile lab:fm-verify-retire yourself, because nothing here can still be relied on to name it.
+teardown verify-retire complete (window lab:fm-verify-retire, worktree $LAB/missing-verify-retire-copy)
+Backlog: verify-retire is closed in $LAB/data/backlog.md. Run bin/fm-tasks-axi.sh ready for dependency-cleared candidates, check date gates, and dispatch only work whose blockers are gone and date is due.
+
+Concurrent start exit 1
+fm-task-job: no task metadata for verify-retire at $LAB/state/verify-retire.meta; the task may have been retired
+
+The original runner and child exited. The late launch never ran and created no task records.
+
+S4. Real bookkeeping write refusal and successor supervision
+
+job: 20261125T221035Z-51510
+output: $LAB/state/verify-fault-a.inbox/jobs/20261125T221035Z-51510/output
+until: 2026-11-25T22:12Z
+
+job: 20261125T221035Z-51783
+output: $LAB/state/verify-fault-b.inbox/jobs/20261125T221035Z-51783/output
+until: 2026-11-25T22:12Z
+
+1795644637	6	stale	lab:fm-verify-fault-a	stale: lab:fm-verify-fault-a (task job 20261125T221035Z-51510: delivery bookkeeping could not write $LAB/state/verify-fault-a.inbox/jobs/20261125T221035Z-51510/delivery for completion $LAB/state/verify-fault-a.inbox/001.msg)
+
+error: task-job escalation bookkeeping failed: $LAB/state/verify-fault-a.inbox/jobs/20261125T221035Z-51510/escalated
+
+1795644667	7	stale	lab:fm-verify-fault-b	stale: lab:fm-verify-fault-b (task job 20261125T221035Z-51783: completion $LAB/state/verify-fault-b.inbox/001.msg still unhandled after 3 doorbell delivery attempts; inspect the worker)
+
+After the first task's bookkeeping failure, the successor watcher surfaced the second task.
+
+Watcher output (nonempty files)
+
+signal: $LAB/state/verify-resume.status
+
+signal: $LAB/state/verify-resume.status
+
+stale: lab:fm-verify-resume (task job 20261125T220822Z-99421: completion $LAB/state/verify-resume.inbox/001.msg still unhandled after 3 doorbell delivery attempts; inspect the worker)
+
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+$WORKTREE/bin/fm-wake-lib.sh: line 795: 45542 Terminated: 15          sleep "$POLL"
+
+error: task-job escalation bookkeeping failed: $LAB/state/verify-fault-a.inbox/jobs/20261125T221035Z-51510/escalated
+$WORKTREE/bin/fm-wake-lib.sh: line 542: 55363 Terminated: 15          rm -f "$lockdir/pid" "$lockdir/pid".tmp.* "$lockdir/fm-home" "$lockdir/pid-identity" "$lockdir/pid-start" "$lockdir/role" "$lockdir/watcher-path" 2> /dev/null
+
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+# task-job: unrecoverable job 20261125T220945Z-99826: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T220945Z-99826)
+stale: lab:fm-verify-fault-b (task job 20261125T221035Z-51783: completion $LAB/state/verify-fault-b.inbox/001.msg still unhandled after 3 doorbell delivery attempts; inspect the worker)
+
+1795644534	1	signal	verify-resume.status	needs-decision: $LAB/state/verify-resume.status
+1795644534	2	signal	verify-resume.status	needs-decision: $LAB/state/verify-resume.status
+1795644570	3	signal	verify-resume.status	signal: $LAB/state/verify-resume.status
+1795644571	4	signal	verify-resume.status	signal: $LAB/state/verify-resume.status
+1795644579	5	stale	lab:fm-verify-resume	stale: lab:fm-verify-resume (task job 20261125T220822Z-99421: completion $LAB/state/verify-resume.inbox/001.msg still unhandled after 3 doorbell delivery attempts; inspect the worker)
+1795644637	6	stale	lab:fm-verify-fault-a	stale: lab:fm-verify-fault-a (task job 20261125T221035Z-51510: delivery bookkeeping could not write $LAB/state/verify-fault-a.inbox/jobs/20261125T221035Z-51510/delivery for completion $LAB/state/verify-fault-a.inbox/001.msg)
+1795644667	7	stale	lab:fm-verify-fault-b	stale: lab:fm-verify-fault-b (task job 20261125T221035Z-51783: completion $LAB/state/verify-fault-b.inbox/001.msg still unhandled after 3 doorbell delivery attempts; inspect the worker)

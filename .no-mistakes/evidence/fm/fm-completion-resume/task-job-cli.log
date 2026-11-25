@@ -1,0 +1,130 @@
+f9aa8d9c4ede4b0d54b51421c8b78829c4f60f93
+
+Marked disposable Firstmate home, real fm-task-job.sh and fm-watch.sh, empty private tmux socket directory.
+
+Completion persisted for the starting generation after the active generation changed.
+window=lab:fm-verify-resume
+kind=scout
+mode=local-only
+backend=tmux
+harness=codex
+spawn_gen=replacement
+schema=fm-task-inbox.v1
+at=2026-11-25T21:56:34Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261125T215611Z-68553 finished: the command exited with status 0.
+Task: verify-resume; started by worker generation original.
+Started: 2026-11-25T21:56Z; ended: 2026-11-25T21:56Z.
+Output: $LAB/state/verify-resume.inbox/jobs/20261125T215611Z-68553/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+Declared hold and release.
+captain-held [key=approval]: waiting for synthetic approval
+resolved [key=approval]: synthetic approval received
+
+Queued supervisor notices. The job-specific stale wake appears after the release signal.
+1795643778	1	signal	verify-resume.status	needs-decision: $LAB/state/verify-resume.status
+1795643778	2	signal	verify-resume.status	needs-decision: $LAB/state/verify-resume.status
+1795643811	3	signal	verify-resume.status	signal: $LAB/state/verify-resume.status
+1795643811	4	signal	verify-resume.status	signal: $LAB/state/verify-resume.status
+1795643831	5	stale	lab:fm-verify-resume	stale: lab:fm-verify-resume (task job 20261125T215611Z-68553: completion $LAB/state/verify-resume.inbox/001.msg is unhandled and the worker's agent has exited or its endpoint is missing; recover the worker)
+
+Firstmate's recovery output for the unavailable worker endpoint.
+stale: lab:fm-verify-resume (task job 20261125T215611Z-68553: completion $LAB/state/verify-resume.inbox/001.msg is unhandled and the worker's agent has exited or its endpoint is missing; recover the worker)
+
+Collected by moving 001.msg into handled/.
+
+Timeout and lost-runner recovery.
+schema=fm-task-inbox.v1
+at=2026-11-25T21:57:59Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261125T215731Z-71976 finished: the command passed its 3-second timeout and was stopped (status 143).
+Task: verify-recover; started by worker generation recovery.
+Started: 2026-11-25T21:57Z; ended: 2026-11-25T21:57Z.
+Output: $LAB/state/verify-recover.inbox/jobs/20261125T215731Z-71976/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+27847 /bin/sleep 65
+# task-job: unrecoverable job 20261125T215804Z-26900: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T215804Z-26900)
+signal: $LAB/state/verify-recover.status
+While the child was live, the lost job had no exit or completion record.
+
+Concurrent worker start against a retiring scout whose endpoint was already gone.
+Retirement lock observed before late launch: yes
+Teardown exit 1
+fm-gate-refuse: gate agent lifecycle permitted only against lab home $LAB
+REFUSED: task verify-retire has a missing, empty, or ambiguous worktree identity; preserving task state.
+The record needs exactly one worktree= line naming the copy this task holds: add it, fill it in, or keep only the right one of several, then re-run.
+A pool slot handed on to another task since is still safe to name: cleanup reads that slot's own .fm-slot-owner claim and then leaves the slot untouched, while a slot with no claim is proved only by that worktree listing.
+Concurrent start exit 0
+job: 20261125T215840Z-77640
+output: $LAB/state/verify-retire.inbox/jobs/20261125T215840Z-77640/output
+until: 2026-11-25T21:59Z
+Retirement or late-start invariant failed.
+
+Retest with a valid recorded worktree identity for the already-absent scout copy.
+Retirement lock observed before late launch: yes
+Teardown exit 1
+fm-gate-refuse: gate agent lifecycle permitted only against lab home $LAB
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  3 task(s) in flight, but no live watcher process holds this home lock (last beat: 74s ago).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  After draining queued wakes, repair missing watcher supervision with a foreground checkpoint: bin/fm-watch-checkpoint.sh --seconds 180.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WARNING: queued wakes pending - drain them with bin/fm-wake-drain.sh before anything else.
+fm-captain-hold: origin verify-retire has no completed captain-call inventory
+REFUSED: scout task verify-retire has not passed the captain-call completion gate.
+Inventory its report and any visual review through bin/fm-captain-hold.sh before teardown.
+Concurrent start exit 0
+job: 20261125T215924Z-31465
+output: $LAB/state/verify-retire.inbox/jobs/20261125T215924Z-31465/output
+until: 2026-11-25T22:00Z
+Retirement or late-start invariant failed.
+
+Retest with the recorded scout copy and the completed captain-call inventory.
+Retirement lock observed before late launch: yes
+Teardown exit 0
+fm-gate-refuse: gate agent lifecycle permitted only against lab home $LAB
+WARNING: watcher still down (same stale episode; last beat: 44s ago, grace 300s) - full banner already printed this episode.
+WARNING: queued wakes pending - drain them with bin/fm-wake-drain.sh before anything else.
+teardown verify-retire complete (window lab:fm-verify-retire, worktree $LAB/missing-scout-copy)
+Backlog: verify-retire just finished (config/backlog-backend selects manual editing). Update $LAB/data/backlog.md - move verify-retire to Done, keep Done to the 10 most recent, then re-scan Queued and dispatch only work whose blockers are gone and date is due.
+Concurrent start exit 1
+fm-task-job: no task metadata for verify-retire at $LAB/state/verify-retire.meta; the task may have been retired
+The two recorded process IDs exited, and neither the late command output nor the inbox or metadata exists.
+
+Recovered outcome after the lost runner's child exited and the watcher restarted.
+schema=fm-task-inbox.v1
+at=2026-11-25T21:59:36Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261125T215804Z-26900 finished: the command did not report an exit and no process remains in its recorded groups.
+Task: verify-recover; started by worker generation recovery.
+Started: 2026-11-25T21:58Z; ended: 2026-11-25T21:59Z.
+Output: $LAB/state/verify-recover.inbox/jobs/20261125T215804Z-26900/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+outcome=lost
+status=
+ended=1795643976
+
+The worker generation change preceded the exit epoch.
+metadata modified=1795643776
+outcome=exited
+status=0
+ended=1795643784
+
+Firstmate encountered a real write refusal in the first job's private directory.
+Job directory permissions dr-xr-xr-x
+error: task-job escalation bookkeeping failed: $LAB/state/verify-fault-a.inbox/jobs/20261125T220030Z-41900/escalated
+stale: lab:fm-verify-fault-a (task job 20261125T220030Z-41900: completion $LAB/state/verify-fault-a.inbox/001.msg is unhandled and the worker's agent has exited or its endpoint is missing; recover the worker)
+After handling the first completion, the successor watcher reported the second task.
+stale: lab:fm-verify-fault-b (task job 20261125T220030Z-42689: completion $LAB/state/verify-fault-b.inbox/001.msg is unhandled and the worker's agent has exited or its endpoint is missing; recover the worker)
+1795644107	20	stale	lab:fm-verify-fault-a	stale: lab:fm-verify-fault-a (task job 20261125T220030Z-41900: completion $LAB/state/verify-fault-a.inbox/001.msg is unhandled and the worker's agent has exited or its endpoint is missing; recover the worker)
+1795644125	21	stale	lab:fm-verify-fault-b	stale: lab:fm-verify-fault-b (task job 20261125T220030Z-42689: completion $LAB/state/verify-fault-b.inbox/001.msg is unhandled and the worker's agent has exited or its endpoint is missing; recover the worker)
+The acknowledged verify-resume completion is still in handled/ after successor runs.

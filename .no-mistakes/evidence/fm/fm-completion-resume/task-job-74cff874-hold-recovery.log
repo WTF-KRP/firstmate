@@ -1,0 +1,81 @@
+74cff8747c899eff1a4ea07a9d05cc4d5eb5365b
+
+Real Firstmate CLI and watcher with synthetic tasks and a private empty tmux socket directory.
+
+S1. Held completion, starting generation, release and acknowledgement
+
+job: 20261125T221123Z-6873
+output: $LAB/state/verify-resume.inbox/jobs/20261125T221123Z-6873/output
+until: 2026-11-25T22:13Z
+
+schema=fm-task-inbox.v1
+at=2026-11-25T22:11:27Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261125T221123Z-6873 finished: the command exited with status 7.
+Task: verify-resume; started by worker generation original.
+Started: 2026-11-25T22:11Z; ended: 2026-11-25T22:11Z.
+Output: $LAB/state/verify-resume.inbox/jobs/20261125T221123Z-6873/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+The held completion was retained through watcher polls without a delivery attempt or stale wake.
+
+captain-held [key=approval]: waiting for synthetic approval
+resolved [key=approval]: synthetic approval received
+
+1795644695	5	stale	lab:fm-verify-resume	stale: lab:fm-verify-resume (task job 20261125T221123Z-6873: completion $LAB/state/verify-resume.inbox/001.msg is unhandled and the worker's agent has exited or its endpoint is missing; recover the worker)
+
+Acknowledged 001.msg by moving it to handled/. The successor watcher left it there with one recovery wake.
+
+S2. Timeout, lost-runner refusal, recovery and teardown
+
+job: 20261125T221141Z-24807
+output: $LAB/state/verify-recover.inbox/jobs/20261125T221141Z-24807/output
+until: 2026-11-25T22:12Z
+
+schema=fm-task-inbox.v1
+at=2026-11-25T22:11:44Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261125T221141Z-24807 finished: the command passed its 3-second timeout and was stopped (status 143).
+Task: verify-recover; started by worker generation original.
+Started: 2026-11-25T22:11Z; ended: 2026-11-25T22:11Z.
+Output: $LAB/state/verify-recover.inbox/jobs/20261125T221141Z-24807/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+job: 20261125T221144Z-27540
+output: $LAB/state/verify-recover.inbox/jobs/20261125T221144Z-27540/output
+until: 2026-11-25T22:14Z
+
+# task-job: unrecoverable job 20261125T221144Z-27540: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T221144Z-27540)
+
+stop-all exited 1 and preserved the still-running synthetic child.
+# task-job: unrecoverable job 20261125T221144Z-27540: runner ownership cannot be proven; refusing to signal its process group ($LAB/state/verify-recover.inbox/jobs/20261125T221144Z-27540)
+
+schema=fm-task-inbox.v1
+at=2026-11-25T22:11:48Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261125T221144Z-27540 finished: the command did not report an exit and no process remains in its recorded groups.
+Task: verify-recover; started by worker generation original.
+Started: 2026-11-25T22:11Z; ended: 2026-11-25T22:11Z.
+Output: $LAB/state/verify-recover.inbox/jobs/20261125T221144Z-27540/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+fm-teardown.sh verify-recover --force exited 0
+fm-gate-refuse: gate agent lifecycle permitted only against lab home $LAB
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  2 task(s) in flight, but no live watcher process holds this home lock (last beat: 2s ago).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  After draining queued wakes, repair missing watcher supervision with a foreground checkpoint: bin/fm-watch-checkpoint.sh --seconds 180.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WARNING: queued wakes pending - drain them with bin/fm-wake-drain.sh before anything else.
+teardown verify-recover complete (window lab:fm-verify-recover, worktree $LAB/missing-verify-recover-copy)
+Backlog: verify-recover is closed in $LAB/data/backlog.md. Run bin/fm-tasks-axi.sh ready for dependency-cleared candidates, check date gates, and dispatch only work whose blockers are gone and date is due.
+
+The seeded in-flight backlog item moved to Done and teardown removed the task metadata and inbox.
