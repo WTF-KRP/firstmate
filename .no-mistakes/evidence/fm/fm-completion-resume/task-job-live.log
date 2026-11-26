@@ -1,0 +1,221 @@
+Revision be030631e2c0004ebcc692a81b0a091882682259
+
+Real private tmux socket and terminal geometry
+{run-worktree}/.v/s 180x35
+
+delivery
+
+
+fm-task-job.sh start [generation]
+job: 20261126T002125Z-86455
+output: {run-worktree}/.v/delivery-86423/state/generation.inbox/jobs/20261126T002125Z-86455/output
+until: 2026-11-26T00:23Z
+
+Runner exit and output
+outcome=exited
+status=3
+ended=1795652486
+synthetic-monitor-result
+
+Durable completion from the real watcher
+schema=fm-task-inbox.v1
+at=2026-11-26T00:21:27Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261126T002125Z-86455 finished: the command exited with status 3.
+Task: generation; started by worker generation start-generation.
+Started: 2026-11-26T00:21Z; ended: 2026-11-26T00:21Z.
+Output: {run-worktree}/.v/delivery-86423/state/generation.inbox/jobs/20261126T002125Z-86455/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+Terminal input received by generation
+: Firstmate instruction waiting: list "$FM_TASK_INBOX"/*.msg in your 'generation.inbox' steering inbox, read and act on each in numeric order, then mv each into its handled/.
+
+Terminal input received by generation
+: Firstmate instruction waiting: list "$FM_TASK_INBOX"/*.msg in your 'generation.inbox' steering inbox, read and act on each in numeric order, then mv each into its handled/.
+: Firstmate instruction waiting: list "$FM_TASK_INBOX"/*.msg in your 'generation.inbox' steering inbox, read and act on each in numeric order, then mv each into its handled/.
+
+Worker acknowledgement (moved to handled/)
+001.msg
+Delivery count after six watcher heartbeats following acknowledgement: 2
+RESULT delivery PASS
+fm-watch.sh pid 87632 stopped by lab, exit -15
+fm-watch.sh pid 91953 stopped by lab, exit -15
+
+waiting
+
+
+busy lifecycle input
+v1 gen=g1795652503.7707.29884 seq=1 state=busy source=fm-spawn event=launch-brief ts=1795652503
+
+fm-task-job.sh start [held]
+job: 20261126T002143Z-7809
+output: {run-worktree}/.v/waiting-86423/state/held.inbox/jobs/20261126T002143Z-7809/output
+until: 2026-11-26T00:23Z
+
+fm-task-job.sh start [busy]
+job: 20261126T002143Z-8106
+output: {run-worktree}/.v/waiting-86423/state/busy.inbox/jobs/20261126T002143Z-8106/output
+until: 2026-11-26T00:23Z
+
+Runner exit and output
+outcome=exited
+status=0
+ended=1795652503
+synthetic-check-complete
+
+Runner exit and output
+outcome=exited
+status=0
+ended=1795652504
+synthetic-check-complete
+RESULT waiting FAIL AssertionError: timed out waiting for held durable inbox message
+fm-watch.sh pid 8379 stopped by lab, exit -15
+
+contention
+
+
+fm-task-job.sh start [a-locked]
+job: 20261126T002205Z-21482
+output: {run-worktree}/.v/contention-86423/state/a-locked.inbox/jobs/20261126T002205Z-21482/output
+until: 2026-11-26T00:24Z
+
+fm-task-job.sh start [b-free]
+job: 20261126T002205Z-22090
+output: {run-worktree}/.v/contention-86423/state/b-free.inbox/jobs/20261126T002205Z-22090/output
+until: 2026-11-26T00:24Z
+
+Runner exit and output
+outcome=exited
+status=0
+ended=1795652525
+
+Runner exit and output
+outcome=exited
+status=0
+ended=1795652525
+
+Terminal input received by b-free
+: Firstmate instruction waiting: list "$FM_TASK_INBOX"/*.msg in your 'b-free.inbox' steering inbox, read and act on each in numeric order, then mv each into its handled/.
+
+Other task completed with first metadata lock still held
+schema=fm-task-inbox.v1
+at=2026-11-26T00:22:18Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261126T002205Z-22090 finished: the command exited with status 0.
+Task: b-free; started by worker generation start-b-free.
+Started: 2026-11-26T00:22Z; ended: 2026-11-26T00:22Z.
+Output: {run-worktree}/.v/contention-86423/state/b-free.inbox/jobs/20261126T002205Z-22090/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+Worker acknowledgement (moved to handled/)
+001.msg
+
+Lock holder exit 0
+locked {run-worktree}/.v/contention-86423/state/.meta-a-locked.lock
+
+Terminal input received by a-locked
+: Firstmate instruction waiting: list "$FM_TASK_INBOX"/*.msg in your 'a-locked.inbox' steering inbox, read and act on each in numeric order, then mv each into its handled/.
+
+Worker acknowledgement (moved to handled/)
+001.msg
+RESULT contention PASS
+fm-watch.sh pid 23858 stopped by lab, exit -15
+
+failed_write
+
+
+fm-task-job.sh start [a-fault]
+job: 20261126T002225Z-47468
+output: {run-worktree}/.v/failed_write-86423/state/a-fault.inbox/jobs/20261126T002225Z-47468/output
+until: 2026-11-26T00:24Z
+
+Runner exit and output
+outcome=exited
+status=0
+ended=1795652545
+
+Filesystem fault verified by real touch
+touch: {run-worktree}/.v/failed_write-86423/state/a-fault.inbox/jobs/20261126T002225Z-47468/.permission-probe: Permission denied
+
+Watcher returned 0 and queued this wake
+1795652547	1	stale	fm-lab-anchor:fm-a-fault	stale: fm-lab-anchor:fm-a-fault (task job 20261126T002225Z-47468: delivery bookkeeping could not write {run-worktree}/.v/failed_write-86423/state/a-fault.inbox/jobs/20261126T002225Z-47468/delivered for completion {run-worktree}/.v/failed_write-86423/state/a-fault.inbox/001.msg)
+
+Completion remained readable despite bookkeeping failing
+schema=fm-task-inbox.v1
+at=2026-11-26T00:22:26Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261126T002225Z-47468 finished: the command exited with status 0.
+Task: a-fault; started by worker generation start-a-fault.
+Started: 2026-11-26T00:22Z; ended: 2026-11-26T00:22Z.
+Output: {run-worktree}/.v/failed_write-86423/state/a-fault.inbox/jobs/20261126T002225Z-47468/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+fm-task-job.sh start [b-follow]
+job: 20261126T002227Z-49971
+output: {run-worktree}/.v/failed_write-86423/state/b-follow.inbox/jobs/20261126T002227Z-49971/output
+until: 2026-11-26T00:24Z
+
+Runner exit and output
+outcome=exited
+status=0
+ended=1795652547
+RESULT failed_write FAIL AssertionError: timed out waiting for 1 real terminal deliveries to b-follow
+
+fm-watch.sh pid 48107 exit 0
+stale: fm-lab-anchor:fm-a-fault (task job 20261126T002225Z-47468: delivery bookkeeping could not write {run-worktree}/.v/failed_write-86423/state/a-fault.inbox/jobs/20261126T002225Z-47468/delivered for completion {run-worktree}/.v/failed_write-86423/state/a-fault.inbox/001.msg)
+fm-watch.sh pid 50449 stopped by lab, exit -15
+
+outcomes
+
+
+fm-task-job.sh start [timeout]
+job: 20261126T002248Z-60416
+output: {run-worktree}/.v/outcomes-86423/state/timeout.inbox/jobs/20261126T002248Z-60416/output
+until: 2026-11-26T00:23Z
+
+fm-task-job.sh start [lost]
+job: 20261126T002249Z-60638
+output: {run-worktree}/.v/outcomes-86423/state/lost.inbox/jobs/20261126T002249Z-60638/output
+until: 2026-11-26T00:24Z
+RESULT outcomes FAIL AssertionError: timed out waiting for unrecoverable group diagnostic
+
+fm-watch.sh pid 60772 exit -15
+# task-job: unrecoverable job 20261126T002249Z-60638: runner ownership cannot be proven; refusing to signal its process group ({run-worktree}/.v/outcomes-86423/state/lost.inbox/jobs/20261126T002249Z-60638)
+# task-job: unrecoverable job 20261126T002249Z-60638: runner ownership cannot be proven; refusing to signal its process group ({run-worktree}/.v/outcomes-86423/state/lost.inbox/jobs/20261126T002249Z-60638)
+# task-job: unrecoverable job 20261126T002249Z-60638: runner ownership cannot be proven; refusing to signal its process group ({run-worktree}/.v/outcomes-86423/state/lost.inbox/jobs/20261126T002249Z-60638)
+# task-job: unrecoverable job 20261126T002249Z-60638: runner ownership cannot be proven; refusing to signal its process group ({run-worktree}/.v/outcomes-86423/state/lost.inbox/jobs/20261126T002249Z-60638)
+# task-job: unrecoverable job 20261126T002249Z-60638: runner ownership cannot be proven; refusing to signal its process group ({run-worktree}/.v/outcomes-86423/state/lost.inbox/jobs/20261126T002249Z-60638)
+# task-job: unrecoverable job 20261126T002249Z-60638: runner ownership cannot be proven; refusing to signal its process group ({run-worktree}/.v/outcomes-86423/state/lost.inbox/jobs/20261126T002249Z-60638)
+# task-job: unrecoverable job 20261126T002249Z-60638: runner ownership cannot be proven; refusing to signal its process group ({run-worktree}/.v/outcomes-86423/state/lost.inbox/jobs/20261126T002249Z-60638)
+# task-job: unrecoverable job 20261126T002249Z-60638: runner ownership cannot be proven; refusing to signal its process group ({run-worktree}/.v/outcomes-86423/state/lost.inbox/jobs/20261126T002249Z-60638)
+
+stop-all cleanup [lost] exit 1
+# task-job: unrecoverable job 20261126T002249Z-60638: runner ownership cannot be proven; refusing to signal its process group ({run-worktree}/.v/outcomes-86423/state/lost.inbox/jobs/20261126T002249Z-60638)
+
+teardown
+
+
+fm-task-job.sh start [retire]
+job: 20261126T002310Z-86154
+output: {run-worktree}/.v/teardown-86423/state/retire.inbox/jobs/20261126T002310Z-86154/output
+until: 2026-11-26T00:26Z
+
+fm-teardown.sh retire exit 1
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  repair missing watcher supervision with a foreground checkpoint: bin/fm-watch-checkpoint.sh --seconds 180.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+fm-captain-hold: origin retire has no completed captain-call inventory
+REFUSED: scout task retire has not passed the captain-call completion gate.
+Inventory its report and any visual review through bin/fm-captain-hold.sh before teardown.
+RESULT teardown FAIL AssertionError: scout retirement refused
+Private tmux teardown exit 0

@@ -1,0 +1,8 @@
+Official Kiro CLI 2.35.1 standalone archive SHA-256 matched the vendor version index.
+Kiro ran with empty workspace-local XDG configuration and data, and with network and writes outside its lab denied.
+kiro-cli --version exit 0
+kiro-cli 2.35.1
+
+kiro-cli whoami exit 1
+error: Operation not permitted (os error 1)
+

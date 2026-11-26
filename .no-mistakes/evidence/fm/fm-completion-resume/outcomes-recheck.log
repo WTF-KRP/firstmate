@@ -1,0 +1,57 @@
+Revision be030631e2c0004ebcc692a81b0a091882682259
+
+Real private tmux socket and terminal geometry
+{run-worktree}/.v/o 180x35
+
+outcomes
+
+
+fm-task-job.sh start [timeout]
+job: 20261126T002556Z-23175
+output: {run-worktree}/.v/outcomes-22391/state/timeout.inbox/jobs/20261126T002556Z-23175/output
+until: 2026-11-26T00:26Z
+
+fm-task-job.sh start [lost]
+job: 20261126T002556Z-23409
+output: {run-worktree}/.v/outcomes-22391/state/lost.inbox/jobs/20261126T002556Z-23409/output
+until: 2026-11-26T00:27Z
+
+Lost job with live child withheld
+paused: waiting for local diagnostics
+# task-job [at=1795652758]: unrecoverable job 20261126T002556Z-23409: runner ownership cannot be proven; refusing to signal its process group ({run-worktree}/.v/outcomes-22391/state/lost.inbox/jobs/20261126T002556Z-23409)
+# task-job: unrecoverable job 20261126T002556Z-23409: runner ownership cannot be proven; refusing to signal its process group ({run-worktree}/.v/outcomes-22391/state/lost.inbox/jobs/20261126T002556Z-23409)
+
+timeout completion
+schema=fm-task-inbox.v1
+at=2026-11-26T00:26:03Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261126T002556Z-23175 finished: the command passed its 3-second timeout and was stopped (status 143).
+Task: timeout; started by worker generation start-timeout.
+Started: 2026-11-26T00:25Z; ended: 2026-11-26T00:25Z.
+Output: {run-worktree}/.v/outcomes-22391/state/timeout.inbox/jobs/20261126T002556Z-23175/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+Worker acknowledgement (moved to handled/)
+001.msg
+
+lost completion
+schema=fm-task-inbox.v1
+at=2026-11-26T00:26:01Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261126T002556Z-23409 finished: the command did not report an exit and no process remains in its recorded groups.
+Task: lost; started by worker generation start-lost.
+Started: 2026-11-26T00:25Z; ended: 2026-11-26T00:26Z.
+Output: {run-worktree}/.v/outcomes-22391/state/lost.inbox/jobs/20261126T002556Z-23409/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+Worker acknowledgement (moved to handled/)
+001.msg
+RESULT outcomes PASS
+
+fm-watch.sh pid 24361 exit -15
+# task-job: unrecoverable job 20261126T002556Z-23409: runner ownership cannot be proven; refusing to signal its process group ({run-worktree}/.v/outcomes-22391/state/lost.inbox/jobs/20261126T002556Z-23409)
+Private tmux teardown exit 0

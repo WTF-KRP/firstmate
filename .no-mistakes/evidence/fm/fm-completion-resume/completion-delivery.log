@@ -1,0 +1,46 @@
+Revision be030631e2c0004ebcc692a81b0a091882682259
+
+Real private tmux socket and terminal geometry
+{run-worktree}/.v/s 180x35
+
+delivery
+
+
+fm-task-job.sh start [generation]
+job: 20261126T002038Z-52210
+output: {run-worktree}/.v/delivery/state/generation.inbox/jobs/20261126T002038Z-52210/output
+until: 2026-11-26T00:22Z
+
+Runner exit and output
+outcome=exited
+status=3
+ended=1795652439
+synthetic-monitor-result
+
+Durable completion from the real watcher
+schema=fm-task-inbox.v1
+at=2026-11-26T00:20:41Z
+body-terminator=1
+delivery=hold-aware
+--
+Task job 20261126T002038Z-52210 finished: the command exited with status 3.
+Task: generation; started by worker generation start-generation.
+Started: 2026-11-26T00:20Z; ended: 2026-11-26T00:20Z.
+Output: {run-worktree}/.v/delivery/state/generation.inbox/jobs/20261126T002038Z-52210/output
+This record reports your own task job's result; it is not a new instruction. Read the output, record the result, and continue under your current instructions; a decision or hold you are waiting on still applies.
+
+Terminal input received by generation
+: Firstmate instruction waiting: list "$FM_TASK_INBOX"/*.msg in your 'generation.inbox' steering inbox, read and act on each in numeric order, then mv each into its handled/.
+
+Terminal input received by generation
+: Firstmate instruction waiting: list "$FM_TASK_INBOX"/*.msg in your 'generation.inbox' steering inbox, read and act on each in numeric order, then mv each into its handled/.
+: Firstmate instruction waiting: list "$FM_TASK_INBOX"/*.msg in your 'generation.inbox' steering inbox, read and act on each in numeric order, then mv each into its handled/.
+
+Worker acknowledgement (moved to handled/)
+001.msg
+RESULT delivery FAIL AssertionError: watcher exited 0 while waiting for watcher heartbeat
+fm-watch.sh pid 52826 stopped by lab, exit -15
+
+fm-watch.sh pid 56306 exit 0
+stale: fm-lab-anchor:fm-generation
+Private tmux teardown exit 0
